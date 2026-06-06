@@ -1,26 +1,69 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* Brand palette — Luxe Noir · Cool Platinum */
+  --color-noir: #08080a;
+  --color-noir-2: #14141a;
+  --color-noir-soft: #1a1a22;
+  --color-platinum: #b8c4d1;
+  --color-platinum-bright: #d4dae2;
+  --color-platinum-dim: #8a96a8;
+  --color-ivory: #e6e6ea;
+  --color-ivory-dim: rgba(230, 230, 234, 0.6);
+  --color-ivory-muted: rgba(230, 230, 234, 0.4);
+  --color-hairline: rgba(184, 196, 209, 0.18);
+
+  /* Typography */
+  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-serif), ui-serif, Georgia, serif;
+
+  /* Tracking presets — used through utility classes */
+  --tracking-eyebrow: 0.4em;
+  --tracking-button: 0.3em;
+  --tracking-nav: 0.25em;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  background: var(--color-noir);
+  color: var(--color-ivory);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  /* Hero gradient as a body background so it bleeds beyond viewport boundaries */
+  background:
+    radial-gradient(
+      ellipse at center top,
+      rgba(184, 196, 209, 0.04) 0%,
+      transparent 60%
+    ),
+    linear-gradient(180deg, var(--color-noir) 0%, var(--color-noir-2) 100%);
+  background-attachment: fixed;
+}
+
+/* Selection */
+::selection {
+  background: var(--color-platinum);
+  color: var(--color-noir);
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Utility shorthands used across hero/sections */
+@utility eyebrow {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-platinum-dim);
+}
+
+@utility serif-italic {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 500;
 }
