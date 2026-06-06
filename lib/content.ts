@@ -193,7 +193,7 @@ export const team = {
 export const cta = {
   eyebrow: "Reserve",
   headline: "A small instrument\nfor a quiet age of intelligence.",
-  body: "First production batch ships Q2 2026. Reserve now, fully refundable until shipment.",
+  body: "First production batch ships Q2 2027. Reserve now, fully refundable until shipment.",
   primary: { label: "Reserve", href: "#" },
   ghost: { label: "Talk to Atelier →", href: "mailto:hello@synoring.com" },
   fineprint: "Free worldwide shipping. 30-day returns. 2-year warranty.",
