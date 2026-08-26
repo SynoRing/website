@@ -346,21 +346,17 @@ summary {
   margin-left: 18px;
 }
 
-.honesty-note {
-  align-items: center;
-  color: var(--muted);
-  display: flex;
+.footnote-ref {
   font-size: 11px;
-  gap: 13px;
-  grid-column: 1 / -1;
-  letter-spacing: 0.08em;
-  margin: 0;
-  text-transform: uppercase;
+  font-weight: 800;
+  line-height: 0;
+  margin-left: 0.18em;
+  vertical-align: super;
 }
 
-.honesty-note span:not(:last-child)::after {
-  content: "·";
-  margin-left: 13px;
+.footnote-ref a {
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 0.08em;
 }
 
 .hero-visual {
@@ -386,23 +382,35 @@ summary {
   width: 100%;
 }
 
-.hero-visual figcaption {
+.visual-note-ref {
   align-items: center;
-  bottom: 30px;
-  color: rgba(242, 240, 232, 0.7);
-  display: flex;
+  background: rgba(17, 17, 15, 0.72);
+  border: 1px solid rgba(242, 240, 232, 0.36);
+  border-radius: 99px;
+  bottom: 28px;
+  color: var(--paper);
+  display: inline-flex;
   font-size: 11px;
   font-weight: 700;
-  gap: 16px;
-  letter-spacing: 0.16em;
+  height: 26px;
+  justify-content: center;
+  line-height: 1;
+  margin: 0;
   position: absolute;
-  right: 34px;
-  text-transform: uppercase;
+  right: 30px;
+  vertical-align: baseline;
+  width: 26px;
+  z-index: 2;
 }
 
-.hero-visual figcaption span {
-  border-left: 1px solid rgba(242, 240, 232, 0.35);
-  padding-left: 16px;
+.visual-note-ref a {
+  align-items: center;
+  border: 0;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  padding: 0;
+  width: 100%;
 }
 
 .signal-strip {
@@ -979,15 +987,6 @@ summary {
   border-color: var(--paper);
 }
 
-.access-copy small {
-  color: #77766f;
-  display: block;
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  margin-top: 22px;
-  text-transform: uppercase;
-}
-
 .faq-section {
   display: grid;
   gap: clamp(60px, 9vw, 150px);
@@ -1061,6 +1060,44 @@ footer {
   padding: 68px 3.3vw 28px;
 }
 
+.product-notes {
+  border-bottom: 1px solid var(--line);
+  grid-column: 1 / -1;
+  padding-bottom: 46px;
+}
+
+.product-notes-title {
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.product-notes ol {
+  color: #66645e;
+  margin: 26px 0 0;
+  max-width: 1040px;
+  padding-left: 20px;
+}
+
+.product-notes li {
+  font-size: 12px;
+  line-height: 1.62;
+  padding-left: 8px;
+  scroll-margin-top: 96px;
+}
+
+.product-notes li + li {
+  margin-top: 11px;
+}
+
+.product-notes li::marker {
+  color: var(--ink);
+  font-weight: 800;
+}
+
 .brand-footer {
   margin-bottom: 22px;
 }
@@ -1113,10 +1150,6 @@ footer {
 
   .hero-actions {
     justify-self: start;
-  }
-
-  .hero-intro .honesty-note {
-    grid-column: auto;
   }
 
   .gesture-grid {
@@ -1221,16 +1254,6 @@ footer {
     flex-direction: column;
   }
 
-  .honesty-note {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .honesty-note span:not(:last-child)::after {
-    display: none;
-  }
-
   .hero-visual {
     aspect-ratio: 4 / 5;
   }
@@ -1239,18 +1262,9 @@ footer {
     object-position: 67% center;
   }
 
-  .hero-visual figcaption {
-    align-items: flex-end;
-    bottom: 24px;
-    flex-direction: column;
-    gap: 6px;
-    left: 25px;
-    right: auto;
-  }
-
-  .hero-visual figcaption span {
-    border-left: 0;
-    padding-left: 0;
+  .visual-note-ref {
+    bottom: 22px;
+    right: 22px;
   }
 
   .signal-strip {
@@ -1359,6 +1373,10 @@ footer {
     grid-template-columns: 1fr;
     padding-left: 18px;
     padding-right: 18px;
+  }
+
+  .product-notes {
+    padding-bottom: 38px;
   }
 
   .footer-links {

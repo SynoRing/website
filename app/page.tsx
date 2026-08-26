@@ -68,6 +68,28 @@ const targetSpecs = [
   ["Material", "Titanium enclosure under evaluation"],
 ];
 
+function FootnoteRef({
+  number,
+  className = "",
+}: {
+  number: number;
+  className?: string;
+}) {
+  return (
+    <sup
+      className={`footnote-ref ${className}`.trim()}
+      id={`product-note-ref-${number}`}
+    >
+      <a
+        href={`#product-note-${number}`}
+        aria-label={`See product note ${number}`}
+      >
+        {number}
+      </a>
+    </sup>
+  );
+}
+
 export default function Home() {
   return (
     <div className="site-frame">
@@ -129,11 +151,6 @@ export default function Home() {
                 Explore the gestures <span aria-hidden="true">↓</span>
               </a>
             </div>
-            <p className="honesty-note">
-              <span>Early-stage concept</span>
-              <span>No deposit</span>
-              <span>Updates only when there is news</span>
-            </p>
           </div>
 
           <figure className="hero-visual">
@@ -141,9 +158,7 @@ export default function Home() {
               src="/og.png"
               alt="Concept visualization of the SynoRing titanium gesture controller"
             />
-            <figcaption>
-              Concept visualization <span>Final hardware may change</span>
-            </figcaption>
+            <FootnoteRef number={1} className="visual-note-ref" />
           </figure>
 
           <div className="signal-strip" aria-label="Product pillars">
@@ -279,9 +294,9 @@ export default function Home() {
             <p className="eyebrow">04 — Building in public</p>
             <h2>Early means early.</h2>
             <p>
-              We are validating the interaction before promising a launch date.
-              Here is the path from prototype to product — with no fictional
-              countdown and no deposit today.
+              We are validating the interaction through a clear path from
+              prototype to product, one decision at a time.
+              <FootnoteRef number={2} />
             </p>
           </div>
 
@@ -304,10 +319,11 @@ export default function Home() {
             <p className="eyebrow">05 — Product direction</p>
             <h2>Built light. Kept capable.</h2>
             <p>
-              These are development targets, not final shipping specifications.
-              We will publish measured numbers as prototypes mature.
+              The current architecture focuses on quiet input, efficient sensing,
+              and broad compatibility across spatial-computing platforms.
+              <FootnoteRef number={3} />
             </p>
-            <span className="spec-label">Target architecture · subject to change</span>
+            <span className="spec-label">Development architecture</span>
           </div>
           <dl className="spec-list">
             {targetSpecs.map(([term, definition]) => (
@@ -330,11 +346,11 @@ export default function Home() {
               Tell us how you would use SynoRing. Early members get honest build
               updates, prototype opportunities, and launch priority when the
               product is ready.
+              <FootnoteRef number={4} />
             </p>
             <a className="button button-lime" href={earlyAccessEmail}>
               Request early access <span aria-hidden="true">↗</span>
             </a>
-            <small>No payment. No weekly noise. Just meaningful progress.</small>
           </div>
         </section>
 
@@ -389,6 +405,38 @@ export default function Home() {
       </main>
 
       <footer>
+        <aside
+          className="product-notes"
+          id="product-notes"
+          aria-labelledby="product-notes-title"
+        >
+          <p className="product-notes-title" id="product-notes-title">
+            Product notes
+          </p>
+          <ol>
+            <li id="product-note-1">
+              Product imagery is a concept rendering for illustrative purposes.
+              Final industrial design, materials, dimensions, controls, and
+              finish may change.
+            </li>
+            <li id="product-note-2">
+              Roadmap stages and launch timing reflect current development plans
+              and may change as testing and validation progress.
+            </li>
+            <li id="product-note-3">
+              Features, materials, compatibility, sensing architecture, and
+              other specifications are development targets, not final shipping
+              specifications. Measured specifications will be published after
+              validation.
+            </li>
+            <li id="product-note-4">
+              Joining early access is free and is not a purchase, deposit,
+              reservation, or guarantee of prototype access or product
+              availability. Updates are sent only when there is meaningful
+              progress.
+            </li>
+          </ol>
+        </aside>
         <div className="footer-brand">
           <a className="brand brand-footer" href="#top">
             <span className="brand-mark" aria-hidden="true">

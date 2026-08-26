@@ -32,6 +32,10 @@ test("renders the complete SynoRing campaign page", async () => {
   assert.match(html, /Control AR without/);
   assert.match(html, /Interaction prototype in development/);
   assert.match(html, /WACV 2027 SEAI Workshop/);
+  assert.match(html, /id="product-notes"/);
+  assert.match(html, /href="#product-note-1"/);
+  assert.match(html, /Product imagery is a concept rendering/);
+  assert.match(html, /Joining early access is free/);
   assert.match(html, /Early means early\./);
   assert.match(html, /Request early access/);
   assert.match(html, /id="gestures"/);
