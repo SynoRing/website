@@ -30,6 +30,8 @@ test("renders the complete SynoRing campaign page", async () => {
   const html = await response.text();
   assert.match(html, /<title>SynoRing — Gesture becomes intent<\/title>/i);
   assert.match(html, /Control AR without/);
+  assert.match(html, /Interaction prototype in development/);
+  assert.match(html, /WACV 2027 SEAI Workshop/);
   assert.match(html, /Early means early\./);
   assert.match(html, /Request early access/);
   assert.match(html, /id="gestures"/);

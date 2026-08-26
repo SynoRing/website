@@ -71,12 +71,20 @@ const targetSpecs = [
 export default function Home() {
   return (
     <div className="site-frame">
-      <div className="project-bar">
-        <span>Independent hardware project</span>
-        <span className="project-status">
-          <i /> Interaction prototype in development
+      <div className="news-bar" role="region" aria-label="SynoRing news">
+        <span className="news-label">News</span>
+        <div className="news-viewport">
+          <span className="news-item news-item-current">
+            <i aria-hidden="true" /> Interaction prototype in development ·
+            Illinois, USA
+          </span>
+          <span className="news-item news-item-launch">
+            Launching at the WACV 2027 SEAI Workshop · Jan 4–8, 2027
+          </span>
+        </div>
+        <span className="news-count" aria-hidden="true">
+          01 / 02
         </span>
-        <span className="project-location">Illinois, USA</span>
       </div>
 
       <header className="nav-wrap">
