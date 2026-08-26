@@ -1,31 +1,32 @@
 import type { Metadata } from "next";
-import { Inter, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-sans",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  display: "swap",
-});
-
-const cormorant = Cormorant_Garamond({
-  variable: "--font-serif",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  style: ["normal", "italic"],
-  display: "swap",
-});
-
 export const metadata: Metadata = {
-  title: "SynoRing — The silent command, cast in titanium.",
+  metadataBase: new URL("https://www.synoring.ai"),
+  title: "SynoRing — Gesture becomes intent",
   description:
-    "A new instrument of input for AR glasses. SynoRing turns the most natural human gesture into the next universal interface.",
+    "A quiet, wearable controller for spatial computing. Join SynoRing early access and help shape the interaction.",
   openGraph: {
-    title: "SynoRing — A New Instrument of Input",
+    title: "SynoRing — Gesture becomes intent",
     description:
-      "The most natural human gesture becomes the next universal interface.",
+      "A quiet, wearable controller for spatial computing. Early-stage hardware, built in the open.",
     type: "website",
+    url: "/",
+    siteName: "SynoRing",
+    images: [
+      {
+        url: "/og.png",
+        width: 1728,
+        height: 910,
+        alt: "SynoRing titanium gesture controller concept",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "SynoRing — Gesture becomes intent",
+    description: "A quiet, wearable controller for spatial computing.",
+    images: ["/og.png"],
   },
 };
 
@@ -35,13 +36,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${inter.variable} ${cormorant.variable} antialiased`}
-    >
-      <body className="min-h-screen bg-noir text-ivory font-sans">
-        {children}
-      </body>
+    <html lang="en">
+      <body>{children}</body>
     </html>
   );
 }
