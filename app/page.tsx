@@ -94,19 +94,7 @@ export default function Home() {
   return (
     <div className="site-frame">
       <div className="news-bar" role="region" aria-label="SynoRing news">
-        <span className="news-label">News</span>
-        <div className="news-viewport">
-          <span className="news-item news-item-current">
-            <i aria-hidden="true" /> Interaction prototype in development ·
-            Illinois, USA
-          </span>
-          <span className="news-item news-item-launch">
-            Launching at the WACV 2027 SEAI Workshop · Jan 4–8, 2027
-          </span>
-        </div>
-        <span className="news-count" aria-hidden="true">
-          01 / 02
-        </span>
+        <span>Launching at the WACV 2027 SEAI Workshop · Jan 4–8, 2027</span>
       </div>
 
       <header className="nav-wrap">
@@ -123,7 +111,7 @@ export default function Home() {
           <a href="#faq">FAQ</a>
         </nav>
         <a className="nav-cta" href="#early-access">
-          Join early access <span aria-hidden="true">↗</span>
+          Join early access
         </a>
       </header>
 
@@ -145,10 +133,7 @@ export default function Home() {
             </p>
             <div className="hero-actions">
               <a className="button button-dark" href="#early-access">
-                Join early access <span aria-hidden="true">↗</span>
-              </a>
-              <a className="text-link" href="#gestures">
-                Explore the gestures <span aria-hidden="true">↓</span>
+                Join early access
               </a>
             </div>
           </div>
@@ -283,7 +268,6 @@ export default function Home() {
               <div className="moment-illustration route-line" aria-hidden="true">
                 <i />
                 <i />
-                <b>↗</b>
               </div>
             </article>
           </div>
@@ -349,7 +333,7 @@ export default function Home() {
               <FootnoteRef number={4} />
             </p>
             <a className="button button-lime" href={earlyAccessEmail}>
-              Request early access <span aria-hidden="true">↗</span>
+              Request early access
             </a>
           </div>
         </section>
@@ -362,7 +346,7 @@ export default function Home() {
           <div className="faq-list">
             <details>
               <summary>
-                Can I buy SynoRing today? <span>+</span>
+                Can I buy SynoRing today? <span aria-hidden="true" />
               </summary>
               <p>
                 Not yet. We are in active development and are not taking deposits.
@@ -372,7 +356,7 @@ export default function Home() {
             </details>
             <details>
               <summary>
-                Which AR glasses will it support? <span>+</span>
+                Which AR glasses will it support? <span aria-hidden="true" />
               </summary>
               <p>
                 Compatibility work comes after the core interaction is reliable.
@@ -382,7 +366,7 @@ export default function Home() {
             </details>
             <details>
               <summary>
-                Are the specifications final? <span>+</span>
+                Are the specifications final? <span aria-hidden="true" />
               </summary>
               <p>
                 No. Materials, battery, sensing, and industrial design remain
@@ -392,7 +376,7 @@ export default function Home() {
             </details>
             <details>
               <summary>
-                I build AR software. Can we collaborate? <span>+</span>
+                I build AR software. Can we collaborate? <span aria-hidden="true" />
               </summary>
               <p>
                 Yes. We especially want to hear from developers working on

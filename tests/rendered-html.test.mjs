@@ -30,7 +30,6 @@ test("renders the complete SynoRing campaign page", async () => {
   const html = await response.text();
   assert.match(html, /<title>SynoRing — Gesture becomes intent<\/title>/i);
   assert.match(html, /Control AR without/);
-  assert.match(html, /Interaction prototype in development/);
   assert.match(html, /WACV 2027 SEAI Workshop/);
   assert.match(html, /id="product-notes"/);
   assert.match(html, /href="#product-note-1"/);
@@ -41,6 +40,9 @@ test("renders the complete SynoRing campaign page", async () => {
   assert.match(html, /id="gestures"/);
   assert.match(html, /id="progress"/);
   assert.match(html, /id="faq"/);
+  assert.doesNotMatch(html, /Interaction prototype in development/);
+  assert.doesNotMatch(html, /Explore the gestures/);
+  assert.doesNotMatch(html, /↗/);
   assert.doesNotMatch(html, /codex-preview|SkeletonPreview|react-loading-skeleton/);
   assert.doesNotMatch(html, /href="#"(?:\s|>)/);
 });
