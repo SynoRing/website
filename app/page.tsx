@@ -93,9 +93,9 @@ const structuredData = {
       email: site.email,
       logo: {
         "@type": "ImageObject",
-        url: `${site.url}/favicon.svg`,
-        width: 512,
-        height: 512,
+        url: `${site.url}/logo.svg`,
+        width: 251,
+        height: 251,
       },
     },
     {
@@ -149,10 +149,13 @@ export default function Home() {
 
       <header className="nav-wrap">
         <a className="brand" href="#top" aria-label="SynoRing home">
-          <span className="brand-mark" aria-hidden="true">
-            III
-          </span>
-          <span>SYNORING</span>
+          <img
+            className="brand-wordmark"
+            src="/wordmark.svg"
+            alt=""
+            width="368"
+            height="122"
+          />
         </a>
         <nav aria-label="Main navigation">
           <a href="#why">Why a ring</a>
@@ -491,7 +494,7 @@ export default function Home() {
           href="#top"
           aria-label="SynoRing — back to top"
         >
-          SYNORING
+          <img src="/wordmark.svg" alt="" width="368" height="122" />
         </a>
       </footer>
       </div>

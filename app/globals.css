@@ -83,19 +83,14 @@ summary {
 .brand {
   align-items: center;
   display: inline-flex;
-  font-size: 12px;
-  font-weight: 800;
-  gap: 11px;
   justify-self: start;
-  letter-spacing: 0.3em;
 }
 
-.brand-mark {
-  font-family: Arial, sans-serif;
-  font-size: 11px;
-  font-weight: 900;
-  letter-spacing: -2px;
-  transform: skew(-4deg);
+.brand-wordmark {
+  display: block;
+  height: auto;
+  mix-blend-mode: multiply;
+  width: clamp(112px, 9.4vw, 148px);
 }
 
 .nav-wrap nav {
@@ -1044,29 +1039,30 @@ footer {
 }
 
 .footer-wordmark {
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-image: linear-gradient(
-    180deg,
-    rgba(17, 17, 15, 0.86) 0%,
-    rgba(17, 17, 15, 0.48) 45%,
-    rgba(17, 17, 15, 0) 100%
-  );
-  background-clip: text;
-  color: transparent;
   display: block;
-  font-family: "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
-  font-size: clamp(96px, 18.5vw, 300px);
-  font-weight: 800;
   grid-column: 1 / -1;
-  justify-self: center;
-  letter-spacing: -0.085em;
-  line-height: 0.72;
   margin: clamp(34px, 5vw, 82px) -3.3vw 0;
-  padding: 0 0 0.035em;
-  text-align: center;
-  white-space: nowrap;
   width: calc(100% + 6.6vw);
+}
+
+.footer-wordmark img {
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    #000 0%,
+    rgba(0, 0, 0, 0.72) 46%,
+    transparent 100%
+  );
+  display: block;
+  height: auto;
+  mask-image: linear-gradient(
+    180deg,
+    #000 0%,
+    rgba(0, 0, 0, 0.72) 46%,
+    transparent 100%
+  );
+  mix-blend-mode: multiply;
+  opacity: 0.84;
+  width: 100%;
 }
 
 .footer-wordmark:focus-visible {
@@ -1325,7 +1321,6 @@ footer {
   }
 
   .footer-wordmark {
-    font-size: clamp(72px, 21vw, 160px);
     margin-left: -18px;
     margin-right: -18px;
     margin-top: 26px;

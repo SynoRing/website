@@ -33,6 +33,9 @@ test("renders the complete SynoRing campaign page", async () => {
   assert.match(html, /id="progress"/);
   assert.match(html, /id="faq"/);
   assert.match(html, /class="footer-wordmark"/);
+  assert.match(html, /class="brand-wordmark"[^>]+src="\/wordmark\.svg"/);
+  assert.match(html, /class="footer-wordmark"[\s\S]+src="\/wordmark\.svg"/);
+  assert.match(html, /"logo":\{"@type":"ImageObject","url":"https:\/\/www\.synoring\.ai\/logo\.svg"/);
   assert.match(html, /aria-label="SynoRing — back to top"/);
   assert.doesNotMatch(html, /Interaction prototype in development/);
   assert.doesNotMatch(html, /Explore the gestures/);
@@ -56,4 +59,5 @@ test("publishes crawl and discovery metadata", async () => {
   assert.match(sitemap, /<loc>https:\/\/www\.synoring\.ai\/<\/loc>/);
 
   assert.match(manifest, /"name"\s*:\s*"SynoRing"/);
+  assert.match(manifest, /"src"\s*:\s*"\/logo\.svg"/);
 });
