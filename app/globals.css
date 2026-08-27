@@ -60,10 +60,20 @@ summary {
   padding: 8px 3.3vw;
   text-align: center;
   text-transform: uppercase;
+  transition: background-color 180ms ease;
 }
 
 .news-bar span {
   line-height: 1.35;
+}
+
+.news-bar:hover {
+  background: #bcff1d;
+}
+
+.news-bar:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: -3px;
 }
 
 .nav-wrap {

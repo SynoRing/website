@@ -143,9 +143,13 @@ export default function Home() {
         }}
       />
       <div className="site-frame">
-      <div className="news-bar" role="region" aria-label="SynoRing news">
+      <a
+        className="news-bar"
+        href="https://wacv27seai.synoring.ai/"
+        aria-label="Launching at the WACV 2027 SEAI Workshop, January 4–8, 2027"
+      >
         <span>Launching at the WACV 2027 SEAI Workshop · Jan 4–8, 2027</span>
-      </div>
+      </a>
 
       <header className="nav-wrap">
         <a className="brand" href="#top" aria-label="SynoRing home">
