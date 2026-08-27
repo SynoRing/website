@@ -1,3 +1,5 @@
+import { site } from "./site";
+
 const earlyAccessEmail =
   "mailto:hello@synoring.com?subject=SynoRing%20Early%20Access&body=Hi%20SynoRing%20team%2C%0A%0AI%27d%20like%20to%20join%20the%20early%20access%20list.%0A%0AName%3A%0AHow%20I%27d%20use%20SynoRing%3A%0A";
 
@@ -68,6 +70,47 @@ const targetSpecs = [
   ["Material", "Titanium enclosure under evaluation"],
 ];
 
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": `${site.url}/#website`,
+      url: `${site.url}/`,
+      name: site.name,
+      alternateName: site.organization,
+      description: site.description,
+      inLanguage: site.language,
+      publisher: { "@id": `${site.url}/#organization` },
+      about: { "@id": `${site.url}/#product` },
+    },
+    {
+      "@type": "Organization",
+      "@id": `${site.url}/#organization`,
+      name: site.organization,
+      alternateName: site.name,
+      url: `${site.url}/`,
+      email: site.email,
+      logo: {
+        "@type": "ImageObject",
+        url: `${site.url}/favicon.svg`,
+        width: 512,
+        height: 512,
+      },
+    },
+    {
+      "@type": "Product",
+      "@id": `${site.url}/#product`,
+      name: site.name,
+      url: `${site.url}/`,
+      description: site.description,
+      image: `${site.url}/og.png`,
+      category: "Wearable gesture controller for AR and spatial computing",
+      brand: { "@id": `${site.url}/#organization` },
+    },
+  ],
+};
+
 function FootnoteRef({
   number,
   className = "",
@@ -92,7 +135,14 @@ function FootnoteRef({
 
 export default function Home() {
   return (
-    <div className="site-frame">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(structuredData).replace(/</g, "\\u003c"),
+        }}
+      />
+      <div className="site-frame">
       <div className="news-bar" role="region" aria-label="SynoRing news">
         <span>Launching at the WACV 2027 SEAI Workshop · Jan 4–8, 2027</span>
       </div>
@@ -422,12 +472,7 @@ export default function Home() {
           </ol>
         </aside>
         <div className="footer-brand">
-          <a className="brand brand-footer" href="#top">
-            <span className="brand-mark" aria-hidden="true">
-              III
-            </span>
-            <span>SYNORING</span>
-          </a>
+          <p className="footer-kicker">Gesture becomes intent.</p>
           <p>A quiet controller for spatial computing.</p>
         </div>
         <div className="footer-links">
@@ -441,7 +486,15 @@ export default function Home() {
           <span>© 2026 SynoRing Labs Inc.</span>
           <span>Designed in Illinois</span>
         </div>
+        <a
+          className="footer-wordmark"
+          href="#top"
+          aria-label="SynoRing — back to top"
+        >
+          SYNORING
+        </a>
       </footer>
-    </div>
+      </div>
+    </>
   );
 }
