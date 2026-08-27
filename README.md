@@ -32,4 +32,4 @@ manifest.
 ## Production
 
 The `master` branch is the production branch. Vercel detects the project as
-Next.js and runs `npm run build`.
+Next.js and runs the native Next.js production build.
