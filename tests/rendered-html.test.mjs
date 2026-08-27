@@ -1,13 +1,13 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-async function render() {
+async function render(pathname = "/") {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
   const { default: worker } = await import(workerUrl.href);
 
   return worker.fetch(
-    new Request("http://localhost/", {
+    new Request(`http://localhost${pathname}`, {
       headers: { accept: "text/html" },
     }),
     {
@@ -28,7 +28,17 @@ test("renders the complete SynoRing campaign page", async () => {
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /<title>SynoRing — Gesture becomes intent<\/title>/i);
+  assert.match(
+    html,
+    /<title>SynoRing — Gesture Controller for AR &amp; Spatial Computing<\/title>/i,
+  );
+  assert.match(html, /rel="canonical" href="https:\/\/www\.synoring\.ai"/i);
+  assert.match(html, /name="robots" content="index, follow"/i);
+  assert.match(html, /name="googlebot"[^>]+max-image-preview:large/i);
+  assert.match(html, /type="application\/ld\+json"/i);
+  assert.match(html, /"@type":"WebSite"/);
+  assert.match(html, /"@type":"Organization"/);
+  assert.match(html, /"@type":"Product"/);
   assert.match(html, /Control AR without/);
   assert.match(html, /WACV 2027 SEAI Workshop/);
   assert.match(html, /id="product-notes"/);
@@ -45,4 +55,27 @@ test("renders the complete SynoRing campaign page", async () => {
   assert.doesNotMatch(html, /↗/);
   assert.doesNotMatch(html, /codex-preview|SkeletonPreview|react-loading-skeleton/);
   assert.doesNotMatch(html, /href="#"(?:\s|>)/);
+});
+
+test("publishes crawl and discovery metadata", async () => {
+  const [robotsResponse, sitemapResponse, manifestResponse] = await Promise.all([
+    render("/robots.txt"),
+    render("/sitemap.xml"),
+    render("/manifest.webmanifest"),
+  ]);
+
+  assert.equal(robotsResponse.status, 200);
+  assert.match(
+    await robotsResponse.text(),
+    /Sitemap: https:\/\/www\.synoring\.ai\/sitemap\.xml/,
+  );
+
+  assert.equal(sitemapResponse.status, 200);
+  assert.match(
+    await sitemapResponse.text(),
+    /<loc>https:\/\/www\.synoring\.ai\/<\/loc>/,
+  );
+
+  assert.equal(manifestResponse.status, 200);
+  assert.match(await manifestResponse.text(), /"name"\s*:\s*"SynoRing"/);
 });
