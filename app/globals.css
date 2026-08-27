@@ -1027,14 +1027,12 @@ footer {
 }
 
 .footer-meta {
-  border-top: 1px solid var(--line);
   color: #77766f;
   display: flex;
   font-size: 11px;
   grid-column: 1 / -1;
   justify-content: space-between;
   letter-spacing: 0.13em;
-  padding-top: 24px;
   text-transform: uppercase;
 }
 
@@ -1052,10 +1050,11 @@ footer {
   -webkit-mask-image: linear-gradient(
     180deg,
     #000 0%,
-    #000 28%,
-    rgba(0, 0, 0, 0.58) 50%,
-    rgba(0, 0, 0, 0.12) 68%,
-    transparent 78%,
+    #000 30%,
+    rgba(0, 0, 0, 0.78) 54%,
+    rgba(0, 0, 0, 0.48) 72%,
+    rgba(0, 0, 0, 0.2) 89%,
+    rgba(0, 0, 0, 0.06) 97%,
     transparent 100%
   );
   display: block;
@@ -1064,10 +1063,11 @@ footer {
   mask-image: linear-gradient(
     180deg,
     #000 0%,
-    #000 28%,
-    rgba(0, 0, 0, 0.58) 50%,
-    rgba(0, 0, 0, 0.12) 68%,
-    transparent 78%,
+    #000 30%,
+    rgba(0, 0, 0, 0.78) 54%,
+    rgba(0, 0, 0, 0.48) 72%,
+    rgba(0, 0, 0, 0.2) 89%,
+    rgba(0, 0, 0, 0.06) 97%,
     transparent 100%
   );
   mix-blend-mode: multiply;
