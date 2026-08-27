@@ -59,5 +59,15 @@ test("publishes crawl and discovery metadata", async () => {
   assert.match(sitemap, /<loc>https:\/\/www\.synoring\.ai\/<\/loc>/);
 
   assert.match(manifest, /"name"\s*:\s*"SynoRing"/);
-  assert.match(manifest, /"src"\s*:\s*"\/logo\.svg"/);
+  assert.match(manifest, /"src"\s*:\s*"\/favicon\.svg"/);
+});
+
+test("adapts the favicon for dark browser chrome", async () => {
+  const favicon = await readFile(
+    new URL("../public/favicon.svg", import.meta.url),
+    "utf8",
+  );
+
+  assert.match(favicon, /prefers-color-scheme:\s*dark/);
+  assert.match(favicon, /filter:\s*invert\(1\)/);
 });
