@@ -472,12 +472,7 @@ export default function Home() {
           </ol>
         </aside>
         <div className="footer-brand">
-          <a className="brand brand-footer" href="#top">
-            <span className="brand-mark" aria-hidden="true">
-              III
-            </span>
-            <span>SYNORING</span>
-          </a>
+          <p className="footer-kicker">Gesture becomes intent.</p>
           <p>A quiet controller for spatial computing.</p>
         </div>
         <div className="footer-links">
@@ -491,6 +486,13 @@ export default function Home() {
           <span>© 2026 SynoRing Labs Inc.</span>
           <span>Designed in Illinois</span>
         </div>
+        <a
+          className="footer-wordmark"
+          href="#top"
+          aria-label="SynoRing — back to top"
+        >
+          SYNORING
+        </a>
       </footer>
       </div>
     </>

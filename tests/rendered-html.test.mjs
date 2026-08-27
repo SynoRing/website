@@ -32,6 +32,8 @@ test("renders the complete SynoRing campaign page", async () => {
   assert.match(html, /id="gestures"/);
   assert.match(html, /id="progress"/);
   assert.match(html, /id="faq"/);
+  assert.match(html, /class="footer-wordmark"/);
+  assert.match(html, /aria-label="SynoRing — back to top"/);
   assert.doesNotMatch(html, /Interaction prototype in development/);
   assert.doesNotMatch(html, /Explore the gestures/);
   assert.doesNotMatch(html, /↗/);
