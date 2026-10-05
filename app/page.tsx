@@ -4,6 +4,7 @@ import {
   ProductVisual,
   ExplodedVisual,
   productMedia,
+  ringFrontView,
   ringRenders,
   ringRenderSize,
 } from "./product-visual";
@@ -96,7 +97,16 @@ export default function Home() {
               </a>
             </div>
             <div className="hero-art">
-              <ProductVisual slot="hero" />
+              <img
+                className="hero-ring"
+                src={ringFrontView.src}
+                srcSet={ringFrontView.srcSet}
+                sizes="(max-width: 760px) 116vw, 1100px"
+                width={ringFrontView.width}
+                height={ringFrontView.height}
+                fetchPriority="high"
+                alt="SynoRing seen from the front, its touch surface at the top"
+              />
             </div>
           </section>
 

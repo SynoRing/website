@@ -452,6 +452,8 @@ details[open] > summary > .icon {
 .hero-copy {
   position: relative;
   z-index: 2;
+  flex-shrink: 0;
+  margin-block: auto;
 }
 .hero h1 {
   font-size: clamp(46px, 4.6vw, 70px);
@@ -463,31 +465,28 @@ details[open] > summary > .icon {
   font-size: var(--text-lg);
   color: #e6ebe8;
 }
-/* The art takes whatever height is left below the copy. */
+/* The front view rises from the bottom edge as a half ring. The art box takes
+   the height left under the copy, and the ring's centre sits on the hero's
+   bottom edge, so only its upper half shows. */
 .hero-art {
-  --art-top: 12px;
-  --art-bottom: clamp(28px, 6svh, 64px);
   position: relative;
-  flex: 1;
-  min-height: 0;
+  flex: 0 1 57.5vw;
+  min-height: 160px;
   width: 100%;
-  max-width: 640px;
+  margin-top: 40px;
+  container-type: size;
 }
-.hero-art > .ring-visual,
-.hero-art > .product-render {
+.hero-ring {
+  --ring: min(200cqh, 115vw, 1600px);
   position: absolute;
-  top: var(--art-top);
-  left: 0;
-  width: 100%;
-  height: calc(100% - var(--art-top) - var(--art-bottom));
-}
-.hero-art > .ring-visual {
-  transform: rotate(-15deg);
-  filter: grayscale(0.6) drop-shadow(22px 26px 15px #28343228)
-    drop-shadow(0 36px 30px #3c4a441c);
+  top: calc(100cqh - var(--ring) * 0.4968);
+  left: 50%;
+  width: var(--ring);
+  max-width: none;
+  height: auto;
+  transform: translateX(-50%);
 }
 /* Transparent renders sit directly on the section and take a soft shadow. */
-.hero-art > .product-render,
 .showcase-art > .product-render {
   object-fit: contain;
   filter: var(--render-shadow);
@@ -1725,8 +1724,10 @@ details[open] > summary > .icon {
     margin: 16px 0 24px;
   }
   .hero-art {
-    --art-bottom: 32px;
-    width: 88%;
+    flex-basis: 64vw;
+  }
+  .hero-ring {
+    --ring: min(200cqh, 128vw);
   }
   .product-intro {
     padding: 56px 20px 32px;

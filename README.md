@@ -42,11 +42,14 @@ The V11 renders live in `public/images/` as transparent WebP files
 1800 px masters. `ringRenders` in `app/product-visual.tsx` maps them to the
 store finishes, and `productMedia` assigns them to page slots:
 
-- `hero`: Space Gray (graphite) on the homepage opening screen.
 - `detail`: Rose Gold in the product introduction.
 - `lifestyle`: none yet; the section stays hidden until an image is supplied.
 - `exploded`: none yet; the schematic assembly drawing is shown instead.
 
+The homepage opening screen uses the Space Gray front orthographic view
+(`synoring-front-*.webp`, `ringFrontView`), cropped so the bore centre is the
+image centre. It is sized from the height left under the headline and centred
+on the hero's bottom edge, so only the upper half of the ring shows.
 The early-access section lines up all four finishes. The renders carry no
 background or shadow; the `--render-shadow` token in `app/globals.css`
 grounds them on whatever section they sit on. A `null` slot keeps its drawn

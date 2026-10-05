@@ -19,18 +19,25 @@ export const ringRenders = {
 };
 export const ringRenderSize = { width: 1200, height: 1223 };
 
+/** The Space Gray front orthographic view, cropped to the ring (1552 × 1542)
+    so the bore centre is the image centre. */
+export const ringFrontView = {
+  src: "/images/synoring-front-1552.webp",
+  srcSet: "/images/synoring-front-800.webp 800w, /images/synoring-front-1552.webp 1552w",
+  width: 1552,
+  height: 1542,
+};
+
 /** A null slot keeps its drawn placeholder. */
 export const productMedia: Record<
-  "hero" | "detail" | "lifestyle" | "exploded",
+  "detail" | "lifestyle" | "exploded",
   MediaImage | null
 > = {
-  hero: ringRenders["space-gray"],
   detail: ringRenders["rose-gold"],
   lifestyle: null,
   exploded: null,
 };
 const mediaSizes: Record<keyof typeof productMedia, string> = {
-  hero: "(max-width: 760px) 90vw, 560px",
   detail: "300px",
   lifestyle: "100vw",
   exploded: "(max-width: 760px) 100vw, 720px",
@@ -245,7 +252,7 @@ export function ProductVisual({
       sizes={mediaSizes[slot]}
       width={ringRenderSize.width}
       height={ringRenderSize.height}
-      loading={slot === "hero" ? "eager" : "lazy"}
+      loading="lazy"
       decoding="async"
       alt={media.alt}
     />
