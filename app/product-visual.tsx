@@ -2,37 +2,37 @@ import { useId } from "react";
 
 export type MediaImage = { src: string; srcSet?: string; alt: string };
 
-/** V11 studio renders, exported square at 800 and 1600 px on the gray sweep. */
-function studioRender(file: string, finish: string): MediaImage {
+/** V11 renders on a transparent background, cropped to the ring (1346 × 1372)
+    and exported 600 and 1200 px wide. Shadows are added in CSS. */
+function ringRender(file: string, finish: string): MediaImage {
   return {
-    src: `/images/synoring-${file}-1600.webp`,
-    srcSet: `/images/synoring-${file}-800.webp 800w, /images/synoring-${file}-1600.webp 1600w`,
+    src: `/images/synoring-${file}-1200.webp`,
+    srcSet: `/images/synoring-${file}-600.webp 600w, /images/synoring-${file}-1200.webp 1200w`,
     alt: `SynoRing in ${finish}`,
   };
 }
-export const studioRenders = {
-  "space-gray": studioRender("graphite", "Space Gray"),
-  platinum: studioRender("platinum", "Platinum"),
-  "rose-gold": studioRender("rose-gold", "Rose Gold"),
-  gold: studioRender("yellow-gold", "Gold"),
+export const ringRenders = {
+  "space-gray": ringRender("graphite", "Space Gray"),
+  platinum: ringRender("platinum", "Platinum"),
+  "rose-gold": ringRender("rose-gold", "Rose Gold"),
+  gold: ringRender("yellow-gold", "Gold"),
 };
+export const ringRenderSize = { width: 1200, height: 1223 };
 
 /** A null slot keeps its drawn placeholder. */
 export const productMedia: Record<
-  "hero" | "detail" | "lifestyle" | "closing" | "exploded",
+  "hero" | "detail" | "lifestyle" | "exploded",
   MediaImage | null
 > = {
-  hero: studioRenders["space-gray"],
-  detail: studioRenders["rose-gold"],
+  hero: ringRenders["space-gray"],
+  detail: ringRenders["rose-gold"],
   lifestyle: null,
-  closing: studioRenders.platinum,
   exploded: null,
 };
 const mediaSizes: Record<keyof typeof productMedia, string> = {
-  hero: "(max-width: 760px) 140vw, 900px",
-  detail: "360px",
+  hero: "(max-width: 760px) 90vw, 560px",
+  detail: "300px",
   lifestyle: "100vw",
-  closing: "(max-width: 760px) 140vw, 640px",
   exploded: "(max-width: 760px) 100vw, 720px",
 };
 
@@ -243,8 +243,8 @@ export function ProductVisual({
       src={media.src}
       srcSet={media.srcSet}
       sizes={mediaSizes[slot]}
-      width="1600"
-      height="1600"
+      width={ringRenderSize.width}
+      height={ringRenderSize.height}
       loading={slot === "hero" ? "eager" : "lazy"}
       decoding="async"
       alt={media.alt}

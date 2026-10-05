@@ -37,22 +37,21 @@ Next.js and runs the native Next.js production build.
 
 ## Product artwork
 
-The V11 studio renders live in `public/images/` as square WebP files
-(`synoring-<finish>-800.webp` and `-1600.webp`), exported from the 1800 px
-masters on their gray sweep. `studioRenders` in `app/product-visual.tsx`
-maps them to the store finishes, and `productMedia` assigns them to page slots:
+The V11 renders live in `public/images/` as transparent WebP files
+(`synoring-<finish>-600.webp` and `-1200.webp`), cropped to the ring from the
+1800 px masters. `ringRenders` in `app/product-visual.tsx` maps them to the
+store finishes, and `productMedia` assigns them to page slots:
 
 - `hero`: Space Gray (graphite) on the homepage opening screen.
-- `detail`: Rose Gold tile in the product introduction.
-- `closing`: Platinum in the early-access section.
+- `detail`: Rose Gold in the product introduction.
 - `lifestyle`: none yet; the section stays hidden until an image is supplied.
 - `exploded`: none yet; the schematic assembly drawing is shown instead.
 
-The hero, closing section, and store gallery use the same gray sweep as the
-renders (`--studio-*` tokens in `app/globals.css`), and a soft circular mask
-dissolves each square image into that background. A `null` slot keeps its
-drawn placeholder. The store gallery and pre-order review use the render for
-the selected finish (`storeRenders` in `app/store/product.ts`).
+The early-access section lines up all four finishes. The renders carry no
+background or shadow; the `--render-shadow` token in `app/globals.css`
+grounds them on whatever section they sit on. A `null` slot keeps its drawn
+placeholder. The store gallery and pre-order review use the render for the
+selected finish (`storeRenders` in `app/store/product.ts`).
 
 The store's technical specifications open with a dimension drawing built
 from the V11 Space Gray orthographic renders (`synoring-view-front`, `-side`,

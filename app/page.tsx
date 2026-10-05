@@ -1,6 +1,13 @@
 import { site } from "./site";
 import { SiteHeader, SiteFooter, Note, ArrowLink } from "./site-components";
-import { ProductVisual, ExplodedVisual, productMedia } from "./product-visual";
+import {
+  ProductVisual,
+  ExplodedVisual,
+  productMedia,
+  ringRenders,
+  ringRenderSize,
+} from "./product-visual";
+import { finishes } from "./store/product";
 import {
   ArrowIcon,
   CircleIcon,
@@ -423,13 +430,27 @@ export default function Home() {
               <p>
                 Follow product progress, developer pilots, and launch updates.
               </p>
-              <a className="button" href={earlyAccessEmail}>
+              <a className="button button-dark" href={earlyAccessEmail}>
                 Request early access
               </a>
             </div>
-            <div className="closing-art">
-              <ProductVisual slot="closing" />
-            </div>
+            <ul className="closing-lineup" aria-label="Four finishes">
+              {finishes.map((finish) => (
+                <li key={finish.id}>
+                  <img
+                    src={ringRenders[finish.id].src}
+                    srcSet={ringRenders[finish.id].srcSet}
+                    sizes="(max-width: 760px) 44vw, 260px"
+                    width={ringRenderSize.width}
+                    height={ringRenderSize.height}
+                    loading="lazy"
+                    decoding="async"
+                    alt={ringRenders[finish.id].alt}
+                  />
+                  <span>{finish.name}</span>
+                </li>
+              ))}
+            </ul>
           </section>
 
           <section className="faq-section content-width" id="faq">

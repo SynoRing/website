@@ -8,7 +8,7 @@ export function ProductGallery({ finish }: { finish: Finish }) {
   const render = storeRenders[finish];
   return (
     <div
-      className={`store-gallery preorder-gallery finish-${finish}${view === "product" && render ? " has-render" : ""}`}
+      className={`store-gallery preorder-gallery finish-${finish}`}
     >
       <div
         className="store-product-art"
@@ -25,7 +25,7 @@ export function ProductGallery({ finish }: { finish: Finish }) {
             <img
               src={render.src}
               srcSet={render.srcSet}
-              sizes="(max-width: 760px) 90vw, 560px"
+              sizes="(max-width: 760px) 80vw, 440px"
               alt={render.alt}
             />
           ) : (

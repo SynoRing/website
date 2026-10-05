@@ -14,11 +14,9 @@
   --on-dark: #f2f5ee;
   --on-dark-muted: #b5c3b0;
   --on-dark-line: #ffffff26;
-  /* The gray sweep behind the V11 studio renders. */
-  --studio-top: #6b727a;
-  --studio-mid: #8f959b;
-  --studio-light: #959ba1;
-  --studio-floor: #8e949a;
+  /* Soft shadows that ground the transparent product renders. */
+  --render-shadow: drop-shadow(0 28px 26px rgb(28 38 44 / 0.22))
+    drop-shadow(0 8px 10px rgb(28 38 44 / 0.16));
 
   --text-xs: 13px;
   --text-sm: 15px;
@@ -447,13 +445,9 @@ details[open] > summary > .icon {
   overflow: hidden;
   text-align: center;
   color: #fff;
-  background: linear-gradient(
-    #4b525a,
-    var(--studio-top) 42%,
-    var(--studio-mid) 66%,
-    var(--studio-light) 84%,
-    var(--studio-floor)
-  );
+  background:
+    radial-gradient(ellipse at 50% 88%, #f1f2ef 0%, transparent 60%),
+    linear-gradient(#34424e, #7f8a91 58%, #dfe2df);
 }
 .hero-copy {
   position: relative;
@@ -492,32 +486,15 @@ details[open] > summary > .icon {
   filter: grayscale(0.6) drop-shadow(22px 26px 15px #28343228)
     drop-shadow(0 36px 30px #3c4a441c);
 }
-/* Studio renders keep their gray sweep; a soft circular mask dissolves the
-   square edge into the matching section background. */
+/* Transparent renders sit directly on the section and take a soft shadow. */
 .hero-art > .product-render,
-.closing-art > .product-render {
-  top: 50%;
-  left: 50%;
-  width: auto;
-  max-width: none;
-  aspect-ratio: 1;
-  transform: translate(-50%, -50%);
-  -webkit-mask-image: radial-gradient(circle closest-side, #000 80%, transparent);
-  mask-image: radial-gradient(circle closest-side, #000 80%, transparent);
-}
-.hero-art > .product-render {
-  height: min(122%, 125vw);
-  transform: translate(-50%, -54%);
-}
-.closing-art > .product-render {
-  position: absolute;
-  height: 128%;
+.showcase-art > .product-render {
+  object-fit: contain;
+  filter: var(--render-shadow);
 }
 .showcase-art > .product-render {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  border-radius: var(--radius);
 }
 /* Product introduction */
 .product-intro {
@@ -1125,18 +1102,12 @@ details[open] > summary > .icon {
 /* Closing */
 .closing-section {
   position: relative;
-  height: 730px;
-  padding: 72px 20px 0;
+  padding: var(--section) 20px calc(var(--section) - 8px);
   overflow: hidden;
   text-align: center;
-  color: #fff;
-  background: linear-gradient(
-    #5b626a,
-    var(--studio-top) 34%,
-    var(--studio-mid) 62%,
-    var(--studio-light) 82%,
-    var(--studio-floor)
-  );
+  background:
+    radial-gradient(ellipse at 50% 100%, #fff 0%, transparent 62%),
+    linear-gradient(#f4f5f2, #e3e7e2);
 }
 .closing-copy {
   position: relative;
@@ -1148,22 +1119,27 @@ details[open] > summary > .icon {
 .closing-copy > p {
   margin: 18px 0 28px;
   font-size: 18px;
-  color: #e6ebe8;
+  color: var(--text);
 }
-.closing-art {
-  position: absolute;
-  top: 330px;
-  left: 50%;
-  width: 480px;
-  height: 380px;
-  transform: translateX(-50%);
+.closing-lineup {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 220px));
+  justify-content: center;
+  gap: clamp(16px, 3vw, 48px);
+  margin: 64px auto 0;
+  padding: 0;
+  list-style: none;
 }
-.closing-art > .ring-visual {
-  width: 430px;
-  height: 375px;
-  margin: auto;
-  transform: rotate(18deg);
-  filter: grayscale(0.7) drop-shadow(15px 25px 17px #213d3130);
+.closing-lineup img {
+  width: 100%;
+  height: auto;
+  filter: var(--render-shadow);
+}
+.closing-lineup span {
+  display: block;
+  margin-top: 22px;
+  font-size: 14px;
+  color: var(--muted);
 }
 
 /* FAQ */
@@ -1656,10 +1632,6 @@ details[open] > summary > .icon {
   .development-steps p {
     max-width: none;
   }
-  .closing-section {
-    height: 650px;
-    padding-top: 56px;
-  }
   .closing-copy h2 {
     font-size: 42px;
   }
@@ -1668,14 +1640,13 @@ details[open] > summary > .icon {
     margin-inline: auto;
     font-size: var(--text-md);
   }
-  .closing-art {
-    top: 300px;
-    width: 365px;
-    height: 320px;
+  .closing-lineup {
+    grid-template-columns: repeat(2, minmax(0, 170px));
+    gap: 36px 24px;
+    margin-top: 48px;
   }
-  .closing-art > .ring-visual {
-    width: 355px;
-    height: 320px;
+  .closing-lineup span {
+    margin-top: 16px;
   }
   .faq-section {
     grid-template-columns: 1fr;
@@ -1755,6 +1726,7 @@ details[open] > summary > .icon {
   }
   .hero-art {
     --art-bottom: 32px;
+    width: 88%;
   }
   .product-intro {
     padding: 56px 20px 32px;
@@ -1919,16 +1891,8 @@ details[open] > summary > .icon {
   .exploded-notes p {
     font-size: 14px;
   }
-  .closing-section {
-    height: 610px;
-    padding-top: 48px;
-  }
   .closing-copy h2 {
     font-size: 38px;
-  }
-  .closing-art {
-    top: 296px;
-    height: 280px;
   }
   .faq-section > h2 {
     font-size: 30px;

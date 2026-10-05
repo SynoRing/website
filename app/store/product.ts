@@ -1,4 +1,4 @@
-import { studioRenders, type MediaImage } from "../product-visual";
+import { ringRenders, type MediaImage } from "../product-visual";
 
 export const finishes = [
   {
@@ -25,4 +25,4 @@ export const finishes = [
 export type Finish = (typeof finishes)[number]["id"];
 export const preorderPrice = 99;
 export const regularPrice = 129;
-export const storeRenders: Record<Finish, MediaImage | null> = studioRenders;
+export const storeRenders: Record<Finish, MediaImage | null> = ringRenders;
