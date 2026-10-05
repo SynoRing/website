@@ -12,7 +12,11 @@ export const site = {
   shortDescription:
     "A wearable gesture controller for AR glasses and spatial computing.",
   email: "hello@synoring.com",
-  social: [{ name: "X", url: "https://x.com/SynoRing" }],
+  social: [
+    { id: "x", name: "X", url: "https://x.com/SynoRing" },
+    { id: "github", name: "GitHub", url: "https://github.com/SynoRing" },
+  ],
+  github: "https://github.com/SynoRing",
 } as const;
 
 export const navigation = [

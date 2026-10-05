@@ -187,6 +187,10 @@ summary::-webkit-details-marker {
 .button-dark:hover {
   background: var(--forest-hover);
 }
+.button > .icon {
+  width: 17px;
+  height: 17px;
+}
 .button-small {
   min-height: 38px;
   padding: 0 18px;

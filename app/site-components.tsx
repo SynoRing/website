@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { ArrowIcon, PlusIcon, XIcon } from "./icons";
+import { ArrowIcon, GitHubIcon, PlusIcon, XIcon } from "./icons";
 import { MobileNavigation } from "./interactions";
 import { navigation, site } from "./site";
 
@@ -80,7 +80,7 @@ export function SiteFooter() {
                 rel="noopener noreferrer"
                 aria-label={`SynoRing on ${profile.name}`}
               >
-                <XIcon />
+                {profile.id === "github" ? <GitHubIcon /> : <XIcon />}
               </a>
             ))}
           </div>

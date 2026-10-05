@@ -1,6 +1,6 @@
 import { PageShell, ArrowLink } from "../site-components";
-import { developerEmail, pageMetadata } from "../site";
-import { PlusIcon } from "../icons";
+import { developerEmail, pageMetadata, site } from "../site";
+import { GitHubIcon, PlusIcon } from "../icons";
 
 export const metadata = pageMetadata(
   "Developers",
@@ -23,10 +23,18 @@ export default function DevelopersPage() {
             circular movement to the actions that matter in your application.
           </p>
           <div className="inline-actions">
-            <a className="button button-dark" href={developerEmail}>
-              Discuss a developer pilot
+            <a
+              className="button button-dark"
+              href={site.github}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <GitHubIcon />
+              View on GitHub
             </a>
-            <ArrowLink href="/demo">Try the interaction</ArrowLink>
+            <ArrowLink href={developerEmail}>
+              Discuss a developer pilot
+            </ArrowLink>
           </div>
           <span className="quiet-label">
             Early development · Public SDK not yet available
