@@ -25,10 +25,26 @@ Open [http://localhost:3000](http://localhost:3000).
 npm test
 ```
 
-The test command creates a production Next.js build and verifies the rendered
-homepage metadata, structured data, `robots.txt`, `sitemap.xml`, and web app
-manifest. It also checks circle recognition, input normalization, and the AR
-demo’s scene controls.
+The test command creates a production Next.js build and verifies each page's
+metadata (title, description length, canonical URL, Open Graph and X card
+images, breadcrumbs), the homepage structured data, `robots.txt`,
+`sitemap.xml`, and the web app manifest. It also checks circle recognition,
+input normalization, and the demo's scene controls.
+
+## Search and sharing
+
+- Titles and descriptions: `site` in `app/site.ts` sets the homepage defaults;
+  each page passes its own to `pageMetadata`.
+- Share images: every route has an `opengraph-image.tsx`, rendered at build
+  time to a 1200 × 630 PNG. `twitter-image.tsx` re-exports the same image.
+  Shared layout pieces are in `app/_og/shared.tsx`; their source PNGs live in
+  `assets/og/` (the renderer cannot read WebP) and are not served publicly.
+- Structured data: `app/structured-data.ts` holds the Organization, WebSite,
+  and Product (with the pre-order offer and free US shipping) graphs. The
+  homepage and store include the product; every inner page adds a breadcrumb.
+- Icons: `favicon.svg`, `app/apple-icon.png` (180 px), and 192/512 px PNGs in
+  `public/` for the manifest, including a maskable one.
+- The sitemap lists product renders as image entries for image search.
 
 ## Production
 

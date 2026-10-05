@@ -44,7 +44,8 @@ export const metadata: Metadata = {
   icons: {
     icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
     shortcut: "/favicon.svg",
-    apple: "/logo.svg",
+    // Listed explicitly: a configured icons object replaces file-based ones.
+    apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
   },
   manifest: "/manifest.webmanifest",
   openGraph: {
@@ -54,21 +55,13 @@ export const metadata: Metadata = {
     url: "/",
     siteName: site.name,
     locale: site.locale,
-    images: [
-      {
-        url: "/og.png",
-        width: 1728,
-        height: 910,
-        type: "image/png",
-        alt: "SynoRing titanium gesture controller concept",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
+    site: site.twitter,
+    creator: site.twitter,
     title: site.title,
     description: site.description,
-    images: ["/og.png"],
   },
 };
 

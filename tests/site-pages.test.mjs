@@ -30,6 +30,22 @@ test("every public page has unique discovery metadata and complete navigation", 
         `${page} links to ${target}`,
       );
     assert.ok(html.includes(`href="/${page}" aria-current="page"`));
+    assert.match(
+      html,
+      new RegExp(
+        `property="og:image" content="https://www\\.synoring\\.ai/${page}/opengraph-image\\?`,
+      ),
+      `${page} has its own Open Graph image`,
+    );
+    assert.match(html, /property="og:image:width" content="1200"/);
+    assert.match(html, /name="twitter:card" content="summary_large_image"/);
+    assert.match(html, /property="og:site_name" content="SynoRing"/);
+    assert.match(html, /"@type":"BreadcrumbList"/);
+    const description = html.match(/<meta name="description" content="([^"]+)"/)?.[1] ?? "";
+    assert.ok(
+      description.length >= 70 && description.length <= 160,
+      `${page} description is 70–160 characters (${description.length})`,
+    );
     assert.ok(sitemap.includes(`<loc>https://www.synoring.ai/${page}</loc>`));
     assert.doesNotMatch(html, /href="#"(?:\s|>)/);
   }

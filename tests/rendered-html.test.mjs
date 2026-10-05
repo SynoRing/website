@@ -12,7 +12,7 @@ test("renders the complete SynoRing campaign page", async () => {
   const html = await render();
   assert.match(
     html,
-    /<title>SynoRing — Gesture Controller for AR &amp; Spatial Computing<\/title>/i,
+    /<title>SynoRing R1 — Gesture Control Ring for AR &amp; Smart Glasses<\/title>/i,
   );
   assert.match(html, /rel="canonical" href="https:\/\/www\.synoring\.ai"/i);
   assert.match(html, /name="robots" content="index, follow"/i);
@@ -21,6 +21,19 @@ test("renders the complete SynoRing campaign page", async () => {
   assert.match(html, /"@type":"WebSite"/);
   assert.match(html, /"@type":"Organization"/);
   assert.match(html, /"@type":"Product"/);
+  assert.match(html, /"availability":"https:\/\/schema\.org\/PreOrder"/);
+  assert.match(html, /"sameAs":\["https:\/\/x\.com\/SynoRing","https:\/\/github\.com\/SynoRing"\]/);
+  assert.match(
+    html,
+    /property="og:image" content="https:\/\/www\.synoring\.ai\/opengraph-image\?[^"]+"/,
+  );
+  assert.match(
+    html,
+    /name="twitter:image" content="https:\/\/www\.synoring\.ai\/twitter-image\?[^"]+"/,
+  );
+  assert.match(html, /name="twitter:site" content="@SynoRing"/);
+  assert.match(html, /rel="apple-touch-icon" href="\/apple-icon\.png"/);
+  assert.doesNotMatch(html, /og\.png/);
   assert.match(
     html,
     /Control your AR glasses, smart glasses, headset, phone,\s+laptop, PC, or robot without breaking the moment\./,
@@ -67,6 +80,9 @@ test("publishes crawl and discovery metadata", async () => {
 
   assert.match(manifest, /"name"\s*:\s*"SynoRing"/);
   assert.match(manifest, /"src"\s*:\s*"\/favicon\.svg"/);
+  assert.match(manifest, /"src"\s*:\s*"\/icon-512\.png"/);
+  assert.match(manifest, /"purpose"\s*:\s*"maskable"/);
+  assert.match(sitemap, /<image:loc>https:\/\/www\.synoring\.ai\/images\//);
 });
 
 test("adapts the favicon for dark browser chrome", async () => {

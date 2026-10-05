@@ -3,8 +3,8 @@ import { developerEmail, pageMetadata, site } from "../site";
 import { GitHubIcon, PlusIcon } from "../icons";
 
 export const metadata = pageMetadata(
-  "Developers",
-  "Explore SynoRing’s developer direction: gesture inputs for spatial applications, integration planning, and early developer pilot interest.",
+  "Developers — Gesture Input for Spatial Apps",
+  "Map SynoRing taps, glides, and circles to actions in your AR or smart glasses app. See the integration direction, follow us on GitHub, and join a pilot.",
   "/developers",
 );
 

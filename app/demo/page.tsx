@@ -12,8 +12,8 @@ import {
 } from "../icons";
 
 export const metadata = pageMetadata(
-  "Demo",
-  "Try SynoRing gestures in an interactive smart glasses concept. Explore music, reading, and navigation using your mouse or touch screen.",
+  "Interactive Smart Glasses Demo",
+  "Try SynoRing in your browser: control music, reading, and navigation on a smart glasses display with a tap, a glide, or a circle. No hardware needed.",
   "/demo",
 );
 

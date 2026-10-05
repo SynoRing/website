@@ -1,10 +1,11 @@
 import { PageShell } from "../site-components";
 import { pageMetadata } from "../site";
+import { product } from "../structured-data";
 import { PurchasePanel } from "./purchase-panel";
 
 export const metadata = pageMetadata(
-  "Store — Pre-order",
-  "Pre-order SynoRing R1 for $99 USD, regularly $129, shipping Q1 2027 with free US delivery. Choose Space Gray, Platinum, Rose Gold, or Gold and explore the technical specifications.",
+  "Pre-order SynoRing R1 — $99",
+  "Pre-order SynoRing R1 for $99 (regularly $129) in Space Gray, Platinum, Rose Gold, or Gold. Ships Q1 2027 with free US shipping; a sizing kit comes first.",
   "/store",
 );
 
@@ -100,7 +101,7 @@ const views: {
 
 export default function StorePage() {
   return (
-    <PageShell active="/store">
+    <PageShell active="/store" structuredData={[product]}>
       <section className="store-heading content-width">
         <span className="eyebrow">SynoRing Store</span>
         <p>Four finishes. One natural connection.</p>
@@ -124,7 +125,10 @@ export default function StorePage() {
         <figure className="dimension-drawing">
           <div className="dimension-views">
             {views.map((view) => (
-              <div className={`dimension-view view-${view.file}`} key={view.file}>
+              <div
+                className={`dimension-view view-${view.file}`}
+                key={view.file}
+              >
                 <div className="dimension-art">
                   <img
                     src={`/images/synoring-view-${view.file}.webp`}

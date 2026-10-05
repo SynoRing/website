@@ -3,8 +3,8 @@ import { developerEmail, pageMetadata } from "../site";
 import { ArrowIcon } from "../icons";
 
 export const metadata = pageMetadata(
-  "About",
-  "Learn why SynoRing is exploring touch and motion as a natural input for AR glasses, and follow our development approach.",
+  "About SynoRing Labs",
+  "SynoRing Labs makes controlling AR and smart glasses feel small and natural: touch and motion in a ring. Designed in the US, manufactured in China.",
   "/about",
 );
 

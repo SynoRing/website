@@ -1,4 +1,4 @@
-import { site } from "./site";
+import { jsonLd, organization, product, website } from "./structured-data";
 import { SiteHeader, SiteFooter, Note, ArrowLink } from "./site-components";
 import {
   ProductVisual,
@@ -23,48 +23,6 @@ import {
 
 const earlyAccessEmail =
   "mailto:hello@synoring.com?subject=SynoRing%20Early%20Access&body=Hi%20SynoRing%20team%2C%0A%0AI%27d%20like%20to%20join%20the%20early%20access%20list.%0A%0AName%3A%0AHow%20I%27d%20use%20SynoRing%3A%0A";
-
-const structuredData = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "WebSite",
-      "@id": `${site.url}/#website`,
-      url: `${site.url}/`,
-      name: site.name,
-      alternateName: site.organization,
-      description: site.description,
-      inLanguage: site.language,
-      publisher: { "@id": `${site.url}/#organization` },
-      about: { "@id": `${site.url}/#product` },
-    },
-    {
-      "@type": "Organization",
-      "@id": `${site.url}/#organization`,
-      name: site.organization,
-      alternateName: site.name,
-      url: `${site.url}/`,
-      email: site.email,
-      sameAs: site.social.map((profile) => profile.url),
-      logo: {
-        "@type": "ImageObject",
-        url: `${site.url}/logo.svg`,
-        width: 251,
-        height: 251,
-      },
-    },
-    {
-      "@type": "Product",
-      "@id": `${site.url}/#product`,
-      name: `${site.name} R1`,
-      url: `${site.url}/`,
-      description: site.description,
-      image: `${site.url}/og.png`,
-      category: "Wearable gesture controller for AR and spatial computing",
-      brand: { "@id": `${site.url}/#organization` },
-    },
-  ],
-};
 
 const heroDevices = [
   "your AR glasses",
@@ -109,7 +67,7 @@ export default function Home() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(structuredData).replace(/</g, "\\u003c"),
+          __html: jsonLd(website, organization, product),
         }}
       />
       <a className="skip-link" href="#main">

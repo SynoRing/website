@@ -6,11 +6,11 @@ export const site = {
   url: "https://www.synoring.ai",
   locale: "en_US",
   language: "en-US",
-  title: "SynoRing — Gesture Controller for AR & Spatial Computing",
+  title: "SynoRing R1 — Gesture Control Ring for AR & Smart Glasses",
   description:
-    "SynoRing is a wearable gesture controller for AR glasses and spatial computing, designed for private, subtle navigation without voice commands.",
-  shortDescription:
-    "A wearable gesture controller for AR glasses and spatial computing.",
+    "SynoRing R1 is a gesture control ring for AR and smart glasses. Tap, glide, and circle to control what you see. Pre-order for $99, shipping Q1 2027.",
+  shortDescription: "A gesture control ring for AR and smart glasses.",
+  twitter: "@SynoRing",
   email: "hello@synoring.com",
   social: [
     { id: "x", name: "X", url: "https://x.com/SynoRing" },
@@ -32,6 +32,8 @@ export const earlyAccessEmail =
 export const developerEmail =
   "mailto:hello@synoring.com?subject=SynoRing%20Developer%20Pilot&body=Hi%20SynoRing%20team%2C%0A%0AI%27m%20interested%20in%20a%20developer%20pilot.%0A%0AProject%3A%0ATarget%20device%3A%0AInteraction%20use%20case%3A%0A";
 
+/** Page metadata. Open Graph images come from each route's
+    opengraph-image.tsx, so they are not listed here. */
 export function pageMetadata(
   title: string,
   description: string,
@@ -42,24 +44,19 @@ export function pageMetadata(
     description,
     alternates: { canonical: path },
     openGraph: {
-      title: `${title} | SynoRing`,
+      title: `${title} | ${site.name}`,
       description,
       url: path,
       type: "website",
-      images: [
-        {
-          url: "/og.png",
-          width: 1728,
-          height: 910,
-          alt: "SynoRing gesture controller concept",
-        },
-      ],
+      siteName: site.name,
+      locale: site.locale,
     },
     twitter: {
       card: "summary_large_image",
-      title: `${title} | SynoRing`,
+      site: site.twitter,
+      creator: site.twitter,
+      title: `${title} | ${site.name}`,
       description,
-      images: ["/og.png"],
     },
   };
 }

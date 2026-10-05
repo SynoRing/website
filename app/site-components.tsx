@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { ArrowIcon, GitHubIcon, PlusIcon, XIcon } from "./icons";
 import { MobileNavigation } from "./interactions";
 import { navigation, site } from "./site";
+import { breadcrumb, jsonLd } from "./structured-data";
 
 export function Note({ number }: { number: number }) {
   return (
@@ -146,13 +147,22 @@ export function SiteFooter() {
 
 export function PageShell({
   active,
+  structuredData = [],
   children,
 }: {
   active: string;
+  /** schema.org items for this page; a breadcrumb is always added. */
+  structuredData?: object[];
   children: ReactNode;
 }) {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLd(...structuredData, breadcrumb(active)),
+        }}
+      />
       <a className="skip-link" href="#main">
         Skip to content
       </a>
