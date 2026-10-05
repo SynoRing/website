@@ -5,73 +5,13 @@ import {
   keyPrefix,
   normalizeEmail,
   parseSignup,
+  selectAudience,
   toCsv,
   waitlistFromEnv,
 } from "../app/waitlist.mjs";
+import { fakeUpstash } from "./fake-upstash.mjs";
 
 const finishIds = ["space-gray", "platinum", "rose-gold", "gold"];
-
-/** An in-memory stand-in for the Upstash REST pipeline endpoint, covering
-    the commands the waitlist sends. */
-function fakeUpstash() {
-  const strings = new Map();
-  const hashes = new Map();
-  const sorted = new Map();
-  const requests = [];
-  const run = ([command, key, ...args]) => {
-    switch (command) {
-      case "INCR": {
-        const value = Number(strings.get(key) ?? 0) + 1;
-        strings.set(key, String(value));
-        return value;
-      }
-      case "EXPIRE":
-        return 1;
-      case "HSETNX": {
-        const hash = hashes.get(key) ?? new Map();
-        hashes.set(key, hash);
-        if (hash.has(args[0])) return 0;
-        hash.set(args[0], args[1]);
-        return 1;
-      }
-      case "HSET": {
-        const hash = hashes.get(key) ?? new Map();
-        hashes.set(key, hash);
-        let added = 0;
-        for (let i = 0; i < args.length; i += 2) {
-          if (!hash.has(args[i])) added++;
-          hash.set(args[i], args[i + 1]);
-        }
-        return added;
-      }
-      case "ZADD": {
-        const set = sorted.get(key) ?? new Map();
-        sorted.set(key, set);
-        const [flag, score, member] = args;
-        assert.equal(flag, "NX");
-        if (set.has(member)) return 0;
-        set.set(member, Number(score));
-        return 1;
-      }
-      case "ZRANGE":
-        return [...(sorted.get(key) ?? new Map())]
-          .sort((a, b) => a[1] - b[1])
-          .map(([member]) => member);
-      case "HGETALL":
-        return [...(hashes.get(key) ?? new Map())].flat();
-      default:
-        throw new Error(`unexpected command ${command}`);
-    }
-  };
-  async function fetch(url, init) {
-    requests.push({ url, init });
-    const commands = JSON.parse(init.body);
-    for (const command of commands)
-      for (const part of command) assert.equal(typeof part, "string");
-    return Response.json(commands.map((command) => ({ result: run(command) })));
-  }
-  return { fetch, hashes, requests };
-}
 
 test("normalizes and validates email addresses", () => {
   assert.equal(normalizeEmail("  Ada@Example.COM "), "ada@example.com");
@@ -224,8 +164,115 @@ test("exports spreadsheet-safe CSV", () => {
   ]);
   assert.equal(
     csv,
-    "email,createdAt,waitlistAt,preorderAt,finish,quantity,country,updatedAt\r\n" +
-      "ada@example.com,2026-10-05T10:00:00.000Z,,,gold,2,,\r\n" +
-      `'=cmd@example.com,,,,,,"a,""b""",\r\n`,
+    "email,createdAt,waitlistAt,preorderAt,finish,quantity,country,updatedAt,unsubscribedAt\r\n" +
+      "ada@example.com,2026-10-05T10:00:00.000Z,,,gold,2,,,\r\n" +
+      `'=cmd@example.com,,,,,,"a,""b""",,\r\n`,
   );
+});
+
+function store(upstash = fakeUpstash()) {
+  return createWaitlist({ url: "https://redis.example", token: "t", fetch: upstash.fetch });
+}
+
+test("unsubscribes, lets a new signup opt back in, and deletes on request", async () => {
+  const waitlist = store();
+  await waitlist.join({ email: "ada@example.com", source: "waitlist" });
+  assert.equal(await waitlist.unsubscribe("nobody@example.com"), false);
+  assert.equal(await waitlist.unsubscribe("ada@example.com"), true);
+  assert.ok((await waitlist.get("ada@example.com")).unsubscribedAt);
+  assert.deepEqual(selectAudience(await waitlist.list(), "all"), []);
+
+  await waitlist.join({ email: "ada@example.com", source: "waitlist" });
+  assert.equal((await waitlist.get("ada@example.com")).unsubscribedAt, undefined);
+
+  await waitlist.remove("ada@example.com");
+  assert.equal(await waitlist.get("ada@example.com"), null);
+  assert.deepEqual(await waitlist.list(), []);
+});
+
+test("keeps one signing secret per database", async () => {
+  const upstash = fakeUpstash();
+  const first = await store(upstash).secret();
+  assert.match(first, /^[0-9a-f]{64}$/);
+  assert.equal(await store(upstash).secret(), first);
+});
+
+test("selects audiences from subscribed entries only", () => {
+  const entries = [
+    { email: "a@x.io", preorderAt: "t" },
+    { email: "b@x.io" },
+    { email: "c@x.io", preorderAt: "t", unsubscribedAt: "t" },
+    { email: "d@x.io", unsubscribedAt: "t" },
+  ];
+  const emails = (audience) => selectAudience(entries, audience).map((entry) => entry.email);
+  assert.deepEqual(emails("all"), ["a@x.io", "b@x.io"]);
+  assert.deepEqual(emails("preorder"), ["a@x.io"]);
+  assert.deepEqual(emails("waitlist"), ["b@x.io"]);
+});
+
+test("saves, lists, and deletes drafts, newest first", async () => {
+  const waitlist = store();
+  const first = await waitlist.saveDraft(
+    { name: "Launch", subject: "Hi", preheader: "", body: "<p>One</p>", ignored: "x" },
+    new Date("2026-10-05T10:00:00Z"),
+  );
+  await waitlist.saveDraft(
+    { name: "Sizing", subject: "Kit", preheader: "", body: "<p>Two</p>" },
+    new Date("2026-10-05T11:00:00Z"),
+  );
+  assert.equal(first.ignored, undefined);
+  assert.deepEqual(
+    (await waitlist.listDrafts()).map((draft) => draft.name),
+    ["Sizing", "Launch"],
+  );
+  await waitlist.saveDraft({ ...first, body: "<p>Edited</p>" }, new Date("2026-10-05T12:00:00Z"));
+  const drafts = await waitlist.listDrafts();
+  assert.equal(drafts.length, 2);
+  assert.equal(drafts[0].body, "<p>Edited</p>");
+  await waitlist.deleteDraft(first.id);
+  assert.deepEqual((await waitlist.listDrafts()).map((draft) => draft.name), ["Sizing"]);
+});
+
+test("queues a campaign and sends each recipient once, with retries", async () => {
+  const waitlist = store();
+  const emails = Array.from({ length: 45 }, (_, i) => `p${i}@example.com`);
+  const campaign = await waitlist.createCampaign(
+    { subject: "News", preheader: "", body: "<p>Hi</p>", audience: "all" },
+    emails,
+  );
+  assert.equal(campaign.total, 45);
+  assert.equal(campaign.pending, 45);
+
+  const seen = new Set();
+  for (;;) {
+    const batch = await waitlist.takeRecipients(campaign.id, 20);
+    if (!batch.length) break;
+    batch.forEach((email) => {
+      assert.ok(!seen.has(email), `${email} taken twice`);
+      seen.add(email);
+    });
+    const [failed, ...sent] = batch;
+    await waitlist.recordResults(campaign.id, {
+      sent: sent.slice(1),
+      skipped: sent.slice(0, 1),
+      failed: [{ email: failed, error: "Address bounced" }],
+    });
+  }
+  assert.equal(seen.size, 45);
+  let status = await waitlist.campaign(campaign.id);
+  assert.deepEqual(
+    [status.pending, status.sent, status.failed, status.skipped],
+    [0, 39, 3, 3],
+  );
+  assert.equal(Object.keys(await waitlist.campaignErrors(campaign.id)).length, 3);
+
+  await waitlist.retryFailed(campaign.id);
+  status = await waitlist.campaign(campaign.id);
+  assert.deepEqual([status.pending, status.failed], [3, 0]);
+  assert.deepEqual(await waitlist.campaignErrors(campaign.id), {});
+  assert.deepEqual(
+    (await waitlist.listCampaigns()).map((item) => item.id),
+    [campaign.id],
+  );
+  assert.equal(await waitlist.campaign("missing"), null);
 });

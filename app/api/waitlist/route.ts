@@ -1,4 +1,8 @@
-import { finishes } from "../../store/product";
+import { after } from "next/server";
+import { confirmationEmail } from "../../email-template.mjs";
+import { mailerFromEnv } from "../../mailer.mjs";
+import { deliver, recipientVariables } from "../../marketing/server";
+import { finishes, preorderPrice } from "../../store/product";
 import { parseSignup, waitlistFromEnv } from "../../waitlist.mjs";
 
 const finishIds: string[] = finishes.map((finish) => finish.id);
@@ -41,9 +45,32 @@ export async function POST(request: Request) {
       "unknown";
     if (!(await waitlist.allow(client)))
       return reply(429, { error: "rate_limited" });
-    const created = await waitlist.join(result.signup, {
+    const signup = result.signup;
+    const created = await waitlist.join(signup, {
       country: request.headers.get("x-vercel-ip-country") ?? "",
     });
+    // Confirm new signups and every pre-order request by email, after the
+    // response so the form never waits on it.
+    const mailer = mailerFromEnv();
+    if (mailer && (created || signup.source === "preorder"))
+      after(async () => {
+        const message =
+          signup.source === "preorder"
+            ? confirmationEmail("preorder", {
+                subtotal: String(preorderPrice * signup.quantity),
+              })
+            : confirmationEmail("waitlist");
+        const variables =
+          signup.source === "preorder"
+            ? recipientVariables({
+                finish: signup.finish,
+                quantity: String(signup.quantity),
+              })
+            : {};
+        await deliver(waitlist, mailer, signup.email, message, variables).catch(
+          (error) => console.error("Confirmation email failed:", error),
+        );
+      });
     return reply(200, { ok: true, created });
   } catch (error) {
     console.error(error);
