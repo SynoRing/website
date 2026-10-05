@@ -27,8 +27,6 @@ export const navigation = [
   ["/about", "About"],
 ] as const;
 
-export const earlyAccessEmail =
-  "mailto:contact@synoring.ai?subject=SynoRing%20Early%20Access&body=Hi%20SynoRing%20team%2C%0A%0AI%27d%20like%20to%20follow%20SynoRing%20and%20hear%20about%20early%20access.%0A%0AName%3A%0AHow%20I%27d%20use%20SynoRing%3A%0A";
 export const developerEmail =
   "mailto:contact@synoring.ai?subject=SynoRing%20Developer%20Pilot&body=Hi%20SynoRing%20team%2C%0A%0AI%27m%20interested%20in%20a%20developer%20pilot.%0A%0AProject%3A%0ATarget%20device%3A%0AInteraction%20use%20case%3A%0A";
 

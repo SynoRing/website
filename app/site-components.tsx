@@ -131,9 +131,10 @@ export function SiteFooter() {
             specifications.
           </li>
           <li id="product-note-4">
-            Joining early access is free and is not a purchase, deposit,
-            reservation, or guarantee of prototype access or product
-            availability.
+            Joining the waitlist or sending a pre-order request is free and is
+            not a purchase, deposit, reservation, or guarantee of prototype
+            access or product availability. No payment is collected on this
+            website.
           </li>
           <li id="product-note-5">
             The browser demo is an interaction concept. Music is silent, the

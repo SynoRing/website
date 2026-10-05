@@ -46,9 +46,16 @@ test("renders the complete SynoRing campaign page", async () => {
   assert.match(html, /id="product-notes"/);
   assert.match(html, /href="#product-note-3"/);
   assert.match(html, /Product imagery is a concept rendering/);
-  assert.match(html, /Joining early access is free/);
+  assert.match(html, /Joining the waitlist or sending a pre-order request is free/);
   assert.match(html, /Early means early\./);
-  assert.match(html, /Request early access/);
+  assert.match(html, /Join the waitlist for launch updates/);
+  assert.match(html, /<form class="waitlist-form waitlist-inline"/);
+  assert.match(
+    html,
+    /<input(?=[^>]*type="email")(?=[^>]*name="email")(?=[^>]*required)/,
+  );
+  assert.match(html, />Join the waitlist<\/button>/);
+  assert.doesNotMatch(html, /Early%20Access/);
   assert.match(html, /id="gestures"/);
   assert.match(html, /id="progress"/);
   assert.match(html, /id="faq"/);
@@ -75,6 +82,7 @@ test("publishes crawl and discovery metadata", async () => {
     robots,
     /Sitemap: https:\/\/www\.synoring\.ai\/sitemap\.xml/,
   );
+  assert.match(robots, /Disallow: \/api\//);
 
   assert.match(sitemap, /<loc>https:\/\/www\.synoring\.ai\/<\/loc>/);
 

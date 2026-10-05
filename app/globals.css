@@ -1219,6 +1219,122 @@ details[open] > summary > .icon {
   color: var(--muted);
 }
 
+/* Waitlist signup: one field and one button. Inline sits in a single pill;
+   stacked (the pre-order review) puts the button under the field. */
+.waitlist-form {
+  width: min(100%, 460px);
+  margin-inline: auto;
+}
+.waitlist-field {
+  display: flex;
+  gap: 6px;
+  padding: 5px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--pill);
+  background: #fff;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+.waitlist-field:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px #4b6a3c24;
+}
+.waitlist-field input {
+  flex: 1;
+  min-width: 0;
+  padding: 0 18px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font: inherit;
+  /* 16px or more keeps iOS from zooming into the field. */
+  font-size: var(--text-md);
+  color: var(--ink);
+}
+.waitlist-field input::placeholder {
+  color: var(--faint);
+}
+.waitlist-field .button {
+  flex-shrink: 0;
+}
+.waitlist-field .button:disabled {
+  opacity: 0.7;
+}
+.waitlist-trap {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.waitlist-message {
+  margin: 12px 0 0;
+  font-size: var(--text-sm);
+  color: #a4472f;
+}
+.waitlist-message:empty {
+  display: none;
+}
+.waitlist-message a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.waitlist-done {
+  display: flex;
+  gap: 12px;
+  width: min(100%, 460px);
+  margin-inline: auto;
+  padding: 16px 22px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  text-align: left;
+  background: #fff;
+}
+.waitlist-done .icon {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  margin-top: 1px;
+  color: var(--accent);
+}
+.waitlist-done p {
+  margin: 0;
+  font-size: var(--text-md);
+  line-height: 1.5;
+  color: var(--text);
+}
+.waitlist-done strong {
+  font-weight: 500;
+  color: var(--ink);
+}
+.waitlist-stacked .waitlist-field {
+  flex-direction: column;
+  gap: 10px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+.waitlist-stacked .waitlist-field input {
+  min-height: 52px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+.waitlist-stacked .waitlist-field input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px #4b6a3c24;
+}
+.waitlist-stacked .button {
+  width: 100%;
+  min-height: 52px;
+}
+
 /* FAQ */
 .faq-section {
   display: grid;
@@ -1812,6 +1928,15 @@ details[open] > summary > .icon {
   }
 }
 @media (max-width: 540px) {
+  .waitlist-inline .waitlist-field {
+    flex-direction: column;
+    padding: 6px;
+    border-radius: 26px;
+  }
+  .waitlist-inline .waitlist-field input {
+    min-height: 46px;
+    text-align: center;
+  }
   .news-bar {
     height: 34px;
   }

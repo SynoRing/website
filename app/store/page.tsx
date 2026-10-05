@@ -196,10 +196,9 @@ export default function StorePage() {
           <article>
             <h3>How does pre-ordering work?</h3>
             <p>
-              Choose a finish and quantity, then review your selection. The
-              enquiry button opens your email app with the details filled in.
-              Our team will confirm the next steps; this website does not
-              collect payment.
+              Choose a finish and quantity, review your selection, and leave
+              your email. Our team will contact you to confirm your size and
+              the next steps; this website does not collect payment.
             </p>
           </article>
           <article>

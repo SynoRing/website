@@ -1010,6 +1010,12 @@
   width: 100%;
   min-height: 52px;
 }
+.preorder-dialog .waitlist-done {
+  padding: 14px 18px;
+}
+.preorder-dialog .waitlist-done p {
+  font-size: var(--text-sm);
+}
 .review-back {
   display: block;
   margin-inline: auto;

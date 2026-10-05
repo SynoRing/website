@@ -29,7 +29,8 @@ The test command creates a production Next.js build and verifies each page's
 metadata (title, description length, canonical URL, Open Graph and X card
 images, breadcrumbs), the homepage structured data, `robots.txt`,
 `sitemap.xml`, and the web app manifest. It also checks circle recognition,
-input normalization, and the demo's scene controls.
+input normalization, the demo's scene controls, and the waitlist store
+(validation, merging repeat signups, rate limiting, and the CSV export).
 
 ## Search and sharing
 
@@ -50,6 +51,33 @@ input normalization, and the demo's scene controls.
 
 The `master` branch is the production branch. Vercel detects the project as
 Next.js and runs the native Next.js production build.
+
+## Waitlist
+
+The homepage signup and the store's pre-order request both post to
+`/api/waitlist`. Entries are kept in Upstash Redis, one per email: a later
+pre-order adds `preorderAt`, the finish, and the quantity to an existing
+waitlist entry instead of creating a second one. The logic is in
+`app/waitlist.mjs`; the routes are in `app/api/waitlist/`.
+
+Setup on Vercel:
+
+1. Storage → Create Database → Upstash for Redis (the free plan is enough),
+   and connect it to this project. That adds `KV_REST_API_URL` and
+   `KV_REST_API_TOKEN`; `UPSTASH_REDIS_REST_URL`/`_TOKEN` also work.
+2. Add `WAITLIST_ADMIN_PASSWORD` under Settings → Environment Variables.
+3. Redeploy.
+
+Download the list at `/api/waitlist/export`: the browser asks for a
+password (any username, the password above) and saves a CSV with email,
+signup and pre-order times, finish, quantity, and country. Without the
+password variable the export route answers 404.
+
+Production writes to `waitlist:*` keys; previews and local runs write to
+`preview:waitlist:*` and `development:waitlist:*`, so test signups stay out
+of the real list. Each connection may submit 10 times an hour. Without
+storage credentials, production returns 503 and the form offers the contact
+email; `npm run dev` accepts signups and only logs them.
 
 ## Product artwork
 
@@ -124,7 +152,9 @@ Closing it restores page scrolling and focus to Try it.
 
 Shared navigation and footer live in `app/site-components.tsx`; route metadata
 and links are in `app/site.ts`. The editorial layouts are in `app/pages.css`.
-All contact buttons open a prefilled email; there is no signup backend or SDK download.
+The waitlist and pre-order requests are stored by `/api/waitlist` (see
+Waitlist below). Developer pilot and general contact links open a prefilled
+email; there is no SDK download.
 
 ### Store pre-orders
 
@@ -136,6 +166,6 @@ ships first; once the size is confirmed, the ring ships with its charger
 `app/store/product.ts` defines the four finishes, $99 USD pre-order price,
 $129 USD regular price, and per-finish artwork slots (`storeRenders`).
 The Pre-order button opens a review with the selected finish, quantity,
-savings, and subtotal. Email pre-order enquiry opens a prefilled mailto;
-no payment is collected and no order is persisted. Unknown hardware details
+savings, and subtotal. Request pre-order adds the email to the waitlist with
+the chosen finish and quantity; no payment is collected. Unknown hardware details
 remain marked as to be announced in the specifications table.

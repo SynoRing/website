@@ -10,6 +10,8 @@ import {
 } from "./product-visual";
 import { finishes } from "./store/product";
 import { RotatingWords } from "./rotating-words";
+import { WaitlistSignup } from "./waitlist-form";
+import { developerEmail } from "./site";
 import {
   ArrowIcon,
   CircleIcon,
@@ -20,9 +22,6 @@ import {
   PlusIcon,
   TapIcon,
 } from "./icons";
-
-const earlyAccessEmail =
-  "mailto:contact@synoring.ai?subject=SynoRing%20Early%20Access&body=Hi%20SynoRing%20team%2C%0A%0AI%27d%20like%20to%20join%20the%20early%20access%20list.%0A%0AName%3A%0AHow%20I%27d%20use%20SynoRing%3A%0A";
 
 const heroDevices = [
   "your AR glasses",
@@ -445,11 +444,9 @@ export default function Home() {
                 the first SynoRing.
               </h2>
               <p>
-                Follow product progress, developer pilots, and launch updates.
+                Join the waitlist for launch updates and developer pilots.
               </p>
-              <a className="button button-dark" href={earlyAccessEmail}>
-                Request early access
-              </a>
+              <WaitlistSignup />
             </div>
             <ul className="closing-lineup" aria-label="Four finishes">
               {finishes.map((finish) => (
@@ -480,7 +477,7 @@ export default function Home() {
                 <p>
                   Early means early. SynoRing R1 is open for pre-order and
                   estimated to ship in Q1 2027, with free shipping within the
-                  US. Join early access to follow developer pilots and
+                  US. Join the waitlist to follow developer pilots and
                   production updates.
                   <Note number={2} />
                   <Note number={4} />
@@ -502,7 +499,7 @@ export default function Home() {
                 </summary>
                 <p>
                   We would love to hear from people building spatial interfaces.{" "}
-                  <a href={earlyAccessEmail}>
+                  <a href={developerEmail}>
                     Tell us what you are working on.
                   </a>
                 </p>

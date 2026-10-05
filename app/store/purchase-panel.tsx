@@ -11,6 +11,7 @@ import {
   type Finish,
 } from "./product";
 import { CloseIcon, MinusIcon, PlusIcon } from "../icons";
+import { WaitlistForm } from "../waitlist-form";
 
 export function PurchasePanel() {
   const [finish, setFinish] = useState<Finish>("space-gray");
@@ -136,10 +137,10 @@ function PreorderReview({
   onClose: () => void;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
+  const [sent, setSent] = useState(false);
   const name = finishes.find((item) => item.id === finish)!.name;
   const render = storeRenders[finish];
   const total = preorderPrice * quantity;
-  const email = `mailto:contact@synoring.ai?subject=${encodeURIComponent(`SynoRing R1 Pre-order — ${name}`)}&body=${encodeURIComponent(`Hi SynoRing team,\n\nI would like to enquire about this pre-order:\n\nProduct: SynoRing R1\nFinish: ${name}\nQuantity: ${quantity}\nPre-order unit price: $${preorderPrice} USD (regular $${regularPrice} USD)\nProduct subtotal: $${total} USD\n\nPlease confirm availability, sizing, shipping, taxes, and payment arrangements.\n\nName:\nCountry / region:\n`)}`;
   useEffect(() => {
     const element = dialog.current;
     const overflow = document.body.style.overflow;
@@ -173,7 +174,7 @@ function PreorderReview({
       }}
     >
       <div className="review-heading">
-        <span className="eyebrow">Pre-order enquiry</span>
+        <span className="eyebrow">Pre-order</span>
         <button onClick={onClose} aria-label="Close pre-order review" autoFocus>
           <CloseIcon />
         </button>
@@ -212,17 +213,26 @@ function PreorderReview({
         </div>
       </dl>
       <p className="review-explainer">
-        Send your selection to our team to arrange your pre-order. A sizing
-        kit ships first so you can confirm your size; your ring is estimated
-        to ship in Q1 2027, free within the US. Taxes and shipping to other
-        regions are confirmed by email. No payment is collected or order
-        placed on this website.
+        Leave your email and our team will contact you to arrange your
+        pre-order. A sizing kit ships first so you can confirm your size; your
+        ring is estimated to ship in Q1 2027, free within the US. Taxes and
+        shipping to other regions are confirmed by email. No payment is
+        collected on this website.
       </p>
-      <a className="button button-dark" href={email}>
-        Email pre-order enquiry
-      </a>
+      <WaitlistForm
+        layout="stacked"
+        submitLabel="Request pre-order"
+        details={{ source: "preorder", finish, quantity }}
+        onDone={() => setSent(true)}
+        done={(email) => (
+          <>
+            <strong>Pre-order request received.</strong> We’ll email {email}{" "}
+            to confirm your size and arrange your SynoRing R1 in {name}.
+          </>
+        )}
+      />
       <button className="review-back" onClick={onClose}>
-        Continue choosing
+        {sent ? "Close" : "Continue choosing"}
       </button>
     </dialog>
   );
