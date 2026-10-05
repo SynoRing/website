@@ -60,7 +60,6 @@ export function ProductGallery({ finish }: { finish: Finish }) {
           Inside SynoRing
         </button>
       </div>
-      <p>Concept imagery. Actual finish may vary.</p>
     </div>
   );
 }

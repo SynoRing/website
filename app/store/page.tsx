@@ -16,7 +16,7 @@ const specifications = [
       ["Colors", "Space Gray · Platinum · Rose Gold · Gold"],
       ["Band width", "8 mm in every size"],
       ["Inner & outer diameter", "Varies by ring size"],
-      ["Ring sizes", "Multiple sizes; find yours with the sizing kit"],
+      ["Ring sizes", "Multiple sizes; confirmed with a sizing kit first"],
       ["Materials", "Custom ceramic outer shell · Stainless steel inner band"],
       ["Weight", "To be announced"],
     ],
@@ -53,7 +53,7 @@ const specifications = [
       ["Battery capacity", "12 mAh"],
       ["Battery life, typical use", "Up to 12 hours"],
       ["Battery life, intensive use", "Up to 1 hour"],
-      ["Charging", "Charger included; charging time to be announced"],
+      ["Charging", "Full charge in about 1.5 hours"],
       ["Water & dust resistance", "Rating to be announced after validation"],
     ],
   },
@@ -62,7 +62,8 @@ const specifications = [
     rows: [
       ["Pre-order price", "$99 USD"],
       ["Regular price", "$129 USD"],
-      ["In the box", "SynoRing R1 · Sizing kit · Charger"],
+      ["Sizing kit", "Ships first so you can confirm your size"],
+      ["In the box", "SynoRing R1 · Charger"],
       ["Estimated shipping", "Q1 2027"],
       ["Shipping", "Free within the US; other regions pay shipping"],
       ["Taxes", "Confirmed by email before payment"],
@@ -207,9 +208,9 @@ export default function StorePage() {
           <article>
             <h3>How do I find my size?</h3>
             <p>
-              The band is 8 mm wide in every size, while the inner and outer
-              diameter follow your ring size. A sizing kit comes with SynoRing
-              R1 to help you find the right fit.
+              We send you a sizing kit first. Wear it, confirm your size, and
+              your SynoRing R1 ships in that size. The band is 8 mm wide in
+              every size; only the inner and outer diameter change.
             </p>
           </article>
           <article>

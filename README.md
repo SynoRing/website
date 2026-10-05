@@ -113,8 +113,9 @@ All contact buttons open a prefilled email; there is no signup backend or SDK do
 ### Store pre-orders
 
 The first generation is sold as SynoRing R1, estimated to ship in Q1 2027
-with free shipping within the US (other regions pay shipping). Each comes with
-a sizing kit and charger.
+with free shipping within the US (other regions pay shipping). A sizing kit
+ships first; once the size is confirmed, the ring ships with its charger
+(full charge in about 1.5 hours).
 
 `app/store/product.ts` defines the four finishes, $99 USD pre-order price,
 $129 USD regular price, and per-finish artwork slots (`storeRenders`).

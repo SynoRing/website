@@ -212,10 +212,11 @@ function PreorderReview({
         </div>
       </dl>
       <p className="review-explainer">
-        Send your selection to our team to arrange your pre-order. Estimated
-        shipping is Q1 2027, free within the US; other regions pay shipping.
-        Sizing and taxes will be confirmed by email. No payment is
-        collected or order placed on this website.
+        Send your selection to our team to arrange your pre-order. A sizing
+        kit ships first so you can confirm your size; your ring is estimated
+        to ship in Q1 2027, free within the US. Taxes and shipping to other
+        regions are confirmed by email. No payment is collected or order
+        placed on this website.
       </p>
       <a className="button button-dark" href={email}>
         Email pre-order enquiry

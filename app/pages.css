@@ -530,12 +530,6 @@
   background: #fff;
   box-shadow: 0 2px 8px #2a3e2214;
 }
-.store-gallery > p {
-  margin-top: 18px;
-  text-align: center;
-  font-size: var(--text-xs);
-  color: var(--muted);
-}
 .status-pill {
   display: inline-flex;
   align-items: center;
