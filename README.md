@@ -45,6 +45,11 @@ store finishes, and `productMedia` assigns them to page slots:
 - `detail`: Rose Gold in the product introduction.
 - `lifestyle`: none yet; the section stays hidden until an image is supplied.
 
+The hero headline cycles through the devices SynoRing can control
+(`heroDevices` in `app/page.tsx`, animated by `app/rotating-words.tsx`); a
+screen-reader sentence in the heading lists them all, and reduced-motion users
+see the first one only.
+
 The homepage opening screen uses the Space Gray front orthographic view
 (`synoring-front-*.webp`, `ringFrontView`), cropped so the bore centre is the
 image centre. It is sized from the height left under the headline and centred

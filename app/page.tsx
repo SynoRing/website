@@ -9,6 +9,7 @@ import {
   ringRenderSize,
 } from "./product-visual";
 import { finishes } from "./store/product";
+import { RotatingWords } from "./rotating-words";
 import {
   ArrowIcon,
   CircleIcon,
@@ -64,6 +65,16 @@ const structuredData = {
   ],
 };
 
+const heroDevices = [
+  "your AR glasses",
+  "your smart glasses",
+  "your headset",
+  "your phone",
+  "your laptop",
+  "your PC",
+  "your robot",
+] as const;
+
 const explodedLayers = [
   {
     id: "shell",
@@ -114,9 +125,16 @@ export default function Home() {
           <section className="hero" aria-labelledby="hero-title">
             <div className="hero-copy">
               <h1 id="hero-title">
-                Control AR without
-                <br />
-                breaking the moment.
+                <span className="sr-only">
+                  Control your AR glasses, smart glasses, headset, phone,
+                  laptop, PC, or robot without breaking the moment.
+                </span>
+                <span className="hero-title-line" aria-hidden="true">
+                  Control <RotatingWords words={heroDevices} />
+                </span>
+                <span className="hero-title-line" aria-hidden="true">
+                  without breaking the moment.
+                </span>
               </h1>
               <p>Your world, at your fingertips.</p>
               <a className="button" href="#why">

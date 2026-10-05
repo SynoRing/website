@@ -460,6 +460,49 @@ details[open] > summary > .icon {
   line-height: 1.04;
   letter-spacing: -0.05em;
 }
+.hero-title-line {
+  display: block;
+  text-wrap: balance;
+}
+/* Rotating device name: words stack in one slot; the slot eases to the
+   active word's width, which keeps the line centred as it changes. */
+.word-rotator {
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+  vertical-align: top;
+  transition: width 0.55s var(--ease);
+}
+.word-rotator.is-ready {
+  width: var(--word-width);
+}
+.word-rotator-strut {
+  display: inline-block;
+  width: 0;
+}
+.word-rotator > span:not(.word-rotator-strut) {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  opacity: 0;
+  transform: translate(-50%, 0.42em);
+  transition:
+    opacity 0.4s ease,
+    transform 0.55s var(--ease);
+}
+.word-rotator > span.is-active {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+.word-rotator > span.is-leaving {
+  transform: translate(-50%, -0.42em);
+}
+/* Before measuring, the first word sits in the flow and sizes the slot. */
+.word-rotator:not(.is-ready) > span.is-active {
+  position: relative;
+  left: auto;
+  transform: none;
+}
 .hero-copy > p {
   margin: 20px 0 28px;
   font-size: var(--text-lg);
@@ -1762,8 +1805,15 @@ details[open] > summary > .icon {
     padding: 116px 18px 0;
   }
   .hero h1 {
-    font-size: clamp(36px, 10vw, 48px);
+    font-size: clamp(34px, 9.4vw, 46px);
     line-height: 1.07;
+  }
+  /* Phones give the device name its own line, so the heading never reflows. */
+  .word-rotator {
+    display: block;
+  }
+  .word-rotator.is-ready {
+    width: auto;
   }
   .hero-copy > p {
     margin: 16px 0 24px;

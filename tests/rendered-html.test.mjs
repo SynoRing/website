@@ -21,7 +21,10 @@ test("renders the complete SynoRing campaign page", async () => {
   assert.match(html, /"@type":"WebSite"/);
   assert.match(html, /"@type":"Organization"/);
   assert.match(html, /"@type":"Product"/);
-  assert.match(html, /Control AR without/);
+  assert.match(
+    html,
+    /Control your AR glasses, smart glasses, headset, phone,\s+laptop, PC, or robot without breaking the moment\./,
+  );
   assert.match(html, /WACV 2027 SEAI Workshop/);
   assert.match(
     html,
