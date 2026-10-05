@@ -102,7 +102,7 @@ export function SiteFooter() {
           <div>
             <span>SynoRing</span>
             <a href="/about">About</a>
-            <a href="mailto:hello@synoring.com">Contact</a>
+            <a href="mailto:contact@synoring.ai">Contact</a>
             <a href="/#faq">Questions</a>
           </div>
         </div>

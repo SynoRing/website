@@ -22,7 +22,7 @@ import {
 } from "./icons";
 
 const earlyAccessEmail =
-  "mailto:hello@synoring.com?subject=SynoRing%20Early%20Access&body=Hi%20SynoRing%20team%2C%0A%0AI%27d%20like%20to%20join%20the%20early%20access%20list.%0A%0AName%3A%0AHow%20I%27d%20use%20SynoRing%3A%0A";
+  "mailto:contact@synoring.ai?subject=SynoRing%20Early%20Access&body=Hi%20SynoRing%20team%2C%0A%0AI%27d%20like%20to%20join%20the%20early%20access%20list.%0A%0AName%3A%0AHow%20I%27d%20use%20SynoRing%3A%0A";
 
 const heroDevices = [
   "your AR glasses",

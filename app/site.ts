@@ -11,7 +11,7 @@ export const site = {
     "SynoRing R1 is a gesture control ring for AR and smart glasses. Tap, glide, and circle to control what you see. Pre-order for $99, shipping Q1 2027.",
   shortDescription: "A gesture control ring for AR and smart glasses.",
   twitter: "@SynoRing",
-  email: "hello@synoring.com",
+  email: "contact@synoring.ai",
   social: [
     { id: "x", name: "X", url: "https://x.com/SynoRing" },
     { id: "github", name: "GitHub", url: "https://github.com/SynoRing" },
@@ -28,9 +28,9 @@ export const navigation = [
 ] as const;
 
 export const earlyAccessEmail =
-  "mailto:hello@synoring.com?subject=SynoRing%20Early%20Access&body=Hi%20SynoRing%20team%2C%0A%0AI%27d%20like%20to%20follow%20SynoRing%20and%20hear%20about%20early%20access.%0A%0AName%3A%0AHow%20I%27d%20use%20SynoRing%3A%0A";
+  "mailto:contact@synoring.ai?subject=SynoRing%20Early%20Access&body=Hi%20SynoRing%20team%2C%0A%0AI%27d%20like%20to%20follow%20SynoRing%20and%20hear%20about%20early%20access.%0A%0AName%3A%0AHow%20I%27d%20use%20SynoRing%3A%0A";
 export const developerEmail =
-  "mailto:hello@synoring.com?subject=SynoRing%20Developer%20Pilot&body=Hi%20SynoRing%20team%2C%0A%0AI%27m%20interested%20in%20a%20developer%20pilot.%0A%0AProject%3A%0ATarget%20device%3A%0AInteraction%20use%20case%3A%0A";
+  "mailto:contact@synoring.ai?subject=SynoRing%20Developer%20Pilot&body=Hi%20SynoRing%20team%2C%0A%0AI%27m%20interested%20in%20a%20developer%20pilot.%0A%0AProject%3A%0ATarget%20device%3A%0AInteraction%20use%20case%3A%0A";
 
 /** Page metadata. Open Graph images come from each route's
     opengraph-image.tsx, so they are not listed here. */

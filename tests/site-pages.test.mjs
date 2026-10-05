@@ -69,7 +69,7 @@ test("pre-order route publishes confirmed pricing and keeps enquiry status clear
   assert.match(developers, /Public SDK not yet available/);
   assert.match(
     developers,
-    /mailto:hello@synoring.com\?subject=SynoRing%20Developer%20Pilot/,
+    /mailto:contact@synoring.ai\?subject=SynoRing%20Developer%20Pilot/,
   );
   assert.match(demo, /Try it/);
   assert.match(demo, /Music is silent/);

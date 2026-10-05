@@ -133,10 +133,10 @@ export default function AboutPage() {
           </p>
         </div>
         <div className="contact-rows">
-          <a href="mailto:hello@synoring.com">
+          <a href="mailto:contact@synoring.ai">
             <span>
               <small>General enquiries</small>
-              <strong>hello@synoring.com</strong>
+              <strong>contact@synoring.ai</strong>
             </span>
             <ArrowIcon />
           </a>
