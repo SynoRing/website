@@ -1,74 +1,19 @@
 import { site } from "./site";
+import { SiteHeader, SiteFooter, Note, ArrowLink } from "./site-components";
+import { ProductVisual, ExplodedVisual, productMedia } from "./product-visual";
+import {
+  ArrowIcon,
+  CircleIcon,
+  GlideIcon,
+  HoldIcon,
+  NavigationIcon,
+  PauseIcon,
+  PlusIcon,
+  TapIcon,
+} from "./icons";
 
 const earlyAccessEmail =
   "mailto:hello@synoring.com?subject=SynoRing%20Early%20Access&body=Hi%20SynoRing%20team%2C%0A%0AI%27d%20like%20to%20join%20the%20early%20access%20list.%0A%0AName%3A%0AHow%20I%27d%20use%20SynoRing%3A%0A";
-
-const gestures = [
-  {
-    number: "01",
-    name: "Tap",
-    action: "Select",
-    detail: "Confirm a choice without reaching for the glasses.",
-    mark: "•",
-  },
-  {
-    number: "02",
-    name: "Glide",
-    action: "Scroll",
-    detail: "Move through a page, a map, or a playlist quietly.",
-    mark: "→",
-  },
-  {
-    number: "03",
-    name: "Rotate",
-    action: "Adjust",
-    detail: "Tune volume, zoom, or any continuous control.",
-    mark: "↻",
-  },
-  {
-    number: "04",
-    name: "Hold",
-    action: "Invoke",
-    detail: "Bring up the action you use most, right where you are.",
-    mark: "+",
-  },
-];
-
-const phases = [
-  {
-    step: "Phase 01",
-    title: "Interaction prototype",
-    copy: "Gesture vocabulary, motion sensing, and touch behavior.",
-    state: "active",
-  },
-  {
-    step: "Phase 02",
-    title: "Developer pilot",
-    copy: "Small-batch hardware and SDK tests with real workflows.",
-    state: "next",
-  },
-  {
-    step: "Phase 03",
-    title: "Production design",
-    copy: "Fit, durability, battery, and manufacturing validation.",
-    state: "later",
-  },
-  {
-    step: "Phase 04",
-    title: "First release",
-    copy: "Launch timing follows validation — not a countdown timer.",
-    state: "later",
-  },
-];
-
-const targetSpecs = [
-  ["Motion", "9-axis inertial sensing"],
-  ["Touch", "Full-circumference input"],
-  ["Connectivity", "Bluetooth Low Energy"],
-  ["Compute", "Phone-side gesture intelligence"],
-  ["Platforms", "iOS · Android · AR ecosystems"],
-  ["Material", "Titanium enclosure under evaluation"],
-];
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -111,28 +56,6 @@ const structuredData = {
   ],
 };
 
-function FootnoteRef({
-  number,
-  className = "",
-}: {
-  number: number;
-  className?: string;
-}) {
-  return (
-    <sup
-      className={`footnote-ref ${className}`.trim()}
-      id={`product-note-ref-${number}`}
-    >
-      <a
-        href={`#product-note-${number}`}
-        aria-label={`See product note ${number}`}
-      >
-        {number}
-      </a>
-    </sup>
-  );
-}
-
 export default function Home() {
   return (
     <>
@@ -142,365 +65,411 @@ export default function Home() {
           __html: JSON.stringify(structuredData).replace(/</g, "\\u003c"),
         }}
       />
-      <div className="site-frame">
-      <a
-        className="news-bar"
-        href="https://wacv27seai.synoring.ai/"
-        aria-label="Launching at the WACV 2027 SEAI Workshop, January 4–8, 2027"
-      >
-        <span>Launching at the WACV 2027 SEAI Workshop · Jan 4–8, 2027</span>
+      <a className="skip-link" href="#main">
+        Skip to content
       </a>
-
-      <header className="nav-wrap">
-        <a className="brand" href="#top" aria-label="SynoRing home">
-          <img
-            className="brand-wordmark"
-            src="/wordmark.svg"
-            alt=""
-            width="368"
-            height="122"
-          />
+      <div className="site-frame" id="top">
+        <a className="news-bar" href="https://wacv27seai.synoring.ai/">
+          Meet us at the WACV 2027 SEAI Workshop
+          <span>January 4–8, 2027</span>
+          <ArrowIcon />
         </a>
-        <nav aria-label="Main navigation">
-          <a href="#why">Why a ring</a>
-          <a href="#gestures">Gestures</a>
-          <a href="#progress">Progress</a>
-          <a href="#faq">FAQ</a>
-        </nav>
-        <a className="nav-cta" href="#early-access">
-          Join early access
-        </a>
-      </header>
-
-      <main>
-        <section className="hero" id="top">
-          <div className="hero-heading">
-            <p className="eyebrow">A quiet controller for spatial computing</p>
-            <h1>
-              Control AR without
-              <br />
-              <em>breaking the moment.</em>
-            </h1>
-          </div>
-          <div className="hero-intro">
-            <p>
-              SynoRing turns small, natural finger gestures into scroll, select,
-              and navigation commands — so your eyes stay up and your hands stay
-              where they belong.
-            </p>
-            <div className="hero-actions">
-              <a className="button button-dark" href="#early-access">
-                Join early access
+        <SiteHeader home />
+        <main id="main">
+          <section className="hero" aria-labelledby="hero-title">
+            <div className="hero-copy">
+              <h1 id="hero-title">
+                Control AR without
+                <br />
+                breaking the moment.
+              </h1>
+              <p>Your world, at your fingertips.</p>
+              <a className="button" href="#why">
+                Discover SynoRing
               </a>
             </div>
-          </div>
-
-          <figure className="hero-visual">
-            <img
-              src="/og.png"
-              alt="Concept visualization of the SynoRing titanium gesture controller"
-            />
-            <FootnoteRef number={1} className="visual-note-ref" />
-          </figure>
-
-          <div className="signal-strip" aria-label="Product pillars">
-            <div>
-              <span>01</span>
-              <strong>Subtle by design</strong>
-              <p>No mid-air choreography.</p>
+            <div className="hero-art">
+              <ProductVisual slot="hero" />
             </div>
-            <div>
-              <span>02</span>
-              <strong>Private in public</strong>
-              <p>No voice commands required.</p>
-            </div>
-            <div>
-              <span>03</span>
-              <strong>Built around intent</strong>
-              <p>Motion, touch, and context.</p>
-            </div>
-          </div>
-        </section>
+          </section>
 
-        <section className="why-section" id="why">
-          <div className="section-heading light-heading">
-            <p className="eyebrow">01 — Why a ring</p>
-            <h2>Your hands already know what to do.</h2>
-          </div>
-          <div className="why-grid">
-            <p className="why-lede">
-              Spatial computers need an input that disappears into daily life.
-              Cameras consume power. Voice exposes the moment. Touching the frame
-              interrupts it. A ring can stay ready without asking for attention.
+          <section className="product-intro" id="why">
+            <p className="intro-line">
+              SynoRing turns finger movements and thumb touches
+              <br className="desktop-break" /> into controls for your AR
+              glasses.
             </p>
-            <div className="comparison" role="list" aria-label="Input comparison">
-              <div role="listitem">
-                <span>Voice</span>
-                <p>Visible to everyone around you</p>
-                <b>Public</b>
-              </div>
-              <div role="listitem">
-                <span>Air gestures</span>
-                <p>Large movements with social friction</p>
-                <b>Obvious</b>
-              </div>
-              <div className="comparison-active" role="listitem">
-                <span>SynoRing</span>
-                <p>Small inputs, close to the body</p>
-                <b>Quiet</b>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="gestures-section" id="gestures">
-          <div className="section-heading split-heading">
-            <div>
-              <p className="eyebrow">02 — A small gesture language</p>
-              <h2>Less movement. More meaning.</h2>
-            </div>
-            <p>
-              Four familiar inputs form a compact vocabulary. The final set will
-              be shaped with early testers, not invented in isolation.
-            </p>
-          </div>
-
-          <div className="gesture-grid">
-            {gestures.map((gesture) => (
-              <article className="gesture-card" key={gesture.number}>
-                <div className="gesture-topline">
-                  <span>{gesture.number}</span>
-                  <span>{gesture.name}</span>
-                </div>
-                <div className="gesture-mark" aria-hidden="true">
-                  {gesture.mark}
-                </div>
-                <h3>{gesture.action}</h3>
-                <p>{gesture.detail}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="moments-section" id="moments">
-          <div className="section-heading light-heading split-heading">
-            <div>
-              <p className="eyebrow">03 — In the moment</p>
-              <h2>Designed for the places voice fails.</h2>
-            </div>
-            <p>
-              The value is not another notification surface. It is keeping the
-              interface available while the device disappears.
-            </p>
-          </div>
-
-          <div className="moment-grid">
-            <article className="moment-card moment-desk">
-              <div className="moment-index">01 / Focus</div>
-              <div className="moment-copy">
-                <h3>At the desk</h3>
+            <div className="product-showcase">
+              <div className="product-caption">
+                <span>Meet SynoRing</span>
                 <p>
-                  Read on your glasses, type on your laptop, and move through a
-                  document without changing posture.
+                  A gesture controller.
+                  <br />
+                  Made to feel natural.
                 </p>
-                <span>Scroll · select · highlight</span>
               </div>
-              <div className="moment-illustration desk-lines" aria-hidden="true">
-                <i />
-                <i />
-                <i />
-                <b>→</b>
+              <div className="showcase-art">
+                <ProductVisual slot="detail" />
               </div>
-            </article>
-            <article className="moment-card moment-street">
-              <div className="moment-index">02 / Move</div>
-              <div className="moment-copy">
-                <h3>On the street</h3>
+              <div className="product-caption">
+                <span>For your spatial world</span>
                 <p>
-                  Step through directions, music, and messages without speaking
-                  into the air or tapping your face.
+                  AR control.
+                  <br />
+                  Without the interruption.
                 </p>
-                <span>Navigate · reply · adjust</span>
               </div>
-              <div className="moment-illustration route-line" aria-hidden="true">
-                <i />
-                <i />
-              </div>
+            </div>
+            <h2>
+              Your AR glasses.
+              <br />
+              Controlled from your ring.
+            </h2>
+            <p className="intro-function">
+              Select with a tap. Scroll with a glide. Adjust with a circle.
+            </p>
+          </section>
+
+          <section
+            className="product-facts content-width"
+            aria-label="What SynoRing does"
+          >
+            <article>
+              <span>01 / Input</span>
+              <h3>Touch + movement</h3>
+              <p>
+                Thumb touches and finger motion work together. Tap, glide, hold,
+                or circle to control what is in view.
+              </p>
             </article>
-          </div>
-        </section>
+            <article>
+              <span>02 / Experience</span>
+              <h3>A smaller gesture</h3>
+              <p>
+                Designed for subtle control at your side, without speaking a
+                command or reaching toward a floating screen.
+              </p>
+            </article>
+            <article>
+              <span>03 / Application</span>
+              <h3>Made for spatial apps</h3>
+              <p>
+                Explore music, reading, and navigation today in our interactive
+                browser demo.
+              </p>
+            </article>
+          </section>
 
-        <section className="progress-section" id="progress">
-          <div className="progress-head">
-            <p className="eyebrow">04 — Building in public</p>
-            <h2>Early means early.</h2>
-            <p>
-              We are validating the interaction through a clear path from
-              prototype to product, one decision at a time.
-              <FootnoteRef number={2} />
-            </p>
-          </div>
-
-          <div className="phase-list">
-            {phases.map((phase) => (
-              <article className={`phase phase-${phase.state}`} key={phase.step}>
-                <div className="phase-state">
-                  <span>{phase.step}</span>
-                  {phase.state === "active" ? <b>Now</b> : null}
+          {productMedia.lifestyle && (
+            <section
+              className="lifestyle-section content-width"
+              aria-label="SynoRing in everyday life"
+            >
+              <div className="lifestyle-media">
+                <img
+                  src={productMedia.lifestyle}
+                  alt="Using SynoRing to control AR glasses with a relaxed hand"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div className="lifestyle-copy">
+                  <h2>
+                    Control your glasses.
+                    <br />
+                    Keep your hands relaxed.
+                  </h2>
+                  <p>
+                    Navigate, read, and change the music
+                    <br />
+                    with small movements at your side.
+                  </p>
                 </div>
-                <h3>{phase.title}</h3>
-                <p>{phase.copy}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="spec-section" id="specs">
-          <div className="spec-intro">
-            <p className="eyebrow">05 — Product direction</p>
-            <h2>Built light. Kept capable.</h2>
-            <p>
-              The current architecture focuses on quiet input, efficient sensing,
-              and broad compatibility across spatial-computing platforms.
-              <FootnoteRef number={3} />
-            </p>
-            <span className="spec-label">Development architecture</span>
-          </div>
-          <dl className="spec-list">
-            {targetSpecs.map(([term, definition]) => (
-              <div key={term}>
-                <dt>{term}</dt>
-                <dd>{definition}</dd>
               </div>
-            ))}
-          </dl>
-        </section>
+            </section>
+          )}
 
-        <section className="access-section" id="early-access">
-          <div className="access-number" aria-hidden="true">
-            06
-          </div>
-          <div className="access-copy">
-            <p className="eyebrow">Early access</p>
-            <h2>Help shape the input, before we shape the object.</h2>
-            <p>
-              Tell us how you would use SynoRing. Early members get honest build
-              updates, prototype opportunities, and launch priority when the
-              product is ready.
-              <FootnoteRef number={4} />
-            </p>
-            <a className="button button-lime" href={earlyAccessEmail}>
-              Request early access
-            </a>
-          </div>
-        </section>
+          <section
+            className="gestures-section content-width"
+            id="gestures"
+            aria-labelledby="demo-strip-title"
+          >
+            <div className="demo-strip">
+              <div className="demo-strip-copy">
+                <span className="eyebrow">Interactive demo</span>
+                <h2 id="demo-strip-title">
+                  See through the glasses.
+                  <br />
+                  Control it with the ring.
+                </h2>
+              </div>
+              <ul className="demo-strip-gestures">
+                <li>
+                  <TapIcon />
+                  Tap to select
+                </li>
+                <li>
+                  <GlideIcon />
+                  Glide to scroll
+                </li>
+                <li>
+                  <CircleIcon />
+                  Circle to adjust
+                </li>
+                <li>
+                  <HoldIcon />
+                  Hold for apps
+                </li>
+              </ul>
+              <a className="button" href="/demo">
+                Try the demo
+              </a>
+            </div>
+          </section>
 
-        <section className="faq-section" id="faq">
-          <div className="faq-heading">
-            <p className="eyebrow">Questions, answered plainly</p>
-            <h2>Before you ask.</h2>
-          </div>
-          <div className="faq-list">
-            <details>
-              <summary>
-                Can I buy SynoRing today? <span aria-hidden="true" />
-              </summary>
-              <p>
-                Not yet. We are in active development and are not taking deposits.
-                Early access is the best way to follow the build and hear when
-                testing opens.
-              </p>
-            </details>
-            <details>
-              <summary>
-                Which AR glasses will it support? <span aria-hidden="true" />
-              </summary>
-              <p>
-                Compatibility work comes after the core interaction is reliable.
-                The current direction is a phone-side SDK designed to work across
-                AR ecosystems instead of locking the ring to one headset.
-              </p>
-            </details>
-            <details>
-              <summary>
-                Are the specifications final? <span aria-hidden="true" />
-              </summary>
-              <p>
-                No. Materials, battery, sensing, and industrial design remain
-                development targets. We will replace targets with measured data as
-                prototypes are validated.
-              </p>
-            </details>
-            <details>
-              <summary>
-                I build AR software. Can we collaborate? <span aria-hidden="true" />
-              </summary>
-              <p>
-                Yes. We especially want to hear from developers working on
-                navigation, productivity, accessibility, and spatial interfaces.
-                Use the early-access link and tell us what you are building.
-              </p>
-            </details>
-          </div>
-        </section>
-      </main>
+          <section
+            className="possibilities content-width"
+            aria-labelledby="possibilities-title"
+          >
+            <h2 id="possibilities-title">
+              One ring.
+              <br />
+              So many ways to stay present.
+            </h2>
+            <div className="possibility-grid">
+              <article className="possibility music">
+                <div className="music-visual" aria-hidden="true">
+                  <div className="record">
+                    <div />
+                  </div>
+                  <span className="play-symbol">
+                    <PauseIcon />
+                  </span>
+                </div>
+                <div className="possibility-copy">
+                  <h3>
+                    Your music.
+                    <br />
+                    Your moment.
+                  </h3>
+                  <p>Adjust the volume. Keep your rhythm.</p>
+                </div>
+              </article>
+              <article className="possibility reading">
+                <div className="reading-visual" aria-hidden="true">
+                  <span>
+                    A little space
+                    <br />
+                    <em>to think.</em>
+                  </span>
+                  <i />
+                  <i />
+                  <i />
+                  <i />
+                </div>
+                <div className="possibility-copy">
+                  <h3>
+                    Follow the thought.
+                    <br />
+                    Not the screen.
+                  </h3>
+                  <p>Move through a page with a glide.</p>
+                </div>
+              </article>
+              <article className="possibility navigation">
+                <div className="navigation-visual" aria-hidden="true">
+                  <div className="navigation-path" />
+                  <NavigationIcon className="navigation-turn" />
+                </div>
+                <div className="possibility-copy">
+                  <h3>
+                    Eyes up.
+                    <br />
+                    World open.
+                  </h3>
+                  <p>Your next direction, a tap away.</p>
+                </div>
+              </article>
+            </div>
+          </section>
 
-      <footer>
-        <aside
-          className="product-notes"
-          id="product-notes"
-          aria-labelledby="product-notes-title"
-        >
-          <p className="product-notes-title" id="product-notes-title">
-            Product notes
-          </p>
-          <ol>
-            <li id="product-note-1">
-              Product imagery is a concept rendering for illustrative purposes.
-              Final industrial design, materials, dimensions, controls, and
-              finish may change.
-            </li>
-            <li id="product-note-2">
-              Roadmap stages and launch timing reflect current development plans
-              and may change as testing and validation progress.
-            </li>
-            <li id="product-note-3">
-              Features, materials, compatibility, sensing architecture, and
-              other specifications are development targets, not final shipping
-              specifications. Measured specifications will be published after
-              validation.
-            </li>
-            <li id="product-note-4">
-              Joining early access is free and is not a purchase, deposit,
-              reservation, or guarantee of prototype access or product
-              availability. Updates are sent only when there is meaningful
-              progress.
-            </li>
-          </ol>
-        </aside>
-        <div className="footer-brand">
-          <p className="footer-kicker">Gesture becomes intent.</p>
-          <p>A quiet controller for spatial computing.</p>
-        </div>
-        <div className="footer-links">
-          <a href="#why">Why a ring</a>
-          <a href="#gestures">Gestures</a>
-          <a href="#progress">Progress</a>
-          <a href="#faq">FAQ</a>
-          <a href={earlyAccessEmail}>Contact</a>
-        </div>
-        <div className="footer-meta">
-          <span>© 2026 SynoRing Labs Inc.</span>
-          <span>Designed in Illinois</span>
-        </div>
-        <a
-          className="footer-wordmark"
-          href="#top"
-          aria-label="SynoRing — back to top"
-        >
-          <img src="/wordmark.svg" alt="" width="368" height="122" />
-        </a>
-      </footer>
+          <section
+            className="technology-section content-width"
+            id="technology"
+            aria-labelledby="technology-title"
+          >
+            <div className="technology-heading">
+              <h2 id="technology-title">
+                Motion and touch.
+                <br />
+                Working together.
+              </h2>
+              <p>Sensors read your movement. Touch gives it intent.</p>
+            </div>
+            <div className="exploded-layout">
+              <div className="exploded-notes">
+                <article>
+                  <h3>Touch input</h3>
+                  <p>A surface for your thumb to tap, hold, and glide.</p>
+                </article>
+                <article>
+                  <h3>Motion sensing</h3>
+                  <p>Reads movement and rotation of the ring-bearing finger.</p>
+                </article>
+              </div>
+              <figure className="exploded-art">
+                {productMedia.exploded ? (
+                  <img
+                    src={productMedia.exploded}
+                    alt="SynoRing exploded component view"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                ) : (
+                  <ExplodedVisual />
+                )}
+                <figcaption>
+                  Illustrative assembly
+                  <Note number={3} />
+                </figcaption>
+              </figure>
+              <div className="exploded-notes">
+                <article>
+                  <h3>Gesture processing</h3>
+                  <p>Brings sensing signals together into control inputs.</p>
+                </article>
+                <article>
+                  <h3>Wireless connection</h3>
+                  <p>Sends those inputs to the connected device.</p>
+                </article>
+              </div>
+            </div>
+          </section>
+
+          <section className="connection-section content-width">
+            <div className="section-heading">
+              <div>
+                <span className="eyebrow">The connection</span>
+                <h2>
+                  From a small gesture
+                  <br />
+                  to an action in view.
+                </h2>
+              </div>
+              <p>
+                Our integration direction connects ring input to spatial
+                applications through a phone-side software layer. Device support
+                will be confirmed through testing.
+              </p>
+            </div>
+            <ol className="connection-flow">
+              <li>
+                <span className="step-index">01</span>
+                <h3>SynoRing</h3>
+                <p>Touch and motion input</p>
+              </li>
+              <li>
+                <span className="step-index">02</span>
+                <h3>Software layer</h3>
+                <p>Interpret and map gestures</p>
+              </li>
+              <li>
+                <span className="step-index">03</span>
+                <h3>Your AR app</h3>
+                <p>Select, scroll, and adjust</p>
+              </li>
+            </ol>
+          </section>
+
+          <section className="home-developer content-width">
+            <div>
+              <span className="eyebrow">For developers</span>
+              <h2>
+                Your app.
+                <br />A new way in.
+              </h2>
+              <p>
+                Building a spatial reader, a media interface, or something we
+                have not imagined? Help shape how ring input fits your
+                application.
+              </p>
+              <ArrowLink href="/developers">Build with SynoRing</ArrowLink>
+            </div>
+            <div className="mapping-preview">
+              <div>
+                <strong>Tap</strong>
+                <span>Select a track</span>
+              </div>
+              <div>
+                <strong>Glide</strong>
+                <span>Move through a page</span>
+              </div>
+              <div>
+                <strong>Circle</strong>
+                <span>Bring a map closer</span>
+              </div>
+              <p>Your context defines the action.</p>
+            </div>
+          </section>
+
+          <section className="closing-section" id="early-access">
+            <div className="closing-copy">
+              <h2>
+                Get closer to
+                <br />
+                the first SynoRing.
+              </h2>
+              <p>
+                Follow product progress, developer pilots, and launch updates.
+              </p>
+              <a className="button button-dark" href={earlyAccessEmail}>
+                Request early access
+              </a>
+            </div>
+            <div className="closing-art">
+              <ProductVisual slot="closing" />
+            </div>
+          </section>
+
+          <section className="faq-section content-width" id="faq">
+            <h2>A little more to know.</h2>
+            <div className="faq-list">
+              <details id="progress">
+                <summary>
+                  When can I get SynoRing? <PlusIcon />
+                </summary>
+                <p>
+                  Early means early. We are refining the interaction prototype,
+                  with developer pilots and production validation to follow.
+                  Join early access for updates; we are not taking deposits.
+                  <Note number={2} />
+                  <Note number={4} />
+                </p>
+              </details>
+              <details>
+                <summary>
+                  Which AR glasses will it work with? <PlusIcon />
+                </summary>
+                <p>
+                  Compatibility is being explored. Our direction is a phone-side
+                  SDK that connects with AR ecosystems. Supported devices will
+                  be announced after validation.
+                </p>
+              </details>
+              <details>
+                <summary>
+                  Can I get involved as a developer? <PlusIcon />
+                </summary>
+                <p>
+                  We would love to hear from people building spatial interfaces.{" "}
+                  <a href={earlyAccessEmail}>
+                    Tell us what you are working on.
+                  </a>
+                </p>
+              </details>
+            </div>
+          </section>
+        </main>
+        <SiteFooter />
       </div>
     </>
   );

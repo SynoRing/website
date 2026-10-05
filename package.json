@@ -10,7 +10,7 @@
     "build": "next build",
     "vercel-build": "next build",
     "start": "next start",
-    "test": "npm run build && node --test tests/rendered-html.test.mjs"
+    "test": "npm run build && node --test tests/*.test.mjs"
   },
   "dependencies": {
     "next": "16.2.6",

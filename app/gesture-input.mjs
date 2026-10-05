@@ -1,0 +1,288 @@
+/** @typedef {{ x: number, y: number, time?: number }} GesturePoint */
+
+/**
+ * Recognize a near-complete circle in screen coordinates (positive Y is down).
+ * Reject small jitter, straight swipes, open arcs, and backtracking scribbles.
+ * @param {GesturePoint[]} points
+ * @returns {"clockwise" | "counterclockwise" | null}
+ */
+export function detectCircle(points) {
+  if (points.length < 18) return null;
+  // A closed path that cancels its own area is a scribble, not a rotation.
+  const extentX =
+    Math.max(...points.map((p) => p.x)) - Math.min(...points.map((p) => p.x));
+  const extentY =
+    Math.max(...points.map((p) => p.y)) - Math.min(...points.map((p) => p.y));
+  const endpointGap = Math.hypot(
+    points[0].x - points[points.length - 1].x,
+    points[0].y - points[points.length - 1].y,
+  );
+  const area =
+    points.reduce((sum, point, index) => {
+      const next = points[(index + 1) % points.length];
+      return sum + point.x * next.y - next.x * point.y;
+    }, 0) / 2;
+  if (
+    endpointGap < Math.min(extentX, extentY) * 0.4 &&
+    Math.abs(area) < extentX * extentY * 0.25
+  )
+    return null;
+  for (let start = 0; start <= points.length - 18; start += 3) {
+    const loop = points.slice(start);
+    const xs = loop.map((p) => p.x);
+    const ys = loop.map((p) => p.y);
+    const width = Math.max(...xs) - Math.min(...xs);
+    const height = Math.max(...ys) - Math.min(...ys);
+    if (
+      width < 54 ||
+      height < 54 ||
+      width / height < 0.48 ||
+      width / height > 2.1
+    )
+      continue;
+    const cx = (Math.min(...xs) + Math.max(...xs)) / 2;
+    const cy = (Math.min(...ys) + Math.max(...ys)) / 2;
+    const first = loop[0];
+    const last = loop[loop.length - 1];
+    if (
+      Math.hypot(first.x - last.x, first.y - last.y) >
+      Math.min(width, height) * 0.42
+    )
+      continue;
+    let signedTurn = 0;
+    let totalTurn = 0;
+    let pathLength = 0;
+    for (let i = 1; i < loop.length; i++) {
+      const before = loop[i - 1];
+      const point = loop[i];
+      let delta =
+        Math.atan2(point.y - cy, point.x - cx) -
+        Math.atan2(before.y - cy, before.x - cx);
+      if (delta > Math.PI) delta -= Math.PI * 2;
+      if (delta < -Math.PI) delta += Math.PI * 2;
+      signedTurn += delta;
+      totalTurn += Math.abs(delta);
+      pathLength += Math.hypot(point.x - before.x, point.y - before.y);
+    }
+    const radii = loop.map((p) =>
+      Math.hypot((p.x - cx) / width, (p.y - cy) / height),
+    );
+    const mean = radii.reduce((sum, radius) => sum + radius, 0) / radii.length;
+    const variation =
+      Math.sqrt(
+        radii.reduce((sum, radius) => sum + (radius - mean) ** 2, 0) /
+          radii.length,
+      ) / mean;
+    if (
+      pathLength < 170 ||
+      Math.abs(signedTurn) < Math.PI * 1.72 ||
+      Math.abs(signedTurn) > Math.PI * 2.7 ||
+      Math.abs(signedTurn) / totalTurn < 0.88 ||
+      variation > 0.27
+    )
+      continue;
+    return signedTurn > 0 ? "clockwise" : "counterclockwise";
+  }
+  return null;
+}
+
+/** @param {number} delta @param {number} mode @param {number} pageHeight */
+export function wheelPixels(delta, mode, pageHeight) {
+  return delta * (mode === 1 ? 16 : mode === 2 ? pageHeight : 1);
+}
+
+export const sceneNames = /** @type {const} */ ([
+  "music",
+  "reading",
+  "navigation",
+]);
+export const tracks = [
+  { title: "Open spaces", artist: "Morning collection", duration: "3:42" },
+  { title: "A slower morning", artist: "Morning collection", duration: "4:08" },
+  { title: "Room to breathe", artist: "Morning collection", duration: "3:16" },
+  { title: "Soft focus", artist: "Evening collection", duration: "2:54" },
+  { title: "Homeward", artist: "Evening collection", duration: "4:21" },
+];
+export const waypoints = [
+  {
+    title: "Riverside path",
+    instruction: "Follow the river",
+    distance: "350 m",
+    x: 100,
+    y: 275,
+  },
+  {
+    title: "Garden bridge",
+    instruction: "Turn right at the bridge",
+    distance: "180 m",
+    x: 205,
+    y: 235,
+  },
+  {
+    title: "Willow grove",
+    instruction: "Continue through the grove",
+    distance: "240 m",
+    x: 305,
+    y: 145,
+  },
+  {
+    title: "The lookout",
+    instruction: "You’ve reached the lookout",
+    distance: "Destination",
+    x: 420,
+    y: 90,
+  },
+];
+
+export const initialDemoState = {
+  scene: /** @type {"music" | "reading" | "navigation"} */ ("music"),
+  selectedTrack: 0,
+  activeTrack: 0,
+  playing: false,
+  volume: 50,
+  readingProgress: 0,
+  textScale: 1,
+  saved: false,
+  waypoint: 0,
+  zoom: 1,
+  navigating: false,
+  launcher: false,
+  feedback: "Your cursor is the ring. Try scrolling the playlist.",
+};
+/** @typedef {typeof initialDemoState} DemoState */
+/** @typedef {{type:"scene", scene:DemoState["scene"]} | {type:"slide", amount:number} | {type:"rotate", direction:1|-1} | {type:"select"} | {type:"track", index:number} | {type:"waypoint", index:number} | {type:"launcher", open:boolean} | {type:"reset"}} DemoAction */
+const clamp = (
+  /** @type {number} */ value,
+  /** @type {number} */ min,
+  /** @type {number} */ max,
+) => Math.max(min, Math.min(max, value));
+
+/** @param {DemoState} state @param {DemoAction} action @returns {DemoState} */
+export function demoReducer(state, action) {
+  switch (action.type) {
+    case "reset":
+      return { ...initialDemoState };
+    case "scene":
+      return {
+        ...state,
+        scene: action.scene,
+        launcher: false,
+        feedback:
+          action.scene === "music"
+            ? "Scroll to browse. Click to play."
+            : action.scene === "reading"
+              ? "Scroll to read. Draw a circle to resize the text."
+              : "Scroll through stops. Draw a circle to zoom.",
+      };
+    case "launcher":
+      return {
+        ...state,
+        launcher: action.open,
+        feedback: action.open
+          ? "Apps open · Choose a scene."
+          : "Back to your view.",
+      };
+    case "slide": {
+      if (state.launcher) return state;
+      if (state.scene === "music")
+        return {
+          ...state,
+          selectedTrack: clamp(
+            state.selectedTrack + Math.sign(action.amount),
+            0,
+            tracks.length - 1,
+          ),
+          feedback: "Touch glide · Browsing your playlist",
+        };
+      if (state.scene === "reading")
+        return {
+          ...state,
+          readingProgress: clamp(state.readingProgress + action.amount, 0, 100),
+          feedback: "Touch glide · Moving through the page",
+        };
+      return {
+        ...state,
+        waypoint: clamp(
+          state.waypoint + Math.sign(action.amount),
+          0,
+          waypoints.length - 1,
+        ),
+        feedback: "Touch glide · Exploring the route",
+      };
+    }
+    case "rotate": {
+      if (state.launcher) return state;
+      const direction = action.direction > 0 ? "Clockwise" : "Counterclockwise";
+      if (state.scene === "music")
+        return {
+          ...state,
+          volume: clamp(state.volume + action.direction * 10, 0, 100),
+          feedback: `${direction} · Volume ${action.direction > 0 ? "up" : "down"}`,
+        };
+      if (state.scene === "reading")
+        return {
+          ...state,
+          textScale:
+            Math.round(
+              clamp(state.textScale + action.direction * 0.1, 0.8, 1.6) * 10,
+            ) / 10,
+          feedback: `${direction} · ${action.direction > 0 ? "Larger" : "Smaller"} text`,
+        };
+      return {
+        ...state,
+        zoom:
+          Math.round(
+            clamp(state.zoom + action.direction * 0.25, 0.75, 2.5) * 100,
+          ) / 100,
+        feedback: `${direction} · Zoom ${action.direction > 0 ? "in" : "out"}`,
+      };
+    }
+    case "track":
+      return {
+        ...state,
+        selectedTrack: action.index,
+        activeTrack: action.index,
+        playing: true,
+        feedback: `Tap · ${tracks[action.index].title} selected`,
+      };
+    case "waypoint":
+      return {
+        ...state,
+        waypoint: action.index,
+        navigating: true,
+        feedback: `Tap · Heading to ${waypoints[action.index].title}`,
+      };
+    case "select": {
+      if (state.launcher) return state;
+      if (state.scene === "music") {
+        const playing =
+          state.selectedTrack !== state.activeTrack || !state.playing;
+        return {
+          ...state,
+          activeTrack: state.selectedTrack,
+          playing,
+          feedback: playing
+            ? `Tap · Playing ${tracks[state.selectedTrack].title}`
+            : "Tap · Playback paused",
+        };
+      }
+      if (state.scene === "reading")
+        return {
+          ...state,
+          saved: !state.saved,
+          feedback: state.saved
+            ? "Tap · Bookmark removed"
+            : "Tap · Page bookmarked",
+        };
+      return {
+        ...state,
+        navigating: !state.navigating,
+        feedback: state.navigating
+          ? "Tap · Navigation paused"
+          : `Tap · Heading to ${waypoints[state.waypoint].title}`,
+      };
+    }
+    default:
+      return state;
+  }
+}

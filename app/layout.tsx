@@ -1,6 +1,19 @@
 import type { Metadata, Viewport } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import "./pages.css";
 import { site } from "./site";
+
+const geist = Geist({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
+});
+const geistMono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -70,7 +83,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang={site.language}>
+    <html
+      lang={site.language}
+      className={`${geist.variable} ${geistMono.variable}`}
+    >
       <body>{children}</body>
     </html>
   );
