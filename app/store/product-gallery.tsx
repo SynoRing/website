@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { RingVisual, ExplodedVisual, productMedia } from "../product-visual";
+import { RingVisual, circuitView } from "../product-visual";
 import { finishes, storeRenders, type Finish } from "./product";
 export function ProductGallery({ finish }: { finish: Finish }) {
   const [view, setView] = useState("product");
@@ -17,7 +17,7 @@ export function ProductGallery({ finish }: { finish: Finish }) {
         aria-label={
           view === "product"
             ? `${name} product concept`
-            : "Exploded assembly concept"
+            : "Inside SynoRing: flexible circuit and battery"
         }
       >
         {view === "product" ? (
@@ -31,14 +31,13 @@ export function ProductGallery({ finish }: { finish: Finish }) {
           ) : (
             <RingVisual finish={finish} />
           )
-        ) : productMedia.exploded ? (
-          <img
-            src={productMedia.exploded.src}
-            srcSet={productMedia.exploded.srcSet}
-            alt={productMedia.exploded.alt}
-          />
         ) : (
-          <ExplodedVisual />
+          <img
+            src={circuitView.src}
+            srcSet={circuitView.srcSet}
+            sizes="(max-width: 760px) 80vw, 440px"
+            alt={circuitView.alt}
+          />
         )}
       </div>
       <div className="gallery-finish" aria-live="polite">

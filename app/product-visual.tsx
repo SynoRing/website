@@ -28,19 +28,32 @@ export const ringFrontView = {
   height: 1542,
 };
 
+/** The V2 vertical exploded view (800 × 2410 crop): shell, circuit, battery,
+    and inner band, top to bottom. `y` is each layer's centre as a share of
+    the image height, used to place the callouts. */
+export const explodedView = {
+  src: "/images/synoring-exploded-800.webp",
+  srcSet: "/images/synoring-exploded-400.webp 400w, /images/synoring-exploded-800.webp 800w",
+  width: 800,
+  height: 2410,
+  layers: { shell: 12.9, circuit: 37.4, battery: 66.0, band: 86.6 },
+};
+
+/** The flexible circuit and arc battery shown together (square crop). */
+export const circuitView: MediaImage = {
+  src: "/images/synoring-circuit-1200.webp",
+  srcSet: "/images/synoring-circuit-600.webp 600w, /images/synoring-circuit-1200.webp 1200w",
+  alt: "SynoRing flexible circuit wrapped around its arc battery",
+};
+
 /** A null slot keeps its drawn placeholder. */
-export const productMedia: Record<
-  "detail" | "lifestyle" | "exploded",
-  MediaImage | null
-> = {
+export const productMedia: Record<"detail" | "lifestyle", MediaImage | null> = {
   detail: ringRenders["rose-gold"],
   lifestyle: null,
-  exploded: null,
 };
 const mediaSizes: Record<keyof typeof productMedia, string> = {
   detail: "300px",
   lifestyle: "100vw",
-  exploded: "(max-width: 760px) 100vw, 720px",
 };
 
 type RingFinish = "space-gray" | "platinum" | "rose-gold" | "gold";
@@ -258,149 +271,5 @@ export function ProductVisual({
     />
   ) : (
     <RingVisual className={className} />
-  );
-}
-
-/** An intentionally schematic assembly placeholder, replaced by productMedia.exploded. */
-export function ExplodedVisual() {
-  const id = useId().replace(/:/g, "");
-  const annulus =
-    "M300 0C400 0 470 32 470 72C470 112 400 144 300 144C200 144 130 112 130 72C130 32 200 0 300 0ZM300 26C220 26 170 47 170 72C170 97 220 118 300 118C380 118 430 97 430 72C430 47 380 26 300 26Z";
-  return (
-    <svg
-      className="exploded-visual"
-      viewBox="0 0 600 670"
-      role="img"
-      aria-label="Schematic exploded view of a ring enclosure, touch layer, electronics, and inner liner"
-    >
-      <defs>
-        <linearGradient
-          id={`${id}-metal`}
-          x1="130"
-          y1="0"
-          x2="470"
-          y2="130"
-          gradientUnits="userSpaceOnUse"
-        >
-          <stop stopColor="#48514e" />
-          <stop offset=".2" stopColor="#bdc5bf" />
-          <stop offset=".43" stopColor="#f0f3ec" />
-          <stop offset=".6" stopColor="#a0aaa3" />
-          <stop offset=".83" stopColor="#404c47" />
-          <stop offset="1" stopColor="#a8b3a9" />
-        </linearGradient>
-        <linearGradient
-          id={`${id}-edge`}
-          x1="130"
-          y1="0"
-          x2="470"
-          y2="0"
-          gradientUnits="userSpaceOnUse"
-        >
-          <stop stopColor="#3b4741" />
-          <stop offset=".5" stopColor="#8f9e91" />
-          <stop offset="1" stopColor="#293c31" />
-        </linearGradient>
-      </defs>
-      <g stroke="#c8d1c4" strokeDasharray="3 9" strokeWidth="1">
-        <path d="M163 109L163 530M437 109L437 530" />
-      </g>
-      <g transform="translate(0 35)">
-        <path
-          d="M130 72V110C130 150 200 182 300 182C400 182 470 150 470 110V72C470 112 400 144 300 144C200 144 130 112 130 72Z"
-          fill={`url(#${id}-edge)`}
-        />
-        <path d={annulus} fill={`url(#${id}-metal)`} fillRule="evenodd" />
-        <ellipse
-          cx="300"
-          cy="72"
-          rx="130"
-          ry="46"
-          fill="none"
-          stroke="#f0f4e9"
-          strokeOpacity=".6"
-        />
-        <path
-          d="M269 165L330 165"
-          stroke="#bfceaa"
-          strokeWidth="3"
-          strokeLinecap="round"
-        />
-      </g>
-      <g transform="translate(0 205)">
-        <path d={annulus} fill="#b9c4ad" fillRule="evenodd" />
-        <path d={annulus} stroke="#e4e8d7" strokeWidth="2" fill="none" />
-        <path
-          d="M171 93C210 131 370 137 431 91"
-          fill="none"
-          stroke="#f1eee0"
-          strokeWidth="8"
-          strokeDasharray="8 10"
-        />
-        <path
-          d="M185 31C250 1 366 13 417 40"
-          fill="none"
-          stroke="#798e6c"
-          strokeWidth="2"
-        />
-      </g>
-      <g transform="translate(0 350)">
-        <path d={annulus} fill="#384e3c" fillRule="evenodd" />
-        <path
-          d="M160 84C170 126 414 150 445 82M165 53C213 14 383 16 437 52"
-          stroke="#9db178"
-          strokeWidth="2"
-          fill="none"
-        />
-        <rect
-          x="265"
-          y="115"
-          width="65"
-          height="30"
-          rx="3"
-          fill="#202e27"
-          stroke="#a6b58e"
-        />
-        <rect
-          x="148"
-          y="65"
-          width="30"
-          height="24"
-          rx="2"
-          fill="#929d80"
-          transform="rotate(15 163 77)"
-        />
-        <rect
-          x="406"
-          y="88"
-          width="30"
-          height="17"
-          rx="2"
-          fill="#c5c9a1"
-          transform="rotate(-20 421 96)"
-        />
-        <g fill="#b3bc90">
-          {[210, 230, 353, 373].map((x) => (
-            <rect key={x} x={x} y="122" width="8" height="9" rx="1" />
-          ))}
-        </g>
-      </g>
-      <g transform="translate(0 495)">
-        <path
-          d="M130 72V86C130 126 200 158 300 158C400 158 470 126 470 86V72C470 112 400 144 300 144C200 144 130 112 130 72Z"
-          fill="#7b8b7e"
-        />
-        <path d={annulus} fill={`url(#${id}-metal)`} fillRule="evenodd" />
-        <ellipse
-          cx="300"
-          cy="72"
-          rx="130"
-          ry="46"
-          fill="none"
-          stroke="#d2dbcb"
-          strokeWidth="3"
-        />
-      </g>
-    </svg>
   );
 }

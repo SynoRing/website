@@ -44,12 +44,17 @@ store finishes, and `productMedia` assigns them to page slots:
 
 - `detail`: Rose Gold in the product introduction.
 - `lifestyle`: none yet; the section stays hidden until an image is supplied.
-- `exploded`: none yet; the schematic assembly drawing is shown instead.
 
 The homepage opening screen uses the Space Gray front orthographic view
 (`synoring-front-*.webp`, `ringFrontView`), cropped so the bore centre is the
 image centre. It is sized from the height left under the headline and centred
 on the hero's bottom edge, so only the upper half of the ring shows.
+The technology section uses the V2 vertical exploded view
+(`synoring-exploded-*.webp`, `explodedView`): ceramic shell, flexible circuit,
+arc battery, and steel inner band. Each callout sits at its layer's centre,
+given in `explodedView.layers` as a percentage of the image height. Re-measure
+those if the image is re-rendered. The store's "Inside SynoRing" view shows the
+circuit wrapped around the battery (`synoring-circuit-*.webp`).
 The early-access section lines up all four finishes. The renders carry no
 background or shadow; the `--render-shadow` token in `app/globals.css`
 grounds them on whatever section they sit on. A `null` slot keeps its drawn

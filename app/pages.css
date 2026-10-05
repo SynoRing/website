@@ -484,10 +484,6 @@
   transform: rotate(-18deg);
   filter: drop-shadow(18px 30px 14px #22332a24);
 }
-.store-product-art > .exploded-visual {
-  width: 90%;
-  height: 415px;
-}
 .store-product-art > img {
   width: 100%;
   height: 420px;
@@ -1289,7 +1285,6 @@
     width: 305px;
     height: 290px;
   }
-  .store-product-art > .exploded-visual,
   .store-product-art > img {
     height: 290px;
   }

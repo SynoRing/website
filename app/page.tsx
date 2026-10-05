@@ -2,7 +2,7 @@ import { site } from "./site";
 import { SiteHeader, SiteFooter, Note, ArrowLink } from "./site-components";
 import {
   ProductVisual,
-  ExplodedVisual,
+  explodedView,
   productMedia,
   ringFrontView,
   ringRenders,
@@ -63,6 +63,33 @@ const structuredData = {
     },
   ],
 };
+
+const explodedLayers = [
+  {
+    id: "shell",
+    side: "left",
+    title: "Ceramic shell",
+    text: "A thin glazed shell. Six touch points line its outer face, right over the electrodes.",
+  },
+  {
+    id: "circuit",
+    side: "right",
+    title: "Flexible circuit",
+    text: "A translucent C-shaped board with six outward-facing electrodes and the electronics for motion sensing, gesture processing, and wireless connection.",
+  },
+  {
+    id: "battery",
+    side: "left",
+    title: "Arc battery",
+    text: "A curved cell that sits just inside the touch area.",
+  },
+  {
+    id: "band",
+    side: "right",
+    title: "Steel inner band",
+    text: "One piece of stainless steel. Its rims form the ring's two steel edges.",
+  },
+] as const;
 
 export default function Home() {
   return (
@@ -323,45 +350,48 @@ export default function Home() {
               </h2>
               <p>Sensors read your movement. Touch gives it intent.</p>
             </div>
-            <div className="exploded-layout">
-              <div className="exploded-notes">
-                <article>
-                  <h3>Touch input</h3>
-                  <p>A surface for your thumb to tap, hold, and glide.</p>
-                </article>
-                <article>
-                  <h3>Motion sensing</h3>
-                  <p>Reads movement and rotation of the ring-bearing finger.</p>
-                </article>
+            <figure className="exploded-stage">
+              <div className="exploded-art">
+                <img
+                  className="exploded-image"
+                  src={explodedView.src}
+                  srcSet={explodedView.srcSet}
+                  sizes="(max-width: 760px) 220px, 320px"
+                  width={explodedView.width}
+                  height={explodedView.height}
+                  loading="lazy"
+                  decoding="async"
+                  alt="SynoRing exploded view: ceramic shell, flexible circuit, arc battery, and steel inner band"
+                />
+                {explodedLayers.map((layer, index) => (
+                  <span
+                    key={layer.id}
+                    className={`exploded-marker side-${layer.side}`}
+                    style={{ top: `${explodedView.layers[layer.id]}%` }}
+                    aria-hidden="true"
+                  >
+                    {index + 1}
+                  </span>
+                ))}
               </div>
-              <figure className="exploded-art">
-                {productMedia.exploded ? (
-                  <img
-                    src={productMedia.exploded.src}
-                    srcSet={productMedia.exploded.srcSet}
-                    alt={productMedia.exploded.alt}
-                    loading="lazy"
-                    decoding="async"
-                  />
-                ) : (
-                  <ExplodedVisual />
-                )}
-                <figcaption>
-                  Illustrative assembly
-                  <Note number={3} />
-                </figcaption>
-              </figure>
-              <div className="exploded-notes">
-                <article>
-                  <h3>Gesture processing</h3>
-                  <p>Brings sensing signals together into control inputs.</p>
-                </article>
-                <article>
-                  <h3>Wireless connection</h3>
-                  <p>Sends those inputs to the connected device.</p>
-                </article>
-              </div>
-            </div>
+              <ol className="exploded-callouts">
+                {explodedLayers.map((layer, index) => (
+                  <li
+                    key={layer.id}
+                    className={`side-${layer.side}`}
+                    style={{ top: `${explodedView.layers[layer.id]}%` }}
+                  >
+                    <span className="exploded-index">0{index + 1}</span>
+                    <h3>{layer.title}</h3>
+                    <p>{layer.text}</p>
+                  </li>
+                ))}
+              </ol>
+              <figcaption>
+                Illustrative exploded view. Parts are separated for clarity.
+                <Note number={3} />
+              </figcaption>
+            </figure>
           </section>
 
           <section className="connection-section content-width">
