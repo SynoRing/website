@@ -167,8 +167,9 @@ export default function Home() {
             >
               <div className="lifestyle-media">
                 <img
-                  src={productMedia.lifestyle}
-                  alt="Using SynoRing to control AR glasses with a relaxed hand"
+                  src={productMedia.lifestyle.src}
+                  srcSet={productMedia.lifestyle.srcSet}
+                  alt={productMedia.lifestyle.alt}
                   loading="lazy"
                   decoding="async"
                 />
@@ -319,8 +320,9 @@ export default function Home() {
               <figure className="exploded-art">
                 {productMedia.exploded ? (
                   <img
-                    src={productMedia.exploded}
-                    alt="SynoRing exploded component view"
+                    src={productMedia.exploded.src}
+                    srcSet={productMedia.exploded.srcSet}
+                    alt={productMedia.exploded.alt}
                     loading="lazy"
                     decoding="async"
                   />
@@ -421,7 +423,7 @@ export default function Home() {
               <p>
                 Follow product progress, developer pilots, and launch updates.
               </p>
-              <a className="button button-dark" href={earlyAccessEmail}>
+              <a className="button" href={earlyAccessEmail}>
                 Request early access
               </a>
             </div>

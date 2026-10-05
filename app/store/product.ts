@@ -1,3 +1,5 @@
+import { studioRenders, type MediaImage } from "../product-visual";
+
 export const finishes = [
   {
     id: "space-gray",
@@ -23,9 +25,4 @@ export const finishes = [
 export type Finish = (typeof finishes)[number]["id"];
 export const preorderPrice = 99;
 export const regularPrice = 129;
-export const storeRenders: Record<Finish, string | null> = {
-  "space-gray": null,
-  platinum: null,
-  "rose-gold": null,
-  gold: null,
-};
+export const storeRenders: Record<Finish, MediaImage | null> = studioRenders;

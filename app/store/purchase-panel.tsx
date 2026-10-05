@@ -3,7 +3,13 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { ProductGallery } from "./product-gallery";
 import { RingVisual } from "../product-visual";
-import { finishes, preorderPrice, regularPrice, type Finish } from "./product";
+import {
+  finishes,
+  preorderPrice,
+  regularPrice,
+  storeRenders,
+  type Finish,
+} from "./product";
 import { CloseIcon, MinusIcon, PlusIcon } from "../icons";
 
 export function PurchasePanel() {
@@ -131,6 +137,7 @@ function PreorderReview({
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const name = finishes.find((item) => item.id === finish)!.name;
+  const render = storeRenders[finish];
   const total = preorderPrice * quantity;
   const email = `mailto:hello@synoring.com?subject=${encodeURIComponent(`SynoRing Pre-order — ${name}`)}&body=${encodeURIComponent(`Hi SynoRing team,\n\nI would like to enquire about this pre-order:\n\nProduct: SynoRing\nFinish: ${name}\nQuantity: ${quantity}\nPre-order unit price: $${preorderPrice} USD (regular $${regularPrice} USD)\nProduct subtotal: $${total} USD\n\nPlease confirm availability, sizing, shipping, taxes, and payment arrangements.\n\nName:\nCountry / region:\n`)}`;
   useEffect(() => {
@@ -174,7 +181,11 @@ function PreorderReview({
       <h2 id="preorder-review-title">Your SynoRing.</h2>
       <div className="review-product">
         <div>
-          <RingVisual finish={finish} />
+          {render ? (
+            <img src={render.src} srcSet={render.srcSet} sizes="104px" alt="" />
+          ) : (
+            <RingVisual finish={finish} />
+          )}
         </div>
         <div>
           <h3>SynoRing</h3>

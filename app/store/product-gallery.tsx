@@ -8,7 +8,7 @@ export function ProductGallery({ finish }: { finish: Finish }) {
   const render = storeRenders[finish];
   return (
     <div
-      className={`store-gallery preorder-gallery finish-${finish} ${view === "assembly" ? "assembly-view" : ""}`}
+      className={`store-gallery preorder-gallery finish-${finish}${view === "product" && render ? " has-render" : ""}`}
     >
       <div
         className="store-product-art"
@@ -22,12 +22,21 @@ export function ProductGallery({ finish }: { finish: Finish }) {
       >
         {view === "product" ? (
           render ? (
-            <img src={render} alt={`SynoRing in ${name}`} />
+            <img
+              src={render.src}
+              srcSet={render.srcSet}
+              sizes="(max-width: 760px) 90vw, 560px"
+              alt={render.alt}
+            />
           ) : (
             <RingVisual finish={finish} />
           )
         ) : productMedia.exploded ? (
-          <img src={productMedia.exploded} alt="SynoRing exploded assembly" />
+          <img
+            src={productMedia.exploded.src}
+            srcSet={productMedia.exploded.srcSet}
+            alt={productMedia.exploded.alt}
+          />
         ) : (
           <ExplodedVisual />
         )}

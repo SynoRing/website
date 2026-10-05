@@ -1,15 +1,39 @@
 import { useId } from "react";
 
-/** Replace a slot's null value with a /public image URL when final renders arrive. */
+export type MediaImage = { src: string; srcSet?: string; alt: string };
+
+/** V11 studio renders, exported square at 800 and 1600 px on the gray sweep. */
+function studioRender(file: string, finish: string): MediaImage {
+  return {
+    src: `/images/synoring-${file}-1600.webp`,
+    srcSet: `/images/synoring-${file}-800.webp 800w, /images/synoring-${file}-1600.webp 1600w`,
+    alt: `SynoRing in ${finish}`,
+  };
+}
+export const studioRenders = {
+  "space-gray": studioRender("graphite", "Space Gray"),
+  platinum: studioRender("platinum", "Platinum"),
+  "rose-gold": studioRender("rose-gold", "Rose Gold"),
+  gold: studioRender("yellow-gold", "Gold"),
+};
+
+/** A null slot keeps its drawn placeholder. */
 export const productMedia: Record<
   "hero" | "detail" | "lifestyle" | "closing" | "exploded",
-  string | null
+  MediaImage | null
 > = {
-  hero: null,
-  detail: null,
+  hero: studioRenders["space-gray"],
+  detail: studioRenders["rose-gold"],
   lifestyle: null,
-  closing: null,
+  closing: studioRenders.platinum,
   exploded: null,
+};
+const mediaSizes: Record<keyof typeof productMedia, string> = {
+  hero: "(max-width: 760px) 140vw, 900px",
+  detail: "360px",
+  lifestyle: "100vw",
+  closing: "(max-width: 760px) 140vw, 640px",
+  exploded: "(max-width: 760px) 100vw, 720px",
 };
 
 type RingFinish = "space-gray" | "platinum" | "rose-gold" | "gold";
@@ -212,14 +236,18 @@ export function ProductVisual({
   slot: keyof typeof productMedia;
   className?: string;
 }) {
-  const src = productMedia[slot];
-  return src ? (
+  const media = productMedia[slot];
+  return media ? (
     <img
       className={`product-render ${className}`}
-      src={src}
+      src={media.src}
+      srcSet={media.srcSet}
+      sizes={mediaSizes[slot]}
+      width="1600"
+      height="1600"
       loading={slot === "hero" ? "eager" : "lazy"}
       decoding="async"
-      alt={`SynoRing ${slot === "lifestyle" ? "in everyday use" : "gesture controller concept"}`}
+      alt={media.alt}
     />
   ) : (
     <RingVisual className={className} />

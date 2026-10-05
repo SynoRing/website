@@ -433,9 +433,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-width: 0;
   min-height: 660px;
   height: 100%;
   padding: 32px 28px 28px;
+  overflow: hidden;
   border-radius: var(--radius);
   background: radial-gradient(
     ellipse at 40% 25%,
@@ -490,6 +492,37 @@
   width: 100%;
   height: 420px;
   object-fit: contain;
+}
+.store-gallery.has-render {
+  background: linear-gradient(
+    #5f666e,
+    var(--studio-top) 16%,
+    var(--studio-mid) 46%,
+    var(--studio-light) 68%,
+    var(--studio-floor)
+  );
+}
+.has-render .store-product-art > img {
+  width: auto;
+  max-width: none;
+  height: 480px;
+  aspect-ratio: 1;
+  -webkit-mask-image: radial-gradient(circle closest-side, #000 80%, transparent);
+  mask-image: radial-gradient(circle closest-side, #000 80%, transparent);
+}
+.has-render .gallery-finish {
+  color: var(--ink);
+}
+.has-render .gallery-finish > span,
+.store-gallery.has-render > p {
+  color: #343c37;
+}
+.has-render .gallery-switch {
+  border-color: #ffffff59;
+  background: #ffffff26;
+}
+.has-render .gallery-switch button {
+  color: var(--ink);
 }
 .gallery-finish {
   margin-bottom: 22px;
@@ -875,10 +908,17 @@
 .review-product > div:first-child {
   display: grid;
   place-items: center;
+  flex-shrink: 0;
   width: 104px;
   height: 104px;
+  overflow: hidden;
   border-radius: var(--radius-sm);
   background: var(--surface);
+}
+.review-product img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 .review-product .ring-visual {
   width: 92px;
@@ -1194,6 +1234,9 @@
   .store-product-art > .exploded-visual,
   .store-product-art > img {
     height: 290px;
+  }
+  .has-render .store-product-art > img {
+    height: 340px;
   }
   .gallery-finish {
     font-size: 21px;

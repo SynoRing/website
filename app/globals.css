@@ -14,6 +14,11 @@
   --on-dark: #f2f5ee;
   --on-dark-muted: #b5c3b0;
   --on-dark-line: #ffffff26;
+  /* The gray sweep behind the V11 studio renders. */
+  --studio-top: #6b727a;
+  --studio-mid: #8f959b;
+  --studio-light: #959ba1;
+  --studio-floor: #8e949a;
 
   --text-xs: 13px;
   --text-sm: 15px;
@@ -442,9 +447,13 @@ details[open] > summary > .icon {
   overflow: hidden;
   text-align: center;
   color: #fff;
-  background:
-    radial-gradient(ellipse at 50% 86%, #eff0ed 0%, transparent 60%),
-    linear-gradient(#34424e, #879197 63%, #dee1df);
+  background: linear-gradient(
+    #4b525a,
+    var(--studio-top) 42%,
+    var(--studio-mid) 66%,
+    var(--studio-light) 84%,
+    var(--studio-floor)
+  );
 }
 .hero-copy {
   position: relative;
@@ -483,14 +492,32 @@ details[open] > summary > .icon {
   filter: grayscale(0.6) drop-shadow(22px 26px 15px #28343228)
     drop-shadow(0 36px 30px #3c4a441c);
 }
-.hero-art > .product-render {
-  object-fit: contain;
-}
-.showcase-art > .product-render,
+/* Studio renders keep their gray sweep; a soft circular mask dissolves the
+   square edge into the matching section background. */
+.hero-art > .product-render,
 .closing-art > .product-render {
+  top: 50%;
+  left: 50%;
+  width: auto;
+  max-width: none;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  -webkit-mask-image: radial-gradient(circle closest-side, #000 80%, transparent);
+  mask-image: radial-gradient(circle closest-side, #000 80%, transparent);
+}
+.hero-art > .product-render {
+  height: min(122%, 125vw);
+  transform: translate(-50%, -54%);
+}
+.closing-art > .product-render {
+  position: absolute;
+  height: 128%;
+}
+.showcase-art > .product-render {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
+  border-radius: var(--radius);
 }
 /* Product introduction */
 .product-intro {
@@ -506,10 +533,10 @@ details[open] > summary > .icon {
   display: grid;
   grid-template-columns: 1fr 1.4fr 1fr;
   align-items: center;
-  gap: 40px;
-  max-width: 880px;
+  gap: 48px;
+  max-width: 920px;
   min-height: 265px;
-  margin: 8px auto 24px;
+  margin: 44px auto 48px;
 }
 .product-caption {
   text-align: left;
@@ -525,8 +552,8 @@ details[open] > summary > .icon {
 }
 .showcase-art {
   position: relative;
-  width: 320px;
-  height: 300px;
+  width: 340px;
+  height: 340px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1098,13 +1125,18 @@ details[open] > summary > .icon {
 /* Closing */
 .closing-section {
   position: relative;
-  height: 680px;
+  height: 730px;
   padding: 72px 20px 0;
   overflow: hidden;
   text-align: center;
-  background:
-    radial-gradient(ellipse at 50% 30%, #f2f5f3, transparent 65%),
-    linear-gradient(#e7edeb, #b6c5c1);
+  color: #fff;
+  background: linear-gradient(
+    #5b626a,
+    var(--studio-top) 34%,
+    var(--studio-mid) 62%,
+    var(--studio-light) 82%,
+    var(--studio-floor)
+  );
 }
 .closing-copy {
   position: relative;
@@ -1116,14 +1148,14 @@ details[open] > summary > .icon {
 .closing-copy > p {
   margin: 18px 0 28px;
   font-size: 18px;
-  color: #5f6e67;
+  color: #e6ebe8;
 }
 .closing-art {
   position: absolute;
-  top: 310px;
+  top: 330px;
   left: 50%;
   width: 480px;
-  height: 375px;
+  height: 380px;
   transform: translateX(-50%);
 }
 .closing-art > .ring-visual {
@@ -1625,7 +1657,7 @@ details[open] > summary > .icon {
     max-width: none;
   }
   .closing-section {
-    height: 620px;
+    height: 650px;
     padding-top: 56px;
   }
   .closing-copy h2 {
@@ -1888,14 +1920,15 @@ details[open] > summary > .icon {
     font-size: 14px;
   }
   .closing-section {
-    height: 600px;
+    height: 610px;
     padding-top: 48px;
   }
   .closing-copy h2 {
     font-size: 38px;
   }
   .closing-art {
-    top: 300px;
+    top: 296px;
+    height: 280px;
   }
   .faq-section > h2 {
     font-size: 30px;

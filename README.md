@@ -37,21 +37,22 @@ Next.js and runs the native Next.js production build.
 
 ## Product artwork
 
-The redesign uses the existing brand assets and lightweight SVG/CSS concept
-visuals until the final product renders are ready. Add the finished files to
-`public/images/`, then set their URLs in `productMedia` in
-`app/product-visual.tsx`:
+The V11 studio renders live in `public/images/` as square WebP files
+(`synoring-<finish>-800.webp` and `-1600.webp`), exported from the 1800 px
+masters on their gray sweep. `studioRenders` in `app/product-visual.tsx`
+maps them to the store finishes, and `productMedia` assigns them to page slots:
 
-- `hero`: transparent product render for the cool gray opening scene.
-- `detail`: transparent product close-up for the white product introduction.
-- `lifestyle`: wide lifestyle image; replaces the entire ambient placeholder.
-- `closing`: transparent product render for the early-access section.
-- `exploded`: transparent exploded-view render for the technology section.
+- `hero`: Space Gray (graphite) on the homepage opening screen.
+- `detail`: Rose Gold tile in the product introduction.
+- `closing`: Platinum in the early-access section.
+- `lifestyle`: none yet; the section stays hidden until an image is supplied.
+- `exploded`: none yet; the schematic assembly drawing is shown instead.
 
-A `null` product slot keeps its concept placeholder. The lifestyle section is
-hidden until an image is supplied; it no longer displays an empty scene.
-The exploded assembly is schematic and does not assert final component placement.
-Early access uses the existing prefilled email link.
+The hero, closing section, and store gallery use the same gray sweep as the
+renders (`--studio-*` tokens in `app/globals.css`), and a soft circular mask
+dissolves each square image into that background. A `null` slot keeps its
+drawn placeholder. The store gallery and pre-order review use the render for
+the selected finish (`storeRenders` in `app/store/product.ts`).
 
 ## AR experience
 
