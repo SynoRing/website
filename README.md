@@ -54,6 +54,12 @@ dissolves each square image into that background. A `null` slot keeps its
 drawn placeholder. The store gallery and pre-order review use the render for
 the selected finish (`storeRenders` in `app/store/product.ts`).
 
+The store's technical specifications open with a dimension drawing built
+from the V11 Space Gray orthographic renders (`synoring-view-front`, `-side`,
+`-top`; transparent 1000 px WebP). All three share one camera scale, so the
+18 mm and 8 mm dimension lines in `app/pages.css` are placed as percentages
+of the source frame. Re-measure them if the views are re-rendered.
+
 ## AR experience
 
 `app/ar-experience.tsx` contains the full-viewport modal and three simulated

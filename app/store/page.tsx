@@ -14,8 +14,10 @@ const specifications = [
     rows: [
       ["Product", "SynoRing wearable gesture controller"],
       ["Colors", "Space Gray · Platinum · Rose Gold · Gold"],
+      ["Band width", "8 mm"],
+      ["Inner diameter", "18 mm on the model shown"],
       ["Ring sizes", "To be announced"],
-      ["Dimensions & weight", "To be announced"],
+      ["Weight", "To be announced"],
       ["Materials", "To be announced"],
     ],
   },
@@ -66,6 +68,29 @@ const specifications = [
   },
 ];
 
+/* The V11 orthographic renders share one camera scale. Dimension lines are
+   placed in percent of the 1800 px source: the inner bore spans 341–1459 px
+   (18 mm) and the band 652–1148 px (8 mm). */
+const views = [
+  {
+    file: "front",
+    label: "Front",
+    alt: "SynoRing front view, 18 mm inner diameter",
+    dimension: { className: "dimension-bore", value: "18 mm" },
+  },
+  {
+    file: "side",
+    label: "Side",
+    alt: "SynoRing side view, 8 mm band width",
+    dimension: { className: "dimension-band", value: "8 mm" },
+  },
+  {
+    file: "top",
+    label: "Top · touch surface",
+    alt: "SynoRing top view of the touch surface and logo",
+  },
+];
+
 export default function StorePage() {
   return (
     <PageShell active="/store">
@@ -89,6 +114,36 @@ export default function StorePage() {
             unconfirmed details are marked below.
           </p>
         </div>
+        <figure className="dimension-drawing">
+          <div className="dimension-views">
+            {views.map((view) => (
+              <div className={`dimension-view view-${view.file}`} key={view.file}>
+                <div className="dimension-art">
+                  <img
+                    src={`/images/synoring-view-${view.file}.webp`}
+                    alt={view.alt}
+                    width="1000"
+                    height="1000"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  {view.dimension && (
+                    <span
+                      className={`dimension-line ${view.dimension.className}`}
+                      aria-hidden="true"
+                    >
+                      <span>{view.dimension.value}</span>
+                    </span>
+                  )}
+                </div>
+                <span className="dimension-label">{view.label}</span>
+              </div>
+            ))}
+          </div>
+          <figcaption>
+            Shown in Space Gray. All three views share one scale.
+          </figcaption>
+        </figure>
         <div className="specification-groups">
           {specifications.map((group, index) => (
             <section
