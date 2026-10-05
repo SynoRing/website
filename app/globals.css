@@ -493,9 +493,16 @@ details[open] > summary > .icon {
 .word-rotator > span.is-active {
   opacity: 1;
   transform: translate(-50%, 0);
+  transition:
+    opacity 0.32s ease 0.1s,
+    transform 0.55s var(--ease) 0.06s;
 }
+/* The outgoing word clears quickly so the two never overlap. */
 .word-rotator > span.is-leaving {
-  transform: translate(-50%, -0.42em);
+  transform: translate(-50%, -0.3em);
+  transition:
+    opacity 0.14s ease-out,
+    transform 0.3s ease-in;
 }
 /* Before measuring, the first word sits in the flow and sizes the slot. */
 .word-rotator:not(.is-ready) > span.is-active {
@@ -913,7 +920,7 @@ details[open] > summary > .icon {
   position: relative;
   max-width: 1080px;
   height: var(--art-h);
-  margin: 36px auto 52px;
+  margin: 36px auto 112px;
 }
 .exploded-art {
   position: absolute;
@@ -982,7 +989,7 @@ details[open] > summary > .icon {
 }
 .exploded-stage figcaption {
   position: absolute;
-  top: calc(100% + 18px);
+  top: calc(100% + 64px);
   left: 0;
   right: 0;
   text-align: center;
@@ -1641,7 +1648,7 @@ details[open] > summary > .icon {
   }
   .exploded-stage figcaption {
     position: static;
-    margin-top: 28px;
+    margin-top: 44px;
   }
   .demo-strip {
     grid-template-columns: 1fr;
