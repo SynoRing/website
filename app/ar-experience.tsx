@@ -23,14 +23,17 @@ import type { DemoAction, DemoState, GesturePoint } from "./gesture-input.mjs";
 import {
   AppsIcon,
   ArrowIcon,
+  CheckIcon,
   CircleIcon,
   CloseIcon,
   MusicIcon,
   NavigationIcon,
   PauseIcon,
   PlayIcon,
+  PlusIcon,
   ReadingIcon,
 } from "./icons";
+import { WorldScene } from "./world-scenes";
 import "./ar-experience.css";
 
 type Scene = DemoState["scene"];
@@ -50,29 +53,34 @@ const paragraphs = [
   "You have reached the end. Hold anywhere in the open view to bring up your apps, then try the same movements in music or navigation.",
 ];
 
+/** The ring's pointer: a green circle that fills its outer track while held. */
 function RingCursor() {
   return (
-    <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
-      <ellipse
-        cx="24"
-        cy="24"
-        rx="13"
-        ry="18"
-        transform="rotate(-32 24 24)"
-        stroke="#e7efdd"
-        strokeWidth="5"
+    <svg viewBox="0 0 56 56" fill="none" aria-hidden="true">
+      <circle className="cursor-hold-track" cx="28" cy="28" r="24" />
+      <circle
+        className="cursor-hold-progress"
+        cx="28"
+        cy="28"
+        r="24"
+        pathLength="1"
+        transform="rotate(-90 28 28)"
       />
-      <ellipse
-        cx="24"
-        cy="24"
-        rx="13"
-        ry="18"
-        transform="rotate(-32 24 24)"
-        stroke="#819884"
-        strokeWidth="1"
-      />
-      <circle cx="24" cy="24" r="2" fill="white" />
+      <circle className="cursor-ring" cx="28" cy="28" r="13" />
+      <circle className="cursor-dot" cx="28" cy="28" r="2.4" />
     </svg>
+  );
+}
+
+/** HUD corner marks show the edge of the glasses' display. */
+function HudCorners() {
+  return (
+    <span className="hud-corners" aria-hidden="true">
+      <i />
+      <i />
+      <i />
+      <i />
+    </span>
   );
 }
 
@@ -88,47 +96,29 @@ export function GestureExperience() {
   return (
     <>
       <div ref={card} className="ar-experience-card content-width">
-        <div className="ar-card-world" aria-hidden="true">
-          <div className="ar-room-window" />
-          <div className="ar-room-floor" />
-          <div className="ar-room-bench" />
-          <div className="ar-preview-pane">
-            <div className="ar-preview-cover">
-              <span>
-                OPEN
-                <br />
-                SPACES
-              </span>
-              <i />
-            </div>
-            <div className="ar-preview-track">
-              <span>Now playing</span>
-              <strong>Open spaces</strong>
-              <span>Morning collection</span>
-              <div className="ar-preview-bars">
-                {Array.from({ length: 20 }, (_, i) => (
-                  <i key={i} style={{ height: `${12 + ((i * 17) % 31)}px` }} />
-                ))}
-              </div>
-            </div>
-            <span className="ar-preview-play">
-              <PauseIcon />
-            </span>
-          </div>
-          <div className="ar-preview-dock">
-            <span>
+        <WorldScene active="music" className="ar-card-world" />
+        <div className="ar-card-hud" aria-hidden="true">
+          <HudCorners />
+          <div className="hud-head">
+            <span className="hud-app">
               <MusicIcon />
+              Music
             </span>
-            <span>
-              <ReadingIcon />
-            </span>
-            <span>
-              <NavigationIcon />
-            </span>
+            <span className="hud-meta">1 / 5</span>
           </div>
-          <div className="ar-preview-cursor">
-            <RingCursor />
-          </div>
+          <span className="hud-label">Now playing</span>
+          <strong>Open spaces</strong>
+          <span className="hud-sub">Morning collection</span>
+          <span className="hud-track">
+            <span>1:12</span>
+            <i>
+              <b style={{ width: "34%" }} />
+            </i>
+            <span>3:42</span>
+          </span>
+        </div>
+        <div className="ar-card-cursor" aria-hidden="true">
+          <RingCursor />
         </div>
         <div className="ar-card-copy">
           <h2>
@@ -456,18 +446,17 @@ function ARDemo({
       }}
       onKeyDown={keyboard}
     >
-      <div className="ar-environment" aria-hidden="true">
-        <div className="ar-room-window" />
-        <div className="ar-room-floor" />
-        <div className="ar-room-bench" />
-        <div className="ar-outdoor-hill" />
-        <div className="ar-outdoor-path" />
-      </div>
+      <WorldScene
+        active={state.scene}
+        scenes={["music", "reading", "navigation"]}
+        className="ar-environment"
+      />
       <header className="ar-demo-header">
         <div>
-          <img src="/logo.svg" alt="" width="27" height="27" />
+          <img src="/logo.svg" alt="" width="26" height="26" />
           <span id="ar-demo-title">
-            SynoRing <span className="ar-title-detail">/ AR experience</span>
+            SynoRing{" "}
+            <span className="ar-title-detail">/ Smart glasses demo</span>
           </span>
         </div>
         <nav className="ar-scene-switcher" aria-label="Demo scenes">
@@ -484,7 +473,7 @@ function ARDemo({
         <button
           className="ar-close"
           onClick={onClose}
-          aria-label="Close AR experience"
+          aria-label="Close the demo"
         >
           <CloseIcon />
           <span>Exit</span>
@@ -494,7 +483,7 @@ function ARDemo({
         ref={world}
         className="ar-world"
         role="region"
-        aria-label="AR interaction area"
+        aria-label="Smart glasses view"
         aria-describedby="ar-controls-hint"
         tabIndex={0}
         onPointerMove={move}
@@ -513,46 +502,39 @@ function ARDemo({
         }}
         onClickCapture={clickCapture}
       >
-        <div className="ar-lens" aria-hidden="true" />
-        <div className="ar-view-caption">
-          <span className="ar-live-dot" /> Your view through the glasses
-        </div>
         <div
-          className="ar-window"
+          className="ar-hud"
           key={state.scene}
           inert={state.launcher}
           aria-hidden={state.launcher}
         >
+          <HudCorners />
           {state.scene === "music" && (
             <>
-              <div className="ar-window-heading">
-                <span>Music</span>
-                <span>Demo playlist · silent playback</span>
+              <div className="hud-head">
+                <span className="hud-app">
+                  <MusicIcon />
+                  Music
+                </span>
+                <span className="hud-meta">Demo playlist · silent</span>
               </div>
-              <div className="ar-music-layout">
-                <div className="ar-now-playing">
-                  <div className={`ar-album ar-album-${state.activeTrack % 3}`}>
-                    <span>
-                      OPEN
-                      <br />
-                      SPACES
-                    </span>
-                    <i />
-                    <i />
-                    <i />
-                  </div>
+              <div className="hud-music">
+                <div className="hud-now">
+                  <span className="hud-label">
+                    {state.playing ? "Now playing" : "Paused"}
+                  </span>
                   <h3>{track.title}</h3>
                   <p>{track.artist}</p>
                   <div
-                    className={`ar-equalizer ${state.playing ? "is-playing" : ""}`}
+                    className={`hud-eq ${state.playing ? "is-playing" : ""}`}
                     aria-hidden="true"
                   >
-                    {Array.from({ length: 28 }, (_, i) => (
+                    {Array.from({ length: 24 }, (_, i) => (
                       <i
                         key={i}
                         style={
                           {
-                            "--bar-height": `${8 + ((i * 19) % 22)}px`,
+                            "--bar-height": `${6 + ((i * 19) % 20)}px`,
                             "--delay": `${i * 0.07}s`,
                           } as CSSProperties
                         }
@@ -560,7 +542,7 @@ function ARDemo({
                     ))}
                   </div>
                   <button
-                    className="ar-play"
+                    className="hud-round"
                     onClick={() => send({ type: "select" })}
                     aria-label={
                       state.playing
@@ -571,8 +553,7 @@ function ARDemo({
                     {state.playing ? <PauseIcon /> : <PlayIcon />}
                   </button>
                 </div>
-                <div className="ar-playlist">
-                  <h4>Your morning mix</h4>
+                <div className="hud-list">
                   {tracks.map((item, index) => (
                     <button
                       key={item.title}
@@ -582,146 +563,160 @@ function ARDemo({
                       aria-pressed={state.selectedTrack === index}
                       onClick={() => send({ type: "track", index })}
                     >
-                      <span className="ar-track-index">
+                      <span className="hud-index">
                         {state.activeTrack === index && state.playing ? (
                           <MusicIcon />
                         ) : (
                           `0${index + 1}`
                         )}
                       </span>
-                      <span>
+                      <span className="hud-row-title">
                         <strong>{item.title}</strong>
                         <small>{item.artist}</small>
                       </span>
-                      <span>{item.duration}</span>
+                      <span className="hud-time">{item.duration}</span>
                     </button>
                   ))}
-                  <div className="ar-adjustment">
-                    <span>Volume</span>
-                    <meter
-                      aria-label="Demo volume"
-                      min="0"
-                      max="100"
-                      value={state.volume}
-                    />
-                    <output aria-label="Volume level">{state.volume}%</output>
-                  </div>
                 </div>
+              </div>
+              <div className="hud-meter">
+                <span>Volume</span>
+                <span
+                  className="hud-bar"
+                  role="meter"
+                  aria-label="Demo volume"
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-valuenow={state.volume}
+                >
+                  <i style={{ width: `${state.volume}%` }} />
+                </span>
+                <output aria-label="Volume level">{state.volume}%</output>
               </div>
             </>
           )}
           {state.scene === "reading" && (
             <>
-              <div className="ar-window-heading">
-                <span>Reading</span>
+              <div className="hud-head">
+                <span className="hud-app">
+                  <ReadingIcon />
+                  Field notes / 01
+                </span>
                 <button
-                  className={`ar-save ${state.saved ? "is-saved" : ""}`}
+                  className={`hud-pill ${state.saved ? "is-on" : ""}`}
                   aria-pressed={state.saved}
                   onClick={() => send({ type: "select" })}
                 >
-                  {state.saved ? "Bookmarked ✓" : "Bookmark +"}
+                  {state.saved ? <CheckIcon /> : <PlusIcon />}
+                  {state.saved ? "Bookmarked" : "Bookmark"}
                 </button>
-              </div>
-              <div className="ar-reading-meta">
-                <span>FIELD NOTES / 01</span>
-                <span>Text size {Math.round(state.textScale * 100)}%</span>
               </div>
               <div
                 ref={article}
-                className="ar-article"
+                className="hud-article"
                 style={{ fontSize: `${17 * state.textScale}px` }}
               >
-                <h3>
-                  A calmer way
-                  <br />
-                  to compute.
-                </h3>
-                <p className="ar-article-intro">
-                  Information within reach.
-                  <br />
-                  The rest of the world in view.
+                <h3>A calmer way to compute.</h3>
+                <p className="hud-article-intro">
+                  Information within reach. The rest of the world in view.
                 </p>
                 {paragraphs.map((p) => (
                   <p key={p}>{p}</p>
                 ))}
-                <span className="ar-article-end">End of article</span>
+                <span className="hud-label">End of article</span>
               </div>
-              <div className="ar-reading-progress">
-                <span>Reading progress</span>
-                <progress
+              <div className="hud-meter">
+                <span>Read</span>
+                <span
+                  className="hud-bar"
+                  role="progressbar"
                   aria-label="Reading progress"
-                  value={state.readingProgress}
-                  max="100"
-                />
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-valuenow={Math.round(state.readingProgress)}
+                >
+                  <i style={{ width: `${state.readingProgress}%` }} />
+                </span>
                 <output>{Math.round(state.readingProgress)}%</output>
+                <span className="hud-meter-extra">
+                  Text {Math.round(state.textScale * 100)}%
+                </span>
               </div>
             </>
           )}
           {state.scene === "navigation" && (
             <>
-              <div className="ar-window-heading">
-                <span>Navigation</span>
-                <span>Riverside walk · demo route</span>
-              </div>
-              <div className="ar-map">
-                <svg
-                  viewBox="0 0 520 350"
-                  role="img"
-                  aria-label={`Route map, ${state.zoom} times zoom, ${waypoint.title} selected`}
-                >
-                  <g
-                    style={{
-                      transform: `scale(${state.zoom})`,
-                      transformOrigin: "260px 175px",
-                      transition: "transform 350ms ease",
-                    }}
-                  >
-                    <path
-                      className="ar-map-river"
-                      d="M-30 280Q140 320 205 140T555 65"
-                    />
-                    <path
-                      className="ar-map-road"
-                      d="M-20 45L570 290M45 -25L465 400M100 400L470 -50"
-                    />
-                    <path
-                      className="ar-map-route"
-                      d="M100 275L160 275Q205 275 205 235L205 175Q205 145 245 145L305 145L380 145Q420 145 420 90"
-                    />
-                    {waypoints.map((point, index) => (
-                      <g key={point.title}>
-                        <circle
-                          className={
-                            state.waypoint === index
-                              ? "ar-map-stop active"
-                              : "ar-map-stop"
-                          }
-                          cx={point.x}
-                          cy={point.y}
-                          r={state.waypoint === index ? 10 : 5}
-                        />
-                        <text x={point.x + 14} y={point.y - 13}>
-                          {point.title}
-                        </text>
-                      </g>
-                    ))}
-                  </g>
-                </svg>
-                <span className="ar-map-zoom">{state.zoom.toFixed(2)}×</span>
-              </div>
-              <div className="ar-route-detail">
-                <span className="ar-route-arrow">
+              <div className="hud-head">
+                <span className="hud-app">
                   <NavigationIcon />
+                  Riverside walk
                 </span>
-                <div>
-                  <span>{waypoint.distance}</span>
-                  <h3>{waypoint.instruction}</h3>
-                </div>
-                <button onClick={() => send({ type: "select" })}>
+                <button
+                  className={`hud-pill ${state.navigating ? "is-on" : ""}`}
+                  onClick={() => send({ type: "select" })}
+                >
+                  {state.navigating ? <PauseIcon /> : <PlayIcon />}
                   {state.navigating ? "Pause" : "Start"}
                 </button>
               </div>
-              <div className="ar-route-stops">
+              <div className="hud-nav">
+                <div className="hud-turn">
+                  <NavigationIcon className="hud-turn-icon" />
+                  <strong>{waypoint.distance}</strong>
+                  <p>{waypoint.instruction}</p>
+                </div>
+                <div className="hud-map">
+                  <svg
+                    viewBox="0 0 520 350"
+                    role="img"
+                    aria-label={`Route map, ${state.zoom} times zoom, ${waypoint.title} selected`}
+                  >
+                    <g
+                      style={{
+                        transform: `scale(${state.zoom})`,
+                        transformOrigin: "260px 175px",
+                        transition: "transform 350ms ease",
+                      }}
+                    >
+                      <path
+                        className="hud-map-river"
+                        d="M-30 280Q140 320 205 140T555 65"
+                      />
+                      <path
+                        className="hud-map-road"
+                        d="M-20 45L570 290M45 -25L465 400M100 400L470 -50"
+                      />
+                      <path
+                        className="hud-map-route"
+                        d="M100 275L160 275Q205 275 205 235L205 175Q205 145 245 145L305 145L380 145Q420 145 420 90"
+                      />
+                      {waypoints.map((point, index) => (
+                        <g key={point.title}>
+                          <circle
+                            className={
+                              state.waypoint === index
+                                ? "hud-map-stop is-active"
+                                : "hud-map-stop"
+                            }
+                            cx={point.x}
+                            cy={point.y}
+                            r={state.waypoint === index ? 9 : 5}
+                          />
+                          {state.waypoint === index && (
+                            <text x={point.x + 16} y={point.y - 12}>
+                              {point.title}
+                            </text>
+                          )}
+                        </g>
+                      ))}
+                    </g>
+                  </svg>
+                  <span className="hud-map-zoom">
+                    {state.zoom.toFixed(2)}×
+                  </span>
+                </div>
+              </div>
+              <div className="hud-stops">
                 {waypoints.map((point, index) => (
                   <button
                     key={point.title}
@@ -729,7 +724,6 @@ function ARDemo({
                     aria-pressed={state.waypoint === index}
                     onClick={() => send({ type: "waypoint", index })}
                   >
-                    <span />
                     {index + 1}
                   </button>
                 ))}
@@ -739,10 +733,10 @@ function ARDemo({
         </div>
         {state.launcher && (
           <div className="ar-launcher">
-            <div>
-              <h3>Where next?</h3>
-              <p>Tap an app, or tap outside to go back.</p>
-              <div className="ar-launcher-apps">
+            <div className="hud-launcher">
+              <HudCorners />
+              <span className="hud-label">Where next?</span>
+              <div className="hud-apps">
                 {scenes.map((scene) => (
                   <button key={scene.id} onClick={() => switchScene(scene.id)}>
                     <span>
@@ -753,12 +747,13 @@ function ARDemo({
                 ))}
               </div>
               <button
-                className="ar-launcher-back"
+                className="hud-back"
                 onClick={() => send({ type: "launcher", open: false })}
               >
                 <ArrowIcon className="icon-back" />
                 Back to view
               </button>
+              <span className="hud-hint">Or tap outside to go back</span>
             </div>
           </div>
         )}
@@ -770,7 +765,6 @@ function ARDemo({
           <polyline
             ref={trace}
             fill="none"
-            stroke="rgba(228,247,215,.5)"
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -778,7 +772,6 @@ function ARDemo({
         </svg>
         <div ref={cursor} className="ar-ring-cursor" aria-hidden="true">
           <RingCursor />
-          <i />
         </div>
       </div>
       <footer className="ar-demo-footer">
@@ -840,8 +833,8 @@ function ARDemo({
           </p>
           <p>
             Draw a complete circle anywhere in the view. Clockwise increases{" "}
-            {adjustment}; counterclockwise decreases it. Hold still for a moment
-            with the mouse button down to open your apps.
+            {adjustment}; counterclockwise decreases it. Press and hold until
+            the ring fills to open your apps.
           </p>
           <p>
             On touch screens, swipe to scroll, draw circles to adjust, and

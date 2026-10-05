@@ -63,14 +63,21 @@ of the source frame. Re-measure them if the views are re-rendered.
 ## AR experience
 
 `app/ar-experience.tsx` contains the full-viewport modal and three simulated
-scenes: music, reading, and navigation. `app/gesture-input.mjs` holds circle
+scenes: music, reading, and navigation. It renders a smart-glasses display:
+a monochrome green, line-only HUD (`--hud` tokens in `app/ar-experience.css`)
+over an illustrated world drawn in `app/world-scenes.tsx`: a city street for
+music, a café window seat for reading, and a riverside path for navigation.
+The scenes are SVG built on one shared perspective, so they need no image
+files. `app/gesture-input.mjs` holds circle
 recognition and scene state, with focused tests in `tests/gesture-input.test.mjs`.
 
 - Move the pointer to move the ring cursor; click to select.
 - Wheel/trackpad scrolling simulates touch gliding. On a phone, swipe vertically.
 - Draw a near-complete clockwise/counterclockwise circle to increase/decrease
   volume, text size, or map zoom. The rotation buttons provide an alternative.
-- Press and hold a blank part of the view for 650 ms to open the app launcher.
+- Press and hold a blank part of the view; the circular cursor fills its outer
+  ring over 650 ms and then opens the app launcher. Tap outside the launcher
+  or use Back to view to return.
 - Keyboard: focus the view, use Up/Down to glide, Left/Right to rotate, Enter
   to select, H for apps, and Escape to close.
 

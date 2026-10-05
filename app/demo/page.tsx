@@ -13,7 +13,7 @@ import {
 
 export const metadata = pageMetadata(
   "Demo",
-  "Try SynoRing gestures in an interactive AR concept. Explore music, reading, and navigation using your mouse or touch screen.",
+  "Try SynoRing gestures in an interactive smart glasses concept. Explore music, reading, and navigation using your mouse or touch screen.",
   "/demo",
 );
 
@@ -31,8 +31,8 @@ export default function DemoPage() {
         </div>
         <div>
           <p>
-            Step into a view through AR glasses. Your cursor becomes the ring;
-            your gestures control the interface.
+            Step into the view through smart glasses. Your cursor becomes the
+            ring; your gestures control the display.
           </p>
           <span className="quiet-label">
             Runs in your browser · No hardware needed
