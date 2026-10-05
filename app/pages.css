@@ -807,14 +807,6 @@
   color: var(--ink);
   font-variant-numeric: tabular-nums;
 }
-.dimension-bore {
-  top: 50%;
-  left: 18.94%;
-  right: 18.94%;
-}
-.dimension-bore > span {
-  bottom: 8px;
-}
 .dimension-band {
   top: 97%;
   left: 36.22%;

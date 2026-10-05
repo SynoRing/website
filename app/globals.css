@@ -1276,6 +1276,33 @@ details[open] > summary > .icon {
   font-size: 14px;
   color: var(--muted);
 }
+.footer-social {
+  display: flex;
+  gap: 10px;
+  margin-top: 22px;
+}
+.footer-social a {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  color: var(--text);
+  transition:
+    color 0.2s,
+    border-color 0.2s,
+    background 0.2s;
+}
+.footer-social a:hover {
+  color: #fff;
+  border-color: var(--ink);
+  background: var(--ink);
+}
+.footer-social .icon {
+  width: 15px;
+  height: 15px;
+}
 .footer-link-groups {
   display: grid;
   grid-template-columns: repeat(3, minmax(120px, auto));
@@ -1772,9 +1799,12 @@ details[open] > summary > .icon {
     font-size: 14px;
   }
   .footer-bottom {
-    flex-wrap: wrap;
-    gap: 8px 20px;
+    flex-direction: column;
+    gap: 6px;
     margin-top: 40px;
+  }
+  .footer-bottom > span:nth-child(2) {
+    margin-left: 0;
   }
 }
 @media (max-width: 540px) {
@@ -1992,12 +2022,6 @@ details[open] > summary > .icon {
   }
   .footer-link-groups > div {
     gap: 14px;
-  }
-  .footer-bottom > span:nth-child(2) {
-    display: none;
-  }
-  .footer-bottom > span:last-child {
-    margin-left: auto;
   }
 }
 @media (prefers-reduced-motion: reduce) {

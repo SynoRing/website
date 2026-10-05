@@ -4,7 +4,7 @@ import { PurchasePanel } from "./purchase-panel";
 
 export const metadata = pageMetadata(
   "Store — Pre-order",
-  "Pre-order SynoRing for $99 USD, regularly $129. Choose Space Gray, Platinum, Rose Gold, or Gold. Explore technical specifications and submit your pre-order enquiry.",
+  "Pre-order SynoRing R1 for $99 USD, regularly $129, shipping Q1 2027 with free US delivery. Choose Space Gray, Platinum, Rose Gold, or Gold and explore the technical specifications.",
   "/store",
 );
 
@@ -12,13 +12,13 @@ const specifications = [
   {
     title: "Design & finish",
     rows: [
-      ["Product", "SynoRing wearable gesture controller"],
+      ["Product", "SynoRing R1 wearable gesture controller"],
       ["Colors", "Space Gray · Platinum · Rose Gold · Gold"],
-      ["Band width", "8 mm"],
-      ["Inner diameter", "18 mm on the model shown"],
-      ["Ring sizes", "To be announced"],
+      ["Band width", "8 mm in every size"],
+      ["Inner & outer diameter", "Varies by ring size"],
+      ["Ring sizes", "Multiple sizes; find yours with the sizing kit"],
+      ["Materials", "Custom ceramic outer shell · Stainless steel inner band"],
       ["Weight", "To be announced"],
-      ["Materials", "To be announced"],
     ],
   },
   {
@@ -50,9 +50,10 @@ const specifications = [
   {
     title: "Power & durability",
     rows: [
-      ["Battery capacity", "To be announced"],
-      ["Battery life", "To be announced after testing"],
-      ["Charging", "Method and charging time to be announced"],
+      ["Battery capacity", "12 mAh"],
+      ["Battery life, typical use", "Up to 12 hours"],
+      ["Battery life, intensive use", "Up to 1 hour"],
+      ["Charging", "Charger included; charging time to be announced"],
       ["Water & dust resistance", "Rating to be announced after validation"],
     ],
   },
@@ -61,33 +62,38 @@ const specifications = [
     rows: [
       ["Pre-order price", "$99 USD"],
       ["Regular price", "$129 USD"],
-      ["Included accessories", "To be announced"],
-      ["Dispatch date", "To be announced"],
-      ["Shipping & taxes", "Confirmed by email before payment"],
+      ["In the box", "SynoRing R1 · Sizing kit · Charger"],
+      ["Estimated shipping", "Q1 2027"],
+      ["Shipping", "Free within the US; other regions pay shipping"],
+      ["Taxes", "Confirmed by email before payment"],
     ],
   },
 ];
 
-/* The V11 orthographic renders share one camera scale. Dimension lines are
-   placed in percent of the 1800 px source: the inner bore spans 341–1459 px
-   (18 mm) and the band 652–1148 px (8 mm). */
-const views = [
+/* The V11 orthographic renders share one camera scale. The band dimension
+   line is placed in percent of the 1800 px source, where the band spans
+   652–1148 px (8 mm). Diameters follow ring size, so they are not marked. */
+const views: {
+  file: string;
+  label: string;
+  alt: string;
+  dimension?: { className: string; value: string };
+}[] = [
   {
     file: "front",
     label: "Front",
-    alt: "SynoRing front view, 18 mm inner diameter",
-    dimension: { className: "dimension-bore", value: "18 mm" },
+    alt: "SynoRing R1 front view",
   },
   {
     file: "side",
     label: "Side",
-    alt: "SynoRing side view, 8 mm band width",
+    alt: "SynoRing R1 side view, 8 mm band width",
     dimension: { className: "dimension-band", value: "8 mm" },
   },
   {
     file: "top",
     label: "Top · touch surface",
-    alt: "SynoRing top view of the touch surface and logo",
+    alt: "SynoRing R1 top view of the touch surface and logo",
   },
 ];
 
@@ -141,7 +147,8 @@ export default function StorePage() {
             ))}
           </div>
           <figcaption>
-            Shown in Space Gray. All three views share one scale.
+            Shown in Space Gray at one scale. The band is 8 mm wide in every
+            size; inner and outer diameter follow your ring size.
           </figcaption>
         </figure>
         <div className="specification-groups">
@@ -193,15 +200,23 @@ export default function StorePage() {
           <article>
             <h3>When will my ring ship?</h3>
             <p>
-              A dispatch date has not been announced. Delivery, fit, and
-              compatibility details will be confirmed before payment.
+              SynoRing R1 is estimated to ship in Q1 2027. Shipping is free
+              within the US; orders to other regions pay the shipping cost.
+            </p>
+          </article>
+          <article>
+            <h3>How do I find my size?</h3>
+            <p>
+              The band is 8 mm wide in every size, while the inner and outer
+              diameter follow your ring size. A sizing kit comes with SynoRing
+              R1 to help you find the right fit.
             </p>
           </article>
           <article>
             <h3>Can I try the controls first?</h3>
             <p>
               Yes. Explore music, reading, and navigation in our{" "}
-              <a href="/demo">interactive AR demo</a>.
+              <a href="/demo">interactive demo</a>.
             </p>
           </article>
         </div>

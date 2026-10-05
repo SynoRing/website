@@ -32,7 +32,7 @@ export function PurchasePanel() {
           <span />
           Pre-order
         </span>
-        <h1>SynoRing</h1>
+        <h1>SynoRing R1</h1>
         <p className="store-subtitle">Your world. At your fingertips.</p>
         <p>
           A wearable gesture controller for AR glasses. Tap, glide, and circle
@@ -110,7 +110,7 @@ export function PurchasePanel() {
           <span>${preorderPrice * quantity} USD</span>
         </button>
         <p className="dispatch-note">
-          Estimated dispatch date to be announced.
+          Estimated shipping Q1 2027 · Free shipping within the US
         </p>
       </div>
       {open &&
@@ -139,7 +139,7 @@ function PreorderReview({
   const name = finishes.find((item) => item.id === finish)!.name;
   const render = storeRenders[finish];
   const total = preorderPrice * quantity;
-  const email = `mailto:hello@synoring.com?subject=${encodeURIComponent(`SynoRing Pre-order — ${name}`)}&body=${encodeURIComponent(`Hi SynoRing team,\n\nI would like to enquire about this pre-order:\n\nProduct: SynoRing\nFinish: ${name}\nQuantity: ${quantity}\nPre-order unit price: $${preorderPrice} USD (regular $${regularPrice} USD)\nProduct subtotal: $${total} USD\n\nPlease confirm availability, sizing, shipping, taxes, and payment arrangements.\n\nName:\nCountry / region:\n`)}`;
+  const email = `mailto:hello@synoring.com?subject=${encodeURIComponent(`SynoRing R1 Pre-order — ${name}`)}&body=${encodeURIComponent(`Hi SynoRing team,\n\nI would like to enquire about this pre-order:\n\nProduct: SynoRing R1\nFinish: ${name}\nQuantity: ${quantity}\nPre-order unit price: $${preorderPrice} USD (regular $${regularPrice} USD)\nProduct subtotal: $${total} USD\n\nPlease confirm availability, sizing, shipping, taxes, and payment arrangements.\n\nName:\nCountry / region:\n`)}`;
   useEffect(() => {
     const element = dialog.current;
     const overflow = document.body.style.overflow;
@@ -188,7 +188,7 @@ function PreorderReview({
           )}
         </div>
         <div>
-          <h3>SynoRing</h3>
+          <h3>SynoRing R1</h3>
           <p>
             {name} · Qty {quantity}
           </p>
@@ -212,8 +212,9 @@ function PreorderReview({
         </div>
       </dl>
       <p className="review-explainer">
-        Send your selection to our team to arrange your pre-order. Shipping,
-        taxes, sizing, and delivery will be confirmed by email. No payment is
+        Send your selection to our team to arrange your pre-order. Estimated
+        shipping is Q1 2027, free within the US; other regions pay shipping.
+        Sizing and taxes will be confirmed by email. No payment is
         collected or order placed on this website.
       </p>
       <a className="button button-dark" href={email}>

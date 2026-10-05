@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
-import { ArrowIcon, PlusIcon } from "./icons";
+import { ArrowIcon, PlusIcon, XIcon } from "./icons";
 import { MobileNavigation } from "./interactions";
-import { navigation } from "./site";
+import { navigation, site } from "./site";
 
 export function Note({ number }: { number: number }) {
   return (
@@ -71,6 +71,19 @@ export function SiteFooter() {
             <img src="/wordmark.svg" alt="" width="368" height="122" />
           </a>
           <p>Gesture becomes intent.</p>
+          <div className="footer-social">
+            {site.social.map((profile) => (
+              <a
+                key={profile.name}
+                href={profile.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`SynoRing on ${profile.name}`}
+              >
+                <XIcon />
+              </a>
+            ))}
+          </div>
         </div>
         <div className="footer-link-groups">
           <div>
@@ -94,12 +107,8 @@ export function SiteFooter() {
         </div>
       </div>
       <div className="footer-bottom">
-        <span>© 2026 SynoRing Labs Inc.</span>
-        <span>Designed in Illinois.</span>
-        <span>
-          Concept imagery
-          <Note number={1} />
-        </span>
+        <span>© 2026 SynoRing Labs</span>
+        <span>Designed in the US. Manufactured in China.</span>
       </div>
       <details className="product-notes" id="product-notes">
         <summary>

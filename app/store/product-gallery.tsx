@@ -42,7 +42,7 @@ export function ProductGallery({ finish }: { finish: Finish }) {
       </div>
       <div className="gallery-finish" aria-live="polite">
         {name}
-        <span>SynoRing</span>
+        <span>SynoRing R1</span>
       </div>
       <div className="gallery-switch" role="group" aria-label="Product views">
         <button

@@ -69,8 +69,9 @@ selected finish (`storeRenders` in `app/store/product.ts`).
 The store's technical specifications open with a dimension drawing built
 from the V11 Space Gray orthographic renders (`synoring-view-front`, `-side`,
 `-top`; transparent 1000 px WebP). All three share one camera scale, so the
-18 mm and 8 mm dimension lines in `app/pages.css` are placed as percentages
-of the source frame. Re-measure them if the views are re-rendered.
+8 mm band-width line in `app/pages.css` is placed as a percentage of the
+source frame. Re-measure it if the views are re-rendered. Inner and outer
+diameter follow ring size, so they are not dimensioned.
 
 ## AR experience
 
@@ -110,6 +111,10 @@ and links are in `app/site.ts`. The editorial layouts are in `app/pages.css`.
 All contact buttons open a prefilled email; there is no signup backend or SDK download.
 
 ### Store pre-orders
+
+The first generation is sold as SynoRing R1, estimated to ship in Q1 2027
+with free shipping within the US (other regions pay shipping). Each comes with
+a sizing kit and charger.
 
 `app/store/product.ts` defines the four finishes, $99 USD pre-order price,
 $129 USD regular price, and per-finish artwork slots (`storeRenders`).

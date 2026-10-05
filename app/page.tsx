@@ -45,6 +45,7 @@ const structuredData = {
       alternateName: site.name,
       url: `${site.url}/`,
       email: site.email,
+      sameAs: site.social.map((profile) => profile.url),
       logo: {
         "@type": "ImageObject",
         url: `${site.url}/logo.svg`,
@@ -55,7 +56,7 @@ const structuredData = {
     {
       "@type": "Product",
       "@id": `${site.url}/#product`,
-      name: site.name,
+      name: `${site.name} R1`,
       url: `${site.url}/`,
       description: site.description,
       image: `${site.url}/og.png`,
@@ -519,9 +520,10 @@ export default function Home() {
                   When can I get SynoRing? <PlusIcon />
                 </summary>
                 <p>
-                  Early means early. We are refining the interaction prototype,
-                  with developer pilots and production validation to follow.
-                  Join early access for updates; we are not taking deposits.
+                  Early means early. SynoRing R1 is open for pre-order and
+                  estimated to ship in Q1 2027, with free shipping within the
+                  US. Join early access to follow developer pilots and
+                  production updates.
                   <Note number={2} />
                   <Note number={4} />
                 </p>

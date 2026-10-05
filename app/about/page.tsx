@@ -27,7 +27,7 @@ export default function AboutPage() {
           <div>
             <p>
               SynoRing is a wearable gesture controller in development at
-              SynoRing Labs Inc. Our focus is simple: give your hand a subtle,
+              SynoRing Labs. Our focus is simple: give your hand a subtle,
               accessible way to control a spatial interface.
             </p>
             <p>
@@ -111,23 +111,23 @@ export default function AboutPage() {
             <h2>Prototype. Learn. Refine.</h2>
           </div>
           <p>
-            We are refining the interaction prototype. Developer pilots and
-            production validation are planned next; dates and shipping
-            specifications are not yet confirmed.
+            SynoRing R1, our first generation, is open for pre-order and
+            estimated to ship in Q1 2027. Developer pilots and production
+            validation continue alongside it.
           </p>
         </div>
         <DevelopmentSteps />
       </section>
       <section className="about-contact content-width">
         <div>
-          <span className="eyebrow">SynoRing Labs Inc.</span>
+          <span className="eyebrow">SynoRing Labs</span>
           <h2>
             Let’s make the
             <br />
             next interaction better.
           </h2>
           <p>
-            Designed in Illinois.
+            Designed in the US. Manufactured in China.
             <br />
             Exploring a more natural connection to spatial computing.
           </p>

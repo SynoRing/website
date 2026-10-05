@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const site = {
   name: "SynoRing",
-  organization: "SynoRing Labs Inc.",
+  organization: "SynoRing Labs",
   url: "https://www.synoring.ai",
   locale: "en_US",
   language: "en-US",
@@ -12,6 +12,7 @@ export const site = {
   shortDescription:
     "A wearable gesture controller for AR glasses and spatial computing.",
   email: "hello@synoring.com",
+  social: [{ name: "X", url: "https://x.com/SynoRing" }],
 } as const;
 
 export const navigation = [

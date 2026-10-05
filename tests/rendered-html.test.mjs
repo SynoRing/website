@@ -31,7 +31,7 @@ test("renders the complete SynoRing campaign page", async () => {
     /class="news-bar"[^>]+href="https:\/\/wacv27seai\.synoring\.ai\/"/,
   );
   assert.match(html, /id="product-notes"/);
-  assert.match(html, /href="#product-note-1"/);
+  assert.match(html, /href="#product-note-3"/);
   assert.match(html, /Product imagery is a concept rendering/);
   assert.match(html, /Joining early access is free/);
   assert.match(html, /Early means early\./);
