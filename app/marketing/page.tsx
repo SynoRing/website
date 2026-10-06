@@ -14,11 +14,11 @@ export const metadata: Metadata = {
 };
 
 /* The marketing dashboard: the mailing list, an email composer with live
-   preview, and campaign sends. Behind MARKETING_PASSWORD. */
+   preview, and campaign sends. Behind WAITLIST_ADMIN_PASSWORD. */
 export default async function Marketing() {
-  if (!process.env.MARKETING_PASSWORD)
+  if (!process.env.WAITLIST_ADMIN_PASSWORD)
     return (
-      <SignIn message="Set MARKETING_PASSWORD in the Vercel project settings to turn on the dashboard." />
+      <SignIn message="Set WAITLIST_ADMIN_PASSWORD in the Vercel project settings to turn on the dashboard." />
     );
   if (!(await isSignedIn())) return <SignIn />;
   return <Dashboard setup={setupStatus()} />;

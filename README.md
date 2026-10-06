@@ -94,7 +94,7 @@ Setup:
    needs the Workers Paid plan. Create an API token with the Email Sending:
    Edit permission.
 3. Vercel → Settings → Environment Variables:
-   - `MARKETING_PASSWORD`: the dashboard password.
+   - `WAITLIST_ADMIN_PASSWORD`: the dashboard password.
    - `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_EMAIL_TOKEN`.
    - `MAIL_POSTAL_ADDRESS`: shown in every email footer; US law (CAN-SPAM)
      requires it, and campaigns stay disabled until it is set.

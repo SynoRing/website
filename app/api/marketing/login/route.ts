@@ -8,7 +8,7 @@ import {
 import { waitlistFromEnv } from "../../../waitlist.mjs";
 
 export async function POST(request: Request) {
-  const password = process.env.MARKETING_PASSWORD;
+  const password = process.env.WAITLIST_ADMIN_PASSWORD;
   if (!password) return json(404, { error: "not_configured" });
   const origin = request.headers.get("origin");
   if (origin && origin !== new URL(request.url).origin)

@@ -1,8 +1,8 @@
 import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
 
-/* The dashboard has one shared password, MARKETING_PASSWORD. Signing in sets
-   a week-long cookie signed with a key derived from that password, so
+/* The dashboard has one shared password, WAITLIST_ADMIN_PASSWORD. Signing in
+   sets a week-long cookie signed with a key derived from that password, so
    changing the password signs everyone out. */
 
 export const sessionCookie = "synoring_marketing";
@@ -27,7 +27,7 @@ export function createSession(password: string, now = Date.now()) {
 
 export function verifySession(
   value: string | undefined,
-  password = process.env.MARKETING_PASSWORD,
+  password = process.env.WAITLIST_ADMIN_PASSWORD,
   now = Date.now(),
 ) {
   if (!value || !password) return false;
