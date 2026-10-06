@@ -151,6 +151,12 @@ test("separates preview and local signups from production", () => {
   );
   assert.ok(
     waitlistFromEnv({
+      STORAGE_KV_REST_API_URL: "https://r.example",
+      STORAGE_KV_REST_API_TOKEN: "t",
+    }),
+  );
+  assert.ok(
+    waitlistFromEnv({
       UPSTASH_REDIS_REST_URL: "https://r.example",
       UPSTASH_REDIS_REST_TOKEN: "t",
     }),

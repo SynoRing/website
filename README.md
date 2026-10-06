@@ -87,7 +87,8 @@ Setup:
 
 1. Vercel → Storage → Create Database → Upstash for Redis (free plan), and
    connect it to this project. That adds `KV_REST_API_URL` and
-   `KV_REST_API_TOKEN` (`UPSTASH_REDIS_REST_URL`/`_TOKEN` also work).
+   `KV_REST_API_TOKEN`, or `STORAGE_KV_REST_API_URL`/`_TOKEN` with the
+   default `STORAGE` prefix (`UPSTASH_REDIS_REST_URL`/`_TOKEN` also work).
 2. Cloudflare → Compute → Email Service → Email Sending → Onboard Domain →
    `synoring.ai`. It adds the SPF, DKIM, DMARC, and bounce records. Sending
    needs the Workers Paid plan. Create an API token with the Email Sending:

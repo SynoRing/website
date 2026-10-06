@@ -320,11 +320,17 @@ export function selectAudience(entries, audience) {
 }
 
 /** The store configured for this deployment, or null without credentials.
-    Vercel's Upstash integration sets KV_*; a direct Upstash link sets
-    UPSTASH_REDIS_REST_*. */
+    Vercel's Upstash integration sets KV_* (STORAGE_KV_* with its default
+    prefix); a direct Upstash link sets UPSTASH_REDIS_REST_*. */
 export function waitlistFromEnv(env = process.env) {
-  const url = env.KV_REST_API_URL || env.UPSTASH_REDIS_REST_URL;
-  const token = env.KV_REST_API_TOKEN || env.UPSTASH_REDIS_REST_TOKEN;
+  const url =
+    env.KV_REST_API_URL ||
+    env.STORAGE_KV_REST_API_URL ||
+    env.UPSTASH_REDIS_REST_URL;
+  const token =
+    env.KV_REST_API_TOKEN ||
+    env.STORAGE_KV_REST_API_TOKEN ||
+    env.UPSTASH_REDIS_REST_TOKEN;
   if (!url || !token) return null;
   return createWaitlist({ url, token, prefix: keyPrefix(env.VERCEL_ENV) });
 }
