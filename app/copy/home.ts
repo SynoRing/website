@@ -143,7 +143,7 @@ const zh: typeof en = {
   hero: {
     summary: "弹指之间，掌控 AR 眼镜、智能眼镜、头显、手机、笔记本电脑、电脑或机器人。",
     // A thin space keeps "AR" from touching 掌控.
-    lines: ["弹指之间，", "掌控\u2009{device}"],
+    lines: ["弹指之间，", "掌控\u2009{device}。"],
     devices: ["AR 眼镜", "智能眼镜", "头显", "手机", "笔记本电脑", "电脑", "机器人"],
     subtitle: "你的世界，尽在指尖。",
     cta: "了解 SynoRing",
