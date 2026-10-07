@@ -3,6 +3,7 @@ import test from "node:test";
 import {
   bpPrefix,
   businessPlanFromEnv,
+  cleanHtml,
   createBusinessPlan,
   generatePassword,
   normalizePassword,
@@ -16,6 +17,8 @@ function store(upstash = fakeUpstash()) {
   return createBusinessPlan({ url: "https://redis.example", token: "t", fetch: upstash.fetch });
 }
 
+const at = (time) => new Date(`2026-10-06T${time}:00Z`);
+
 test("generates readable passwords that name the recipient", () => {
   assert.match(generatePassword("Y Combinator"), /^y-combinator-[a-hj-km-np-z2-9]{4}-[a-hj-km-np-z2-9]{4}$/);
   assert.match(generatePassword("红杉"), /^[a-z2-9]{4}-[a-z2-9]{4}$/);
@@ -25,16 +28,22 @@ test("generates readable passwords that name the recipient", () => {
   for (const bad of ["short", "x".repeat(65), 42, undefined]) assert.equal(normalizePassword(bad), null);
 });
 
-test("requires a password, a name, an email, and the terms", () => {
-  const body = { password: " YC-k7pd-3mqx ", name: "  Ada   Lovelace ", email: "Ada@YC.com", agree: true };
-  assert.deepEqual(parseAccess(body), {
-    access: { password: "yc-k7pd-3mqx", name: "Ada Lovelace", email: "ada@yc.com" },
-  });
-  assert.deepEqual(parseAccess({ ...body, password: " " }), { error: "wrong_password" });
-  assert.deepEqual(parseAccess({ ...body, name: "" }), { error: "invalid_name" });
-  assert.deepEqual(parseAccess({ ...body, email: "ada" }), { error: "invalid_email" });
-  assert.deepEqual(parseAccess({ ...body, agree: "true" }), { error: "terms_not_accepted" });
+test("asks only for the password and the terms", () => {
+  assert.deepEqual(parseAccess({ password: " YC-k7pd-3mqx ", agree: true }), { password: "yc-k7pd-3mqx" });
+  assert.deepEqual(parseAccess({ password: " ", agree: true }), { error: "wrong_password" });
+  assert.deepEqual(parseAccess({ password: "yc-k7pd-3mqx", agree: "true" }), { error: "terms_not_accepted" });
   assert.deepEqual(parseAccess(null), { error: "invalid_request" });
+});
+
+test("keeps layout HTML and drops anything that runs code", () => {
+  assert.equal(
+    cleanHtml(
+      '<h2 style="color:red">Market</h2><script>alert(1)</script><style>body{}</style>' +
+        '<img src="x.png" onerror="alert(1)"><a href="javascript:alert(1)">x</a>' +
+        '<a href="https://synoring.ai" target="_blank">ok</a><iframe src="//evil"></iframe><table><tr><td>1</td></tr></table>',
+    ),
+    '<h2 style="color:red">Market</h2><img src="x.png"><a>x</a><a href="https://synoring.ai" target="_blank">ok</a><table><tr><td>1</td></tr></table>',
+  );
 });
 
 test("signs sessions that expire and can't be altered", () => {
@@ -50,87 +59,139 @@ test("signs sessions that expire and can't be altered", () => {
   assert.equal(verifySession("secret", undefined, now), null);
 });
 
+test("publishes numbered versions that later edits don't change", async () => {
+  const plan = store();
+  assert.equal(await plan.publish(), null);
+  await plan.saveDraft({ html: "<h1>Plan</h1><script>x</script>", note: "First draft" }, at("09:00"));
+  const v1 = await plan.publish(at("10:00"));
+  assert.equal(v1.number, "1");
+  assert.equal(v1.html, "<h1>Plan</h1>");
+  assert.equal(v1.note, "First draft");
+  assert.equal(v1.publishedAt, "2026-10-06T10:00:00.000Z");
+  assert.equal((await plan.draft()).note, "");
+  assert.equal((await plan.draft()).html, "<h1>Plan</h1>");
+
+  await plan.saveDraft({ html: "<h1>Plan, revised</h1>", note: "New numbers" });
+  const v2 = await plan.publish(at("11:00"));
+  assert.equal(v2.number, "2");
+  assert.equal((await plan.version(v1.id)).html, "<h1>Plan</h1>");
+  assert.deepEqual((await plan.versions()).map((version) => version.number), ["2", "1"]);
+  assert.equal((await plan.latestVersion()).id, v2.id);
+
+  assert.equal(await plan.removeVersion(v2.id), true);
+  assert.equal((await plan.latestVersion()).id, v1.id);
+  assert.equal(await plan.nextNumber(), 3);
+  const v3 = await plan.publish(at("12:00"));
+  assert.equal(v3.number, "3", "numbers are never reused");
+});
+
+test("keeps a version's PDF until nothing uses it", async () => {
+  const upstash = fakeUpstash();
+  const plan = store(upstash);
+  await plan.putPart("u1", 0, "AAA=");
+  assert.equal(await plan.attachPdf({ upload: "u1", name: "plan.pdf", size: 5, parts: 2 }), null);
+  await plan.putPart("u1", 1, "BBB=");
+  const draft = await plan.attachPdf({ upload: "u1", name: "plan.pdf", size: 5, parts: 2 });
+  assert.equal(draft.pdfName, "plan.pdf");
+
+  const v1 = await plan.publish(at("10:00"));
+  assert.equal(v1.pdfUpload, "u1");
+  assert.equal(v1.html, "", "a PDF alone is enough to publish");
+
+  // Replacing the draft's PDF keeps v1's.
+  await plan.putPart("u2", 0, "CCC=");
+  await plan.attachPdf({ upload: "u2", name: "plan-v2.pdf", size: 2, parts: 1 });
+  assert.equal(await plan.readPart("u1", 1), "BBB=");
+
+  // Replacing an unpublished PDF drops it.
+  await plan.putPart("u3", 0, "DDD=");
+  await plan.attachPdf({ upload: "u3", name: "plan-v3.pdf", size: 2, parts: 1 });
+  assert.equal(await plan.readPart("u2", 0), null);
+
+  // Editing v1 again brings back its HTML and PDF; the draft's own goes.
+  const restored = await plan.restoreDraft(v1.id);
+  assert.equal(restored.pdfUpload, "u1");
+  assert.equal(await plan.readPart("u3", 0), null);
+  assert.equal(await plan.restoreDraft("missing"), null);
+  await plan.putPart("u3", 0, "DDD=");
+  await plan.attachPdf({ upload: "u3", name: "plan-v3.pdf", size: 2, parts: 1 });
+  assert.equal(await plan.readPart("u1", 0), "AAA=", "v1 still has its PDF");
+
+  await plan.detachPdf();
+  assert.equal((await plan.draft()).pdfUpload, undefined);
+  assert.equal(await plan.readPart("u3", 0), null);
+
+  await plan.removeVersion(v1.id);
+  assert.equal(await plan.readPart("u1", 0), null);
+  assert.ok(![...upstash.data.keys()].some((key) => key.includes(":pdf:")));
+});
+
+test("shows each recipient the latest version unless pinned", async () => {
+  const plan = store();
+  await plan.saveDraft({ html: "<p>One</p>", note: "" });
+  const v1 = await plan.publish(at("10:00"));
+  const yc = await plan.createRecipient({ label: "YC", password: "yc-k7pd-3mqx" });
+  const pinned = await plan.createRecipient({ label: "Seed fund", password: "seed-2a2a-3b3b", versionId: v1.id });
+  await plan.saveDraft({ html: "<p>Two</p>", note: "" });
+  const v2 = await plan.publish(at("11:00"));
+
+  assert.equal((await plan.versionFor(yc)).id, v2.id);
+  assert.equal((await plan.versionFor(pinned)).id, v1.id);
+  await plan.updateRecipient(yc.id, { versionId: v1.id });
+  assert.equal((await plan.versionFor(await plan.recipient(yc.id))).id, v1.id);
+  await plan.removeVersion(v1.id);
+  assert.equal((await plan.versionFor(await plan.recipient(yc.id))).id, v2.id);
+});
+
 test("gives each recipient a unique password that can be turned off", async () => {
   const plan = store();
-  const yc = await plan.createRecipient(
-    { label: "YC", password: "yc-k7pd-3mqx" },
-    new Date("2026-10-06T10:00:00Z"),
-  );
-  assert.equal(yc.label, "YC");
+  const yc = await plan.createRecipient({ label: "YC", password: "yc-k7pd-3mqx" }, at("10:00"));
+  assert.equal(yc.versionId, "");
   assert.equal(await plan.createRecipient({ label: "Copy", password: "yc-k7pd-3mqx" }), null);
   assert.equal((await plan.recipientFor("yc-k7pd-3mqx")).id, yc.id);
   assert.equal(await plan.recipientFor("nope-nope"), null);
 
-  assert.equal(await plan.setRevoked(yc.id, true), true);
+  assert.equal(await plan.updateRecipient(yc.id, { revoked: true }), true);
   assert.equal(await plan.recipientFor("yc-k7pd-3mqx"), null);
-  await plan.setRevoked(yc.id, false);
+  await plan.updateRecipient(yc.id, { revoked: false });
   assert.equal((await plan.recipientFor("yc-k7pd-3mqx")).id, yc.id);
-  assert.equal(await plan.setRevoked("missing", true), false);
+  assert.equal(await plan.updateRecipient("missing", { revoked: true }), false);
 });
 
-test("records who accepted the terms and how often they opened the plan", async () => {
+test("records each acceptance and which version was opened", async () => {
   const upstash = fakeUpstash();
   const plan = store(upstash);
-  const yc = await plan.createRecipient({ label: "YC", password: "yc-k7pd-3mqx" }, new Date("2026-10-06T10:00:00Z"));
-  const sequoia = await plan.createRecipient({ label: "Sequoia", password: "sequoia-2a2a-3b3b" }, new Date("2026-10-06T11:00:00Z"));
-  const ada = await plan.addViewer(
-    yc.id,
-    { name: "Ada", email: "ada@yc.com", terms: "2026-10-06", country: "US", ip: "1.2.3.4" },
-    new Date("2026-10-06T12:00:00Z"),
-  );
-  await plan.addViewer(yc.id, { name: "Grace", email: "grace@yc.com", terms: "2026-10-06" }, new Date("2026-10-06T13:00:00Z"));
-  await plan.recordView(ada, new Date("2026-10-06T12:01:00Z"));
-  await plan.recordView(ada, new Date("2026-10-06T12:05:00Z"));
+  await plan.saveDraft({ html: "<p>Plan</p>", note: "" });
+  const v1 = await plan.publish();
+  const yc = await plan.createRecipient({ label: "YC", password: "yc-k7pd-3mqx" }, at("10:00"));
+  const sequoia = await plan.createRecipient({ label: "Sequoia", password: "sequoia-2a2a-3b3b" }, at("11:00"));
+  const first = await plan.addViewer(yc.id, { terms: "2026-10-06", country: "US", ip: "1.2.3.4" }, at("12:00"));
+  await plan.addViewer(yc.id, { terms: "2026-10-06" }, at("13:00"));
+  await plan.recordView(first, v1, at("12:01"));
+  await plan.recordView(first, v1, at("12:05"));
 
   const recipients = await plan.listRecipients();
   assert.deepEqual(recipients.map((item) => item.label), ["Sequoia", "YC"]);
   const [, listed] = recipients;
   assert.equal(listed.views, "2");
   assert.equal(listed.lastViewedAt, "2026-10-06T12:05:00.000Z");
-  assert.deepEqual(listed.viewers.map((viewer) => viewer.name), ["Grace", "Ada"]);
+  assert.equal(listed.viewers.length, 2);
   assert.equal(listed.viewers[1].views, "2");
+  assert.equal(listed.viewers[1].lastVersion, "1");
   assert.equal(listed.viewers[1].country, "US");
   assert.deepEqual(recipients[0].viewers, []);
 
-  const cookie = signSession(await plan.secret(), ada.id);
+  const cookie = signSession(await plan.secret(), first.id);
   assert.equal((await plan.session(cookie)).recipient.id, yc.id);
-  await plan.setRevoked(yc.id, true);
+  await plan.updateRecipient(yc.id, { revoked: true });
   assert.equal(await plan.session(cookie), null);
   assert.equal(await plan.session("forged.0.x"), null);
 
   assert.equal(await plan.removeRecipient(yc.id), true);
   assert.deepEqual((await plan.listRecipients()).map((item) => item.id), [sequoia.id]);
-  assert.equal(await plan.viewer(ada.id), null);
-  assert.equal(await plan.createRecipient({ label: "YC again", password: "yc-k7pd-3mqx" }) !== null, true);
+  assert.equal(await plan.viewer(first.id), null);
+  assert.notEqual(await plan.createRecipient({ label: "YC again", password: "yc-k7pd-3mqx" }), null);
   assert.ok(![...upstash.data.keys()].some((key) => key.includes(yc.id)));
-});
-
-test("publishes an upload only when every part arrived, then drops the old one", async () => {
-  const upstash = fakeUpstash();
-  const plan = store(upstash);
-  assert.equal(await plan.document(), null);
-
-  await plan.putPart("v1", 0, "AAA=");
-  assert.equal(await plan.publishDocument({ version: "v1", name: "plan.pdf", size: 5, parts: 2 }), null);
-  await plan.putPart("v1", 1, "BBB=");
-  const first = await plan.publishDocument(
-    { version: "v1", name: "plan.pdf", size: 5, parts: 2 },
-    new Date("2026-10-06T10:00:00Z"),
-  );
-  assert.deepEqual(first, {
-    version: "v1",
-    name: "plan.pdf",
-    size: "5",
-    parts: "2",
-    uploadedAt: "2026-10-06T10:00:00.000Z",
-  });
-  assert.equal(await plan.readPart("v1", 1), "BBB=");
-
-  await plan.putPart("v2", 0, "CCC=");
-  await plan.publishDocument({ version: "v2", name: "plan-v2.pdf", size: 2, parts: 1 });
-  assert.equal((await plan.document()).name, "plan-v2.pdf");
-  assert.equal(await plan.readPart("v1", 0), null);
-  assert.equal(await plan.readPart("v2", 0), "CCC=");
 });
 
 test("only counts wrong passwords toward the limit", async () => {

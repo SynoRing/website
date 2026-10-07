@@ -1,15 +1,20 @@
 /* The confidential business plan at /bp. Everyone it is sent to gets their
    own password, so access can be followed, and turned off, one recipient at
-   a time. Before the plan opens, a visitor gives their name and email and
-   accepts the confidentiality terms; each acceptance is kept.
+   a time. A visitor enters the password and accepts the confidentiality
+   terms; each acceptance is kept.
 
-   The PDF lives in the same Upstash database as the waitlist, split into
-   base64 parts that each fit in one request. The site's repository is
-   public, so nothing confidential can ship with the code. Plain JavaScript
-   so the tests run it directly. */
+   The plan is written in the marketing dashboard as HTML, with an optional
+   PDF alongside. Publishing the draft makes a numbered version that never
+   changes afterwards. Each recipient sees the latest version unless they
+   are pinned to an earlier one.
+
+   Everything lives in the same Upstash database as the waitlist; PDFs are
+   split into base64 parts that each fit in one request. The site's
+   repository is public, so nothing confidential can ship with the code.
+   Plain JavaScript so the tests run it directly. */
 
 import { createHmac, randomInt, timingSafeEqual } from "node:crypto";
-import { normalizeEmail, upstash, upstashFromEnv } from "./waitlist.mjs";
+import { upstash, upstashFromEnv } from "./waitlist.mjs";
 
 /** @typedef {Record<string, string>} Row */
 /** @typedef {Row & { viewers: Row[] }} Recipient */
@@ -17,10 +22,13 @@ import { normalizeEmail, upstash, upstashFromEnv } from "./waitlist.mjs";
 /** Upload part size: under Vercel's 4.5 MB request limit, and still
     under Upstash's once base64 makes it a third larger. */
 export const partBytes = 2 * 1024 * 1024;
-export const maxDocumentBytes = 40 * 1024 * 1024;
-export const maxParts = Math.ceil(maxDocumentBytes / partBytes);
+export const maxPdfBytes = 40 * 1024 * 1024;
+export const maxParts = Math.ceil(maxPdfBytes / partBytes);
+export const maxHtmlLength = 500_000;
 
 export const sessionSeconds = 7 * 24 * 60 * 60;
+
+const pdfFields = ["pdfUpload", "pdfName", "pdfSize", "pdfParts"];
 
 // No 0/o or 1/i/l, so a password read aloud or retyped comes out right.
 const alphabet = "abcdefghjkmnpqrstuvwxyz23456789";
@@ -47,19 +55,27 @@ export function normalizePassword(value) {
   return password.length >= 8 && password.length <= 64 ? password : null;
 }
 
-/** Validates the /bp form: password, name, email, and the terms box.
+/** Validates the /bp form: the password and the terms box.
     @param {any} body
-    @returns {{ access: { password: string, name: string, email: string }, error?: undefined } | { error: string, access?: undefined }} */
+    @returns {{ password: string, error?: undefined } | { error: string, password?: undefined }} */
 export function parseAccess(body) {
   if (!body || typeof body !== "object") return { error: "invalid_request" };
   const password = typeof body.password === "string" ? body.password.trim().toLowerCase() : "";
-  const name = typeof body.name === "string" ? body.name.trim().replace(/\s+/g, " ") : "";
-  const email = normalizeEmail(body.email);
   if (!password) return { error: "wrong_password" };
-  if (!name || name.length > 120) return { error: "invalid_name" };
-  if (!email) return { error: "invalid_email" };
   if (body.agree !== true) return { error: "terms_not_accepted" };
-  return { access: { password, name, email } };
+  return { password };
+}
+
+/** Strips what could run code from the plan's HTML: scripts, frames,
+    style blocks, event handler attributes, and javascript: links. The
+    dashboard is the only author; this keeps a pasted snippet from doing
+    more than lay out text. */
+export function cleanHtml(html) {
+  return String(html)
+    .replace(/<(script|style|iframe|object|embed|template)\b[\s\S]*?<\/\1\s*>/gi, "")
+    .replace(/<\/?(script|style|iframe|object|embed|template|link|meta|base|form)\b[^>]*>/gi, "")
+    .replace(/\s+on[a-z]+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, "")
+    .replace(/\s+(href|src)\s*=\s*("\s*javascript:[^"]*"|'\s*javascript:[^']*'|javascript:[^\s>]+)/gi, "");
 }
 
 /* A viewer's session cookie: their id and an expiry, signed with the
@@ -97,14 +113,37 @@ export function createBusinessPlan({ url, token, prefix = "bp", fetch: send = fe
   const viewerIndex = (recipientId) => `${prefix}:viewers:${recipientId}`;
   const viewerKey = (id) => `${prefix}:viewer:${id}`;
   const failureKey = (client) => `${prefix}:failures:${client}`;
-  const documentKey = `${prefix}:document`;
-  const partKey = (version, index) => `${documentKey}:${version}:${index}`;
+  const draftKey = `${prefix}:draft`;
+  const versionIndex = `${prefix}:versions`;
+  const versionKey = (id) => `${prefix}:version:${id}`;
+  const counterKey = `${prefix}:version-number`;
+  const partKey = (upload, index) => `${prefix}:pdf:${upload}:${index}`;
+  const partKeys = (upload, parts) =>
+    Array.from({ length: Number(parts) }, (_, i) => partKey(upload, i));
   let secretValue;
 
   /** @returns {Promise<Row | null>} */
   async function read(key) {
     const [row] = await pipeline([["HGETALL", key]]);
     return row.length ? toObject(row) : null;
+  }
+
+  /** @returns {Promise<Row[]>} */
+  async function readAll(keys) {
+    if (!keys.length) return [];
+    const rows = await pipeline(keys.map((key) => ["HGETALL", key]));
+    return rows.filter((row) => row.length).map(toObject);
+  }
+
+  /** Deletes a PDF's parts unless the draft or a version still uses it. */
+  async function releasePdf(upload, parts) {
+    if (!upload) return;
+    const [ids] = await pipeline([["ZRANGE", versionIndex, 0, -1]]);
+    const uploads = await pipeline([
+      ["HGET", draftKey, "pdfUpload"],
+      ...ids.map((id) => ["HGET", versionKey(id), "pdfUpload"]),
+    ]);
+    if (!uploads.includes(upload)) await pipeline([["DEL", ...partKeys(upload, parts)]]);
   }
 
   const store = {
@@ -135,15 +174,142 @@ export function createBusinessPlan({ url, token, prefix = "bp", fetch: send = fe
       return secretValue;
     },
 
+    /* The draft: the working copy the dashboard edits. */
+
+    /** @returns {Promise<Row>} */
+    async draft() {
+      return (await read(draftKey)) ?? {};
+    },
+
+    /** @param {{ html: string, note: string }} draft */
+    async saveDraft({ html, note }, now = new Date()) {
+      await pipeline([
+        ["HSET", draftKey, "html", cleanHtml(html), "note", note, "updatedAt", now.toISOString()],
+      ]);
+      return store.draft();
+    },
+
+    /** Stores one part of a PDF upload. Parts never attached expire in a day. */
+    async putPart(upload, index, base64) {
+      await pipeline([["SET", partKey(upload, index), base64, "EX", 86400]]);
+    },
+
+    /** Attaches an uploaded PDF to the draft, replacing its PDF. Resolves
+        null if a part is missing.
+        @param {{ upload: string, name: string, size: number, parts: number }} pdf */
+    async attachPdf({ upload, name, size, parts }) {
+      const keys = partKeys(upload, parts);
+      const [present] = await pipeline([["EXISTS", ...keys]]);
+      if (present !== parts) return null;
+      const previous = await store.draft();
+      await pipeline([
+        ...keys.map((key) => ["PERSIST", key]),
+        ["HSET", draftKey, "pdfUpload", upload, "pdfName", name, "pdfSize", size, "pdfParts", parts],
+      ]);
+      if (previous.pdfUpload !== upload) await releasePdf(previous.pdfUpload, previous.pdfParts);
+      return store.draft();
+    },
+
+    /** Takes the PDF off the draft; versions that have it keep it. */
+    async detachPdf() {
+      const previous = await store.draft();
+      await pipeline([["HDEL", draftKey, ...pdfFields]]);
+      await releasePdf(previous.pdfUpload, previous.pdfParts);
+      return store.draft();
+    },
+
+    /** Replaces the draft with a copy of a version, its PDF included. */
+    async restoreDraft(id, now = new Date()) {
+      const version = await store.version(id);
+      if (!version) return null;
+      const previous = await store.draft();
+      const pdf = pdfFields.filter((field) => version[field]).flatMap((field) => [field, version[field]]);
+      await pipeline([
+        ["DEL", draftKey],
+        ["HSET", draftKey, "html", version.html ?? "", "note", "", "updatedAt", now.toISOString(), ...pdf],
+      ]);
+      if (previous.pdfUpload !== version.pdfUpload)
+        await releasePdf(previous.pdfUpload, previous.pdfParts);
+      return store.draft();
+    },
+
+    /* Versions: numbered snapshots of the draft, newest first. */
+
+    /** Publishes the draft as the next version. Resolves null when the
+        draft has neither HTML nor a PDF. */
+    async publish(now = new Date()) {
+      const draft = await store.draft();
+      if (!draft.html?.trim() && !draft.pdfUpload) return null;
+      const [number] = await pipeline([["INCR", counterKey]]);
+      const version = {
+        id: newId(now),
+        number: String(number),
+        note: draft.note ?? "",
+        html: draft.html ?? "",
+        publishedAt: now.toISOString(),
+        ...Object.fromEntries(pdfFields.filter((field) => draft[field]).map((field) => [field, draft[field]])),
+      };
+      await pipeline([
+        ["HSET", versionKey(version.id), ...Object.entries(version).flat()],
+        ["ZADD", versionIndex, number, version.id],
+        ["HSET", draftKey, "note", ""],
+      ]);
+      return version;
+    },
+
+    /** The number the next published version will get. Numbers of deleted
+        versions aren't reused. */
+    async nextNumber() {
+      const [count] = await pipeline([["GET", counterKey]]);
+      return Number(count ?? 0) + 1;
+    },
+
+    async versions() {
+      const [ids] = await pipeline([["ZREVRANGE", versionIndex, 0, -1]]);
+      return readAll(ids.map(versionKey));
+    },
+
+    version: (id) => read(versionKey(id)),
+
+    async latestVersion() {
+      const [[id]] = await pipeline([["ZREVRANGE", versionIndex, 0, 0]]);
+      return id ? store.version(id) : null;
+    },
+
+    /** The version a recipient sees: the one they are pinned to, or the
+        latest. */
+    async versionFor(recipient) {
+      const pinned = recipient.versionId && (await store.version(recipient.versionId));
+      return pinned || store.latestVersion();
+    },
+
+    /** Deletes a version. Recipients pinned to it see the latest instead. */
+    async removeVersion(id) {
+      const version = await store.version(id);
+      if (!version) return false;
+      await pipeline([
+        ["DEL", versionKey(id)],
+        ["ZREM", versionIndex, id],
+      ]);
+      await releasePdf(version.pdfUpload, version.pdfParts);
+      return true;
+    },
+
+    /** @returns {Promise<string | null>} one part of a PDF, base64 */
+    async readPart(upload, index) {
+      const [part] = await pipeline([["GET", partKey(upload, index)]]);
+      return part;
+    },
+
     /* Recipients: one per person or firm the plan is sent to. */
 
     /** Adds a recipient. Resolves null when the password is taken.
-        @param {{ label: string, password: string }} recipient */
-    async createRecipient({ label, password }, now = new Date()) {
+        @param {{ label: string, password: string, versionId?: string }} recipient */
+    async createRecipient({ label, password, versionId = "" }, now = new Date()) {
       const id = newId(now);
       const [claimed] = await pipeline([["SET", passwordKey(password), id, "NX"]]);
       if (claimed !== "OK") return null;
-      const recipient = { id, label, password, createdAt: now.toISOString(), views: "0" };
+      const recipient = { id, label, password, versionId, createdAt: now.toISOString(), views: "0" };
       await pipeline([
         ["HSET", recipientKey(id), ...Object.entries(recipient).flat()],
         ["ZADD", recipientIndex, now.getTime(), id],
@@ -160,8 +326,8 @@ export function createBusinessPlan({ url, token, prefix = "bp", fetch: send = fe
       return recipient && !recipient.revokedAt ? recipient : null;
     },
 
-    /** Every recipient, newest first, each with the people who opened the
-        plan through it, newest first.
+    /** Every recipient, newest first, each with the visits made through
+        their password, newest first.
         @returns {Promise<Recipient[]>} */
     async listRecipients() {
       const [ids] = await pipeline([["ZREVRANGE", recipientIndex, 0, -1]]);
@@ -172,15 +338,10 @@ export function createBusinessPlan({ url, token, prefix = "bp", fetch: send = fe
           ["ZREVRANGE", viewerIndex(id), 0, -1],
         ]),
       );
-      const viewerIds = ids.flatMap((_, i) => results[i * 2 + 1]);
-      const viewerRows = viewerIds.length
-        ? await pipeline(viewerIds.map((id) => ["HGETALL", viewerKey(id)]))
-        : [];
       const viewers = new Map(
-        viewerRows.filter((row) => row.length).map((row) => {
-          const viewer = toObject(row);
-          return [viewer.id, viewer];
-        }),
+        (await readAll(ids.flatMap((_, i) => results[i * 2 + 1]).map(viewerKey))).map(
+          (viewer) => [viewer.id, viewer],
+        ),
       );
       return ids.flatMap((_, i) =>
         results[i * 2].length
@@ -194,18 +355,21 @@ export function createBusinessPlan({ url, token, prefix = "bp", fetch: send = fe
       );
     },
 
-    /** Turns a recipient's password off, or back on. False if unknown. */
-    async setRevoked(id, revoked, now = new Date()) {
+    /** Turns a recipient's password off or on, or pins them to a version
+        ("" for the latest). False if the recipient is unknown.
+        @param {string} id
+        @param {{ revoked?: boolean, versionId?: string }} changes */
+    async updateRecipient(id, { revoked, versionId }, now = new Date()) {
       if (!(await store.recipient(id))) return false;
-      await pipeline([
-        revoked
-          ? ["HSET", recipientKey(id), "revokedAt", now.toISOString()]
-          : ["HDEL", recipientKey(id), "revokedAt"],
-      ]);
+      const commands = [];
+      if (revoked === true) commands.push(["HSET", recipientKey(id), "revokedAt", now.toISOString()]);
+      if (revoked === false) commands.push(["HDEL", recipientKey(id), "revokedAt"]);
+      if (versionId !== undefined) commands.push(["HSET", recipientKey(id), "versionId", versionId]);
+      if (commands.length) await pipeline(commands);
       return true;
     },
 
-    /** Deletes a recipient, their password, and their viewers' records. */
+    /** Deletes a recipient, their password, and the record of their visits. */
     async removeRecipient(id) {
       const recipient = await store.recipient(id);
       if (!recipient) return false;
@@ -219,22 +383,12 @@ export function createBusinessPlan({ url, token, prefix = "bp", fetch: send = fe
 
     /* Viewers: one per accepted set of terms. */
 
-    /** Records who accepted the terms through a recipient's password.
+    /** Records an acceptance of the terms through a recipient's password.
         @param {string} recipientId
-        @param {{ name: string, email: string, terms: string, country?: string, ip?: string }} details */
-    async addViewer(recipientId, { name, email, terms, country = "", ip = "" }, now = new Date()) {
+        @param {{ terms: string, country?: string, ip?: string }} details */
+    async addViewer(recipientId, { terms, country = "", ip = "" }, now = new Date()) {
       const id = newId(now);
-      const viewer = {
-        id,
-        recipientId,
-        name,
-        email,
-        terms,
-        acceptedAt: now.toISOString(),
-        country,
-        ip,
-        views: "0",
-      };
+      const viewer = { id, recipientId, terms, acceptedAt: now.toISOString(), country, ip, views: "0" };
       await pipeline([
         ["HSET", viewerKey(id), ...Object.entries(viewer).flat()],
         ["ZADD", viewerIndex(recipientId), now.getTime(), id],
@@ -253,58 +407,15 @@ export function createBusinessPlan({ url, token, prefix = "bp", fetch: send = fe
       return recipient && !recipient.revokedAt ? { viewer, recipient } : null;
     },
 
-    /** Counts an opening of the plan for the viewer and their recipient. */
-    async recordView(viewer, now = new Date()) {
+    /** Counts an opening of a version for the viewer and their recipient. */
+    async recordView(viewer, version, now = new Date()) {
       const at = now.toISOString();
       await pipeline([
         ["HINCRBY", viewerKey(viewer.id), "views", 1],
-        ["HSET", viewerKey(viewer.id), "lastViewedAt", at],
+        ["HSET", viewerKey(viewer.id), "lastViewedAt", at, "lastVersion", version.number],
         ["HINCRBY", recipientKey(viewer.recipientId), "views", 1],
         ["HSET", recipientKey(viewer.recipientId), "lastViewedAt", at],
       ]);
-    },
-
-    /* The document: parts upload one request at a time, then publishing
-       swaps the new version in and drops the old one. */
-
-    /** Stores one part of an upload. Parts never published expire in a day. */
-    async putPart(version, index, base64) {
-      await pipeline([["SET", partKey(version, index), base64, "EX", 86400]]);
-    },
-
-    /** Makes an uploaded version the current plan. Resolves null if a part
-        is missing.
-        @param {{ version: string, name: string, size: number, parts: number }} upload */
-    async publishDocument({ version, name, size, parts }, now = new Date()) {
-      const keys = Array.from({ length: parts }, (_, i) => partKey(version, i));
-      const [present, previousRow] = await pipeline([
-        ["EXISTS", ...keys],
-        ["HGETALL", documentKey],
-      ]);
-      if (present !== parts) return null;
-      const document = { version, name, size, parts, uploadedAt: now.toISOString() };
-      const previous = toObject(previousRow);
-      const commands = [
-        ...keys.map((key) => ["PERSIST", key]),
-        ["DEL", documentKey],
-        ["HSET", documentKey, ...Object.entries(document).flat()],
-      ];
-      if (previous.version && previous.version !== version)
-        commands.push([
-          "DEL",
-          ...Array.from({ length: Number(previous.parts) }, (_, i) => partKey(previous.version, i)),
-        ]);
-      await pipeline(commands);
-      return store.document();
-    },
-
-    /** The current plan's details, or null before the first upload. */
-    document: () => read(documentKey),
-
-    /** @returns {Promise<string | null>} one part, base64 */
-    async readPart(version, index) {
-      const [part] = await pipeline([["GET", partKey(version, index)]]);
-      return part;
     },
   };
   return store;

@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { businessPlanFromEnv } from "../business-plan.mjs";
 import { site } from "../site";
-import { PlanFrame } from "./frame";
 import { PlanGate } from "./gate";
-import { currentViewer } from "./server";
+import { PlanView } from "./plan-view";
+import { currentViewer, longDate } from "./server";
 import "./bp.css";
 
 // Always checks the visitor's session, never prerendered.
@@ -19,55 +19,45 @@ export const metadata: Metadata = {
 };
 
 /* The confidential business plan. Visitors enter the password made for
-   them in the marketing dashboard, accept the confidentiality terms, and
-   the PDF opens. */
-export default async function BusinessPlan() {
+   them in the marketing dashboard and accept the confidentiality terms;
+   then they see the version chosen for them, on the web or as a PDF. */
+export default async function BusinessPlan({
+  searchParams,
+}: {
+  searchParams: Promise<{ view?: string }>;
+}) {
   const plan = businessPlanFromEnv();
   const session = plan && (await currentViewer(plan));
   if (!plan || !session) return <PlanGate available={Boolean(plan)} />;
 
-  const document = await plan.document();
   const { viewer, recipient } = session;
-  const accepted = new Date(viewer.acceptedAt).toLocaleDateString("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
-  return (
-    <div className="bp-viewer">
-      <header className="bp-bar">
-        <a href="/" aria-label="SynoRing home">
-          <img src="/wordmark.svg" width="108" height="36" alt="SynoRing" />
-        </a>
-        <div className="bp-title">
-          <h1>Business plan</h1>
-          <p>Confidential · Shared with {recipient.label}</p>
-        </div>
-        {document && (
-          <a
-            className="button button-small button-dark"
-            href="/api/bp/document"
-            target="_blank"
-            rel="noopener"
-          >
-            Open PDF
-          </a>
-        )}
-      </header>
-      {document ? (
-        <PlanFrame />
-      ) : (
-        <div className="bp-stage">
-          <p>
-            The plan is being updated. Please check back shortly, or email{" "}
+  const version = await plan.versionFor(recipient);
+  if (!version)
+    return (
+      <main className="bp-gate">
+        <img src="/wordmark.svg" width="132" height="44" alt="SynoRing" />
+        <div className="bp-card">
+          <h1>The plan is on its way.</h1>
+          <p className="bp-lede">
+            It hasn’t been published yet. Please check back shortly, or email{" "}
             <a href={`mailto:${site.email}`}>{site.email}</a>.
           </p>
         </div>
-      )}
-      <footer className="bp-foot">
-        Shared with {viewer.name} under the confidentiality terms accepted on{" "}
-        {accepted}. Questions: <a href={`mailto:${site.email}`}>{site.email}</a>
-      </footer>
-    </div>
+      </main>
+    );
+
+  const { view } = await searchParams;
+  const pdf = Boolean(version.pdfUpload) && (view === "pdf" || !version.html?.trim());
+  // The PDF route counts PDF openings; the page counts the web version.
+  if (!pdf) await plan.recordView(viewer, version);
+  return (
+    <PlanView
+      version={version}
+      shared={recipient.label}
+      view={pdf ? "pdf" : "web"}
+      base="/bp"
+      pdfUrl="/api/bp/document"
+      footer={`Confidential. Shared with ${recipient.label} under the terms accepted on ${longDate(viewer.acceptedAt)}.`}
+    />
   );
 }

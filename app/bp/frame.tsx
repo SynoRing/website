@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 /* Shows the PDF inline on wide screens. Phones can't show a PDF inside a
    page, so they get a button that opens it in their own viewer. */
-export function PlanFrame() {
+export function PlanFrame({ src }: { src: string }) {
   const [wide, setWide] = useState<boolean | null>(null);
   useEffect(() => {
     const query = matchMedia("(min-width: 760px)");
@@ -18,20 +18,15 @@ export function PlanFrame() {
     return (
       <iframe
         className="bp-frame"
-        src="/api/bp/document#view=FitH"
+        src={`${src}#view=FitH`}
         title="SynoRing business plan"
       />
     );
   return (
     <div className="bp-stage">
-      <p>The plan opens in your phone’s PDF viewer.</p>
-      <a
-        className="button button-dark"
-        href="/api/bp/document"
-        target="_blank"
-        rel="noopener"
-      >
-        Open the business plan
+      <p>The PDF opens in your phone’s viewer.</p>
+      <a className="button button-dark" href={src} target="_blank" rel="noopener">
+        Open the PDF
       </a>
     </div>
   );

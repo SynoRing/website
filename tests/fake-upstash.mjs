@@ -49,6 +49,7 @@ export function fakeUpstash() {
       const h = data.get(key);
       return h ? fields.filter((field) => h.delete(field)).length : 0;
     },
+    HGET: (key, field) => data.get(key)?.get(field) ?? null,
     HGETALL: (key) => [...(data.get(key) ?? new Map())].flat(),
     ZADD: (key, ...args) => {
       const nx = args[0] === "NX";

@@ -6,13 +6,11 @@ import { terms } from "./terms";
 const errors: Record<string, string> = {
   wrong_password: "That password isn’t valid, or it has been turned off.",
   rate_limited: "Too many attempts. Try again in an hour.",
-  invalid_name: "Enter your name.",
-  invalid_email: "Enter a valid email address.",
   terms_not_accepted: "Please accept the confidentiality terms.",
 };
 
 export function PlanGate({ available }: { available: boolean }) {
-  const [form, setForm] = useState({ password: "", name: "", email: "", agree: false });
+  const [form, setForm] = useState({ password: "", agree: false });
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const set = (field: keyof typeof form) => (value: string | boolean) =>
@@ -54,8 +52,8 @@ export function PlanGate({ available }: { available: boolean }) {
         ) : (
           <>
             <p className="bp-lede">
-              Enter the password you were given, then confirm who you are and
-              agree to keep the plan confidential.
+              Enter the password you were given and agree to keep the plan
+              confidential.
             </p>
             <label className="bp-field">
               Password
@@ -70,30 +68,6 @@ export function PlanGate({ available }: { available: boolean }) {
                 onChange={(event) => set("password")(event.target.value)}
               />
             </label>
-            <div className="bp-pair">
-              <label className="bp-field">
-                Full name
-                <input
-                  name="name"
-                  autoComplete="name"
-                  required
-                  maxLength={120}
-                  value={form.name}
-                  onChange={(event) => set("name")(event.target.value)}
-                />
-              </label>
-              <label className="bp-field">
-                Email
-                <input
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  value={form.email}
-                  onChange={(event) => set("email")(event.target.value)}
-                />
-              </label>
-            </div>
             <section
               className="bp-terms"
               tabIndex={0}
@@ -106,10 +80,7 @@ export function PlanGate({ available }: { available: boolean }) {
                   <li key={term}>{term}</li>
                 ))}
               </ol>
-              <p>
-                When you accept, we record your name, email, IP address, and the
-                time.
-              </p>
+              <p>When you accept, we record the time and your IP address.</p>
             </section>
             <label className="bp-check">
               <input

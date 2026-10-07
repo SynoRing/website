@@ -3,6 +3,7 @@ import { Dashboard } from "./dashboard";
 import { setupStatus } from "./server";
 import { isSignedIn } from "./session";
 import { SignIn } from "./sign-in";
+import "../bp/doc.css";
 import "./marketing.css";
 
 // Always checks the session cookie, never prerendered.

@@ -1,9 +1,11 @@
 import { cookies } from "next/headers";
 import { businessPlanFromEnv } from "../business-plan.mjs";
 
-/* Shared by the /bp page and the routes that serve the plan. */
+/* Shared by the /bp page, the dashboard's preview, and the routes that
+   serve the plan's PDF. */
 
 export type Plan = NonNullable<ReturnType<typeof businessPlanFromEnv>>;
+export type Version = Record<string, string>;
 
 export const viewerCookie = "synoring_bp";
 
@@ -13,30 +15,48 @@ export async function currentViewer(plan: Plan) {
   return plan.session((await cookies()).get(viewerCookie)?.value);
 }
 
-/** Streams the stored PDF part by part. A streamed response isn't held to
+export const longDate = (value: string) =>
+  new Date(value).toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+
+/** "Version 3 · October 6, 2026", or "Draft" for the working copy. */
+export const versionLabel = (version: Version) =>
+  version.number
+    ? `Version ${version.number} · ${longDate(version.publishedAt)}`
+    : "Draft · not published";
+
+/** Streams a version's PDF part by part. A streamed response isn't held to
     Vercel's 4.5 MB response limit. */
-export function documentResponse(
-  plan: Plan,
-  document: Record<string, string>,
-  { download = false } = {},
-) {
-  const parts = Number(document.parts);
+export function pdfResponse(plan: Plan, version: Version, { download = false } = {}) {
+  const parts = Number(version.pdfParts);
   let index = 0;
   const body = new ReadableStream<Uint8Array>({
     async pull(controller) {
       if (index >= parts) return controller.close();
-      const part = await plan.readPart(document.version, index++);
+      const part = await plan.readPart(version.pdfUpload, index++);
       if (part === null) return controller.error(new Error("Business plan part missing"));
       controller.enqueue(new Uint8Array(Buffer.from(part, "base64")));
     },
   });
+  const name = version.number
+    ? `SynoRing business plan v${version.number}.pdf`
+    : "SynoRing business plan draft.pdf";
   return new Response(body, {
     headers: {
       "content-type": "application/pdf",
-      "content-disposition": `${download ? "attachment" : "inline"}; filename="SynoRing business plan.pdf"`,
+      "content-disposition": `${download ? "attachment" : "inline"}; filename="${name}"`,
       "cache-control": "private, no-store",
       "x-content-type-options": "nosniff",
       "x-robots-tag": "noindex, nofollow",
     },
   });
 }
+
+export const notFound = () =>
+  new Response("Not found", {
+    status: 404,
+    headers: { "cache-control": "no-store", "x-robots-tag": "noindex" },
+  });

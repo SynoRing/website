@@ -1,27 +1,38 @@
 import {
   generatePassword,
-  maxDocumentBytes,
+  maxPdfBytes,
   normalizePassword,
   partBytes,
 } from "../../../business-plan.mjs";
+import type { Plan } from "../../../bp/server";
 import { authorizePlan, json } from "../../../marketing/server";
 import { site } from "../../../site";
 
-/** The current plan, every recipient with their viewers, and the upload
-    limits. */
+/** The draft, every version, every recipient with their visits, and the
+    upload limits. */
 export async function GET(request: Request) {
   const { plan, denied } = await authorizePlan(request);
   if (denied) return denied;
-  const [document, recipients] = await Promise.all([
-    plan.document(),
+  const [draft, versions, recipients, nextNumber] = await Promise.all([
+    plan.draft(),
+    plan.versions(),
     plan.listRecipients(),
+    plan.nextNumber(),
   ]);
   return json(200, {
-    document,
+    draft,
+    versions,
     recipients,
+    nextNumber,
     url: `${site.url}/bp`,
-    limits: { partBytes, maxBytes: maxDocumentBytes },
+    limits: { partBytes, maxBytes: maxPdfBytes },
   });
+}
+
+/** "" (the latest) or the id of an existing version. */
+async function validVersion(plan: Plan, value: unknown) {
+  if (value === undefined || value === "") return "";
+  return typeof value === "string" && (await plan.version(value)) ? value : null;
 }
 
 /** Adds a recipient, with a generated password unless one is given. */
@@ -35,24 +46,29 @@ export async function POST(request: Request) {
     ? normalizePassword(body.password)
     : generatePassword(label);
   if (!password) return json(400, { error: "invalid_password" });
-  const recipient = await plan.createRecipient({ label, password });
+  const versionId = await validVersion(plan, body.versionId);
+  if (versionId === null) return json(400, { error: "invalid_request" });
+  const recipient = await plan.createRecipient({ label, password, versionId });
   if (!recipient) return json(409, { error: "password_taken" });
   return json(200, { recipient: { ...recipient, viewers: [] } });
 }
 
-/** Turns a recipient's password off or back on. */
+/** Turns a recipient's password off or on, or changes their version. */
 export async function PATCH(request: Request) {
   const { plan, denied } = await authorizePlan(request);
   if (denied) return denied;
   const body = await request.json().catch(() => ({}));
-  if (typeof body.id !== "string" || typeof body.revoked !== "boolean")
-    return json(400, { error: "invalid_request" });
-  if (!(await plan.setRevoked(body.id, body.revoked)))
+  if (typeof body.id !== "string") return json(400, { error: "invalid_request" });
+  const revoked = typeof body.revoked === "boolean" ? body.revoked : undefined;
+  const versionId =
+    body.versionId === undefined ? undefined : await validVersion(plan, body.versionId);
+  if (versionId === null) return json(400, { error: "invalid_request" });
+  if (!(await plan.updateRecipient(body.id, { revoked, versionId })))
     return json(404, { error: "not_found" });
   return json(200, { ok: true });
 }
 
-/** Deletes a recipient and the record of who viewed through them. */
+/** Deletes a recipient and the record of their visits. */
 export async function DELETE(request: Request) {
   const { plan, denied } = await authorizePlan(request);
   if (denied) return denied;

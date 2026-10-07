@@ -16,6 +16,7 @@ const errorText: Record<string, string> = {
   not_pdf: "Choose a PDF file.",
   too_large: "That file is too large.",
   upload_incomplete: "The upload didn’t finish. Try again.",
+  empty_draft: "Write the web version or attach a PDF first.",
 };
 
 export class ApiError extends Error {}
