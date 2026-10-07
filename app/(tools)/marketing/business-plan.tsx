@@ -329,6 +329,13 @@ function PlanEditor({ data, reload, onNotice, onLocked }: Props & { onLocked: ()
           </div>
         </div>
 
+        <AssetLibrary
+          partBytes={data.limits.partBytes}
+          maxBytes={data.limits.maxBytes}
+          onInsert={insert}
+          onNotice={onNotice}
+        />
+
         <div className="mk-send">
           <label className="mk-field">
             <span>Lock a version</span>
@@ -378,7 +385,10 @@ function PlanEditor({ data, reload, onNotice, onLocked }: Props & { onLocked: ()
           </div>
         </div>
         <div className={`mk-plan-preview mk-plan-preview-${width}`}>
-          <article className="bp-doc" dangerouslySetInnerHTML={{ __html: html }} />
+          <article
+            className={/class="deck[\s"]/.test(html) ? undefined : "bp-doc"}
+            dangerouslySetInnerHTML={{ __html: html }}
+          />
         </div>
       </div>
     </div>
@@ -714,6 +724,152 @@ function RecipientList({ data, reload, onNotice }: Props) {
           </article>
         );
       })}
+    </div>
+  );
+}
+
+type Asset = Row;
+
+/** The snippet that shows an asset in the plan. */
+function assetSnippet(asset: Asset) {
+  const src = `/api/bp/asset/${asset.id}`;
+  return asset.type.startsWith("video/")
+    ? `<video src="${src}" controls playsinline preload="metadata"></video>`
+    : `<img src="${src}" alt="" />`;
+}
+
+/* Images and videos for the plan. They are stored privately and only load
+   for signed-in viewers, so they are safe to use in a confidential plan. */
+function AssetLibrary({
+  partBytes,
+  maxBytes,
+  onInsert,
+  onNotice,
+}: {
+  partBytes: number;
+  maxBytes: number;
+  onInsert: (snippet: string) => void;
+  onNotice: Notify;
+}) {
+  const [assets, setAssets] = useState<Asset[] | null>(null);
+  const [uploading, setUploading] = useState("");
+  const picker = useRef<HTMLInputElement>(null);
+  const fail = (error: unknown) => onNotice({ tone: "error", text: message(error) });
+
+  async function load() {
+    try {
+      setAssets((await api("bp/assets")).assets);
+    } catch (error) {
+      fail(error);
+    }
+  }
+  useEffect(() => {
+    load();
+  }, []);
+
+  async function upload(files: FileList) {
+    try {
+      for (const file of Array.from(files)) {
+        if (file.size > maxBytes)
+          throw new Error(`${file.name} is larger than ${megabytes(maxBytes)}.`);
+        const id = crypto.randomUUID();
+        const parts = Math.ceil(file.size / partBytes);
+        for (let index = 0; index < parts; index++) {
+          setUploading(`${file.name} ${Math.round((index / parts) * 100)}%`);
+          const response = await fetch(`/api/marketing/bp/assets?upload=${id}&index=${index}`, {
+            method: "PUT",
+            headers: { "content-type": "application/octet-stream" },
+            body: file.slice(index * partBytes, (index + 1) * partBytes),
+          });
+          if (response.status === 401) location.reload();
+          if (!response.ok) throw new Error(`Upload failed (${response.status}).`);
+        }
+        await api("bp/assets", "POST", {
+          upload: id,
+          name: file.name,
+          type: file.type,
+          size: file.size,
+          parts,
+        });
+      }
+      await load();
+    } catch (error) {
+      fail(error);
+    } finally {
+      setUploading("");
+      if (picker.current) picker.current.value = "";
+    }
+  }
+
+  async function remove(asset: Asset) {
+    if (!confirm(`Delete ${asset.name}? Anything still showing it gets a broken image.`)) return;
+    try {
+      await api("bp/assets", "DELETE", { id: asset.id });
+      await load();
+    } catch (error) {
+      fail(error);
+    }
+  }
+
+  async function copy(asset: Asset) {
+    try {
+      await navigator.clipboard.writeText(`/api/bp/asset/${asset.id}`);
+      onNotice({ tone: "ok", text: "Address copied." });
+    } catch {
+      fail(new Error("Couldn’t copy."));
+    }
+  }
+
+  return (
+    <div className="mk-field">
+      <span>Images and video</span>
+      <div className="mk-assets">
+        {assets?.map((asset) => (
+          <div key={asset.id} className="mk-asset">
+            {asset.type.startsWith("video/") ? (
+              <span className="mk-asset-thumb mk-asset-video">▶</span>
+            ) : (
+              <img className="mk-asset-thumb" src={`/api/bp/asset/${asset.id}`} alt="" loading="lazy" />
+            )}
+            <span className="mk-asset-name" title={asset.name}>
+              {asset.name}
+              <small>{megabytes(asset.size)}</small>
+            </span>
+            <button className="mk-quiet" onClick={() => onInsert(assetSnippet(asset))}>
+              Insert
+            </button>
+            <button className="mk-quiet" onClick={() => copy(asset)}>
+              Copy address
+            </button>
+            <button className="mk-quiet" onClick={() => remove(asset)}>
+              Delete
+            </button>
+          </div>
+        ))}
+        {assets && !assets.length && (
+          <p className="mk-hint">None yet. Upload images or video to show them in the plan.</p>
+        )}
+        <div className="mk-inline">
+          <input
+            ref={picker}
+            type="file"
+            multiple
+            accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm"
+            hidden
+            onChange={(event) => event.target.files?.length && upload(event.target.files)}
+          />
+          <button
+            className="mk-quiet"
+            disabled={uploading !== ""}
+            onClick={() => picker.current?.click()}
+          >
+            {uploading ? `Uploading ${uploading}…` : "Upload images or video"}
+          </button>
+        </div>
+      </div>
+      <p className="mk-hint">
+        Stored privately: they only load for people signed in to the plan.
+      </p>
     </div>
   );
 }

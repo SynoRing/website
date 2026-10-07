@@ -127,6 +127,14 @@ in `/marketing`:
   to a locked version. Copy invite copies the link and password. Turning a
   password off ends access at once.
 
+HTML wrapped in `<div class="deck">`, with one `<section class="slide">` per
+page, shows as 16:9 slides styled by `app/(tools)/bp/deck.css` (classes such
+as `panel`, `card`, `stat`, `flow`, `callout`, and `timeline`). Slides scale
+with the window, and Save as PDF prints one slide per landscape page, so the
+PDF is always the current version. Images and video uploaded in the editor
+are stored privately and served at `/api/bp/asset/<id>` only to signed-in
+viewers and the dashboard, with byte ranges so video can seek.
+
 A visitor enters their password and accepts the confidentiality terms
 (`app/(tools)/bp/terms.ts`). They then see Latest, labeled with the date it was last
 updated, or their locked version, labeled with its number and date. It shows

@@ -3,6 +3,7 @@ import { PlanFrame } from "./frame";
 import { PrintButton } from "./print-button";
 import { versionLabel, type Version } from "./server";
 import "./bp.css";
+import "./deck.css";
 import "./doc.css";
 
 /* One version of the plan as a recipient sees it: the web version, or its
@@ -24,6 +25,8 @@ export function PlanView({
   pdfUrl: string;
 }) {
   const hasWeb = Boolean(version.html?.trim());
+  // Slides opt in with <div class="deck">; anything else is a document.
+  const deck = /class="deck[\s"]/.test(version.html ?? "");
   const hasPdf = Boolean(version.pdfUpload);
   const label = versionLabel(version);
   const download = `${pdfUrl}${pdfUrl.includes("?") ? "&" : "?"}download`;
@@ -62,11 +65,16 @@ export function PlanView({
       {view === "pdf" ? (
         <PlanFrame src={pdfUrl} />
       ) : (
-        <main className="bp-page">
-          <p className="bp-print-head">
-            SynoRing business plan · {label} · Confidential · Shared with {shared}
-          </p>
-          <article className="bp-doc" dangerouslySetInnerHTML={{ __html: version.html }} />
+        <main className={`bp-page${deck ? " bp-deck-page" : ""}`}>
+          {!deck && (
+            <p className="bp-print-head">
+              SynoRing business plan · {label} · Confidential · Shared with {shared}
+            </p>
+          )}
+          <article
+            className={deck ? undefined : "bp-doc"}
+            dangerouslySetInnerHTML={{ __html: version.html }}
+          />
         </main>
       )}
 

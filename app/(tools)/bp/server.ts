@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { businessPlanFromEnv } from "../../business-plan.mjs";
+import { businessPlanFromEnv, partBytes } from "../../business-plan.mjs";
 
 /* Shared by the /bp page, the dashboard's preview, and the routes that
    serve the plan's PDF. */
@@ -29,31 +29,75 @@ export const versionLabel = (version: Version) =>
     ? `Version ${version.number} · ${longDate(version.lockedAt)}`
     : `Latest · updated ${longDate(version.updatedAt)}`;
 
-/** Streams a version's PDF part by part. A streamed response isn't held to
-    Vercel's 4.5 MB response limit. */
-export function pdfResponse(plan: Plan, version: Version, { download = false } = {}) {
-  const parts = Number(version.pdfParts);
-  let index = 0;
+type StoredFile = { upload: string; parts: string | number; size: string | number };
+
+/** Streams a stored file part by part, or the byte range asked for, so
+    videos can seek. A streamed response isn't held to Vercel's 4.5 MB
+    response limit. */
+export function fileResponse(
+  plan: Plan,
+  file: StoredFile,
+  headers: Record<string, string>,
+  range?: string | null,
+) {
+  const size = Number(file.size);
+  let start = 0;
+  let end = size - 1;
+  const match = range && /^bytes=(\d*)-(\d*)$/.exec(range.trim());
+  if (range && match && (match[1] || match[2])) {
+    if (match[1]) {
+      start = Number(match[1]);
+      if (match[2]) end = Math.min(Number(match[2]), size - 1);
+    } else start = Math.max(0, size - Number(match[2]));
+    if (start > end || start >= size)
+      return new Response(null, {
+        status: 416,
+        headers: { "content-range": `bytes */${size}` },
+      });
+  }
+  let part = Math.floor(start / partBytes);
+  const last = Math.floor(end / partBytes);
   const body = new ReadableStream<Uint8Array>({
     async pull(controller) {
-      if (index >= parts) return controller.close();
-      const part = await plan.readPart(version.pdfUpload, index++);
-      if (part === null) return controller.error(new Error("Business plan part missing"));
-      controller.enqueue(new Uint8Array(Buffer.from(part, "base64")));
+      if (part > last) return controller.close();
+      const data = await plan.readPart(file.upload, part);
+      if (data === null) return controller.error(new Error("Stored file part missing"));
+      const bytes = Buffer.from(data, "base64");
+      const offset = part * partBytes;
+      const from = Math.max(start - offset, 0);
+      const to = Math.min(end - offset + 1, bytes.length);
+      part++;
+      controller.enqueue(new Uint8Array(bytes.subarray(from, to)));
     },
   });
-  const name = version.number
-    ? `SynoRing business plan v${version.number}.pdf`
-    : "SynoRing business plan.pdf";
+  const partial = start !== 0 || end !== size - 1;
   return new Response(body, {
+    status: partial ? 206 : 200,
     headers: {
-      "content-type": "application/pdf",
-      "content-disposition": `${download ? "attachment" : "inline"}; filename="${name}"`,
-      "cache-control": "private, no-store",
+      ...headers,
+      "accept-ranges": "bytes",
+      "content-length": String(end - start + 1),
+      ...(partial ? { "content-range": `bytes ${start}-${end}/${size}` } : {}),
       "x-content-type-options": "nosniff",
       "x-robots-tag": "noindex, nofollow",
     },
   });
+}
+
+/** A version's PDF, inline or as a download. */
+export function pdfResponse(plan: Plan, version: Version, { download = false } = {}) {
+  const name = version.number
+    ? `SynoRing business plan v${version.number}.pdf`
+    : "SynoRing business plan.pdf";
+  return fileResponse(
+    plan,
+    { upload: version.pdfUpload, parts: version.pdfParts, size: version.pdfSize },
+    {
+      "content-type": "application/pdf",
+      "content-disposition": `${download ? "attachment" : "inline"}; filename="${name}"`,
+      "cache-control": "private, no-store",
+    },
+  );
 }
 
 export const notFound = () =>

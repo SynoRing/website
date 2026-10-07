@@ -1,0 +1,565 @@
+/* Slides for the business plan. The plan's HTML opts in with
+   <div class="deck">, holding one <section class="slide"> per page.
+
+   Each slide is a 16:9 container drawn on a 1280 × 720 grid: --u is one
+   grid pixel, so everything scales with the slide's width on screen, in
+   the dashboard preview, and on a printed page. Printing gives one slide
+   per landscape page, which is how the plan becomes a PDF. */
+
+.deck {
+  --u: calc(100cqw / 1280);
+  --deck-ink: #18211c;
+  --deck-text: #4a544d;
+  --deck-muted: #6f786f;
+  --deck-line: #d9ded4;
+  --deck-paper: #f7f8f4;
+  --deck-tint: #e9f0e1;
+  --deck-lime: #c9e3a6;
+  --deck-forest: #20302a;
+  --deck-accent: #4b6a3c;
+  --deck-clay: #c49a6c;
+  display: grid;
+  gap: 28px;
+  max-width: 1280px;
+  margin: 0 auto;
+  font-family: var(--font-sans), "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+.slide {
+  position: relative;
+  container-type: inline-size;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 14px;
+  color: var(--deck-ink);
+  background: var(--deck-paper);
+  box-shadow:
+    0 1px 2px #18211c14,
+    0 18px 40px #18211c14;
+}
+.slide > .in {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: calc(46 * var(--u)) calc(64 * var(--u)) calc(34 * var(--u));
+  font-size: calc(17 * var(--u));
+  line-height: 1.5;
+}
+.slide * {
+  margin: 0;
+}
+.slide img,
+.slide video,
+.slide svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* Header and footer on every slide. */
+.slide .top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: calc(30 * var(--u));
+}
+.slide .mark {
+  width: calc(104 * var(--u));
+  height: auto;
+}
+.slide .section {
+  font-size: calc(12 * var(--u));
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--deck-muted);
+}
+.slide .section b {
+  margin-right: calc(10 * var(--u));
+  font-weight: 500;
+  color: var(--deck-accent);
+}
+.slide .foot {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  gap: calc(24 * var(--u));
+  margin-top: auto;
+  padding-top: calc(16 * var(--u));
+  font-size: calc(11.5 * var(--u));
+  color: var(--deck-muted);
+}
+
+/* Type. */
+.slide h1,
+.slide h2 {
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 1.04;
+}
+.slide h2 {
+  max-width: calc(980 * var(--u));
+  font-size: calc(50 * var(--u));
+}
+.slide h3 {
+  font-size: calc(21 * var(--u));
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+.slide p {
+  color: var(--deck-text);
+}
+.slide .lead {
+  max-width: calc(860 * var(--u));
+  margin-top: calc(16 * var(--u));
+  font-size: calc(21 * var(--u));
+  line-height: 1.45;
+  color: var(--deck-text);
+}
+.slide .kicker {
+  display: block;
+  margin-bottom: calc(10 * var(--u));
+  font-size: calc(11.5 * var(--u));
+  font-weight: 500;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--deck-accent);
+}
+.slide .small {
+  font-size: calc(13.5 * var(--u));
+  line-height: 1.5;
+  color: var(--deck-muted);
+}
+.slide .source {
+  font-size: calc(11.5 * var(--u));
+  color: var(--deck-muted);
+}
+.slide strong {
+  font-weight: 500;
+  color: var(--deck-ink);
+}
+.slide .hl {
+  padding: 0 0.15em;
+  border-radius: 0.2em;
+  background: var(--deck-lime);
+}
+
+/* Layout. The body grows between the header and footer. */
+.slide .body {
+  flex: 1;
+  min-height: 0;
+  margin-top: calc(30 * var(--u));
+}
+.slide .body.grid {
+  align-content: start;
+}
+.slide .row {
+  display: flex;
+  align-items: center;
+  gap: calc(16 * var(--u));
+}
+.slide .grid {
+  display: grid;
+  gap: calc(28 * var(--u));
+}
+.slide .c2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.slide .c3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.slide .c4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.slide .split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: calc(48 * var(--u));
+  align-items: center;
+}
+.slide .stack > * + * {
+  margin-top: calc(10 * var(--u));
+}
+.slide .gap-lg {
+  margin-top: calc(28 * var(--u));
+}
+
+/* Blocks. */
+.slide .card {
+  padding-top: calc(16 * var(--u));
+  border-top: 1px solid var(--deck-line);
+}
+.slide .card h3 + p {
+  margin-top: calc(8 * var(--u));
+}
+.slide .num {
+  display: block;
+  margin-bottom: calc(12 * var(--u));
+  font-size: calc(12 * var(--u));
+  font-variant-numeric: tabular-nums;
+  color: var(--deck-muted);
+}
+.slide .panel {
+  padding: calc(24 * var(--u)) calc(26 * var(--u));
+  border-radius: calc(16 * var(--u));
+  background: #fff;
+}
+.slide .panel.tint {
+  background: var(--deck-tint);
+}
+.slide .callout {
+  display: flex;
+  align-items: baseline;
+  gap: calc(20 * var(--u));
+  padding: calc(18 * var(--u)) calc(24 * var(--u));
+  border-radius: calc(14 * var(--u));
+  font-size: calc(19 * var(--u));
+  color: var(--deck-ink);
+  background: var(--deck-tint);
+}
+.slide .callout .kicker {
+  flex: none;
+  margin: 0;
+}
+.slide .stat {
+  display: block;
+  font-size: calc(64 * var(--u));
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--deck-ink);
+}
+.slide .stat small {
+  margin-left: calc(6 * var(--u));
+  font-size: 0.3em;
+  letter-spacing: 0;
+  color: var(--deck-muted);
+}
+.slide .stat.md {
+  font-size: calc(44 * var(--u));
+}
+.slide .chip {
+  display: inline-block;
+  padding: calc(4 * var(--u)) calc(11 * var(--u));
+  border-radius: 999px;
+  font-size: calc(12.5 * var(--u));
+  font-weight: 500;
+  color: var(--deck-accent);
+  background: var(--deck-tint);
+}
+.slide ul.ticks {
+  padding: 0;
+  list-style: none;
+}
+.slide ul.ticks li {
+  position: relative;
+  padding-left: calc(20 * var(--u));
+  color: var(--deck-text);
+}
+.slide ul.ticks li + li {
+  margin-top: calc(6 * var(--u));
+}
+.slide ul.ticks li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: calc(7 * var(--u));
+  height: calc(7 * var(--u));
+  border-radius: 50%;
+  background: var(--deck-accent);
+}
+
+/* A row of steps joined by arrows. */
+.slide .flow {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  gap: calc(14 * var(--u));
+}
+.slide .flow > div {
+  position: relative;
+  padding: calc(18 * var(--u)) calc(20 * var(--u));
+  border-radius: calc(14 * var(--u));
+  background: #fff;
+}
+.slide .flow > div + div::before {
+  content: "→";
+  position: absolute;
+  left: calc(-12 * var(--u));
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: calc(16 * var(--u));
+  color: var(--deck-muted);
+}
+.slide .flow h3 {
+  font-size: calc(18 * var(--u));
+}
+.slide .flow p {
+  margin-top: calc(4 * var(--u));
+  font-size: calc(14 * var(--u));
+  line-height: 1.4;
+}
+
+/* Tables. */
+.slide table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: calc(14 * var(--u));
+  line-height: 1.35;
+}
+.slide th {
+  padding: 0 calc(12 * var(--u)) calc(10 * var(--u)) 0;
+  border-bottom: 1px solid var(--deck-ink);
+  font-size: calc(11 * var(--u));
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-align: left;
+  text-transform: uppercase;
+  color: var(--deck-muted);
+}
+.slide td {
+  padding: calc(10 * var(--u)) calc(12 * var(--u)) calc(10 * var(--u)) 0;
+  border-bottom: 1px solid var(--deck-line);
+  vertical-align: top;
+  color: var(--deck-text);
+}
+.slide td:first-child {
+  color: var(--deck-ink);
+}
+.slide td.price {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--deck-ink);
+}
+.slide td small {
+  display: block;
+  font-size: calc(11.5 * var(--u));
+  color: var(--deck-muted);
+}
+.slide tr.us td {
+  border-bottom: 0;
+  background: var(--deck-tint);
+}
+.slide tr.us td:first-child {
+  padding-left: calc(12 * var(--u));
+  border-radius: calc(10 * var(--u)) 0 0 calc(10 * var(--u));
+}
+.slide tr.us td:last-child {
+  border-radius: 0 calc(10 * var(--u)) calc(10 * var(--u)) 0;
+}
+.slide td.num-cell,
+.slide th.num-cell {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Media. */
+.slide .frame {
+  overflow: hidden;
+  border-radius: calc(14 * var(--u));
+  background: #0d1210;
+}
+.slide .frame video,
+.slide .frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.slide .caption {
+  margin-top: calc(8 * var(--u));
+  font-size: calc(12 * var(--u));
+  color: var(--deck-muted);
+}
+.deck .slide .print-only {
+  display: none;
+}
+
+/* Team. */
+.slide .person img {
+  width: calc(132 * var(--u));
+  height: calc(132 * var(--u));
+  margin-bottom: calc(16 * var(--u));
+  border-radius: 50%;
+  object-fit: cover;
+}
+.slide .person .role {
+  margin-top: calc(2 * var(--u));
+  font-size: calc(13 * var(--u));
+  font-weight: 500;
+  color: var(--deck-accent);
+}
+.slide .person p {
+  margin-top: calc(10 * var(--u));
+  font-size: calc(14 * var(--u));
+  line-height: 1.45;
+}
+.slide .logos {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: calc(28 * var(--u));
+  padding: calc(16 * var(--u)) calc(28 * var(--u));
+  border-radius: calc(14 * var(--u));
+  background: var(--deck-forest);
+}
+.slide .logos img {
+  width: auto;
+  height: calc(24 * var(--u));
+  object-fit: contain;
+}
+
+/* Timeline: a grid of quarters with bars placed by grid-column. */
+.slide .timeline {
+  display: grid;
+  grid-template-columns: calc(150 * var(--u)) repeat(4, minmax(0, 1fr));
+  gap: calc(10 * var(--u)) calc(8 * var(--u));
+  align-items: center;
+  font-size: calc(14 * var(--u));
+}
+.slide .timeline .head {
+  padding-bottom: calc(6 * var(--u));
+  border-bottom: 1px solid var(--deck-ink);
+  font-size: calc(11 * var(--u));
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--deck-muted);
+}
+.slide .timeline .lane {
+  font-weight: 500;
+}
+.slide .timeline .bar {
+  padding: calc(8 * var(--u)) calc(12 * var(--u));
+  border-radius: calc(9 * var(--u));
+  font-size: calc(13 * var(--u));
+  line-height: 1.3;
+  color: #fff;
+  background: var(--deck-accent);
+}
+.slide .timeline .bar.next {
+  color: var(--deck-ink);
+  background: var(--deck-lime);
+}
+.slide .timeline .bar.later {
+  color: var(--deck-ink);
+  background: var(--deck-tint);
+}
+
+/* Charts are inline SVG; these set their text and colors. */
+.slide svg text {
+  font-family: inherit;
+  fill: var(--deck-muted);
+}
+.slide svg .label {
+  fill: var(--deck-ink);
+}
+.slide .legend {
+  display: flex;
+  gap: calc(18 * var(--u));
+  font-size: calc(12.5 * var(--u));
+  color: var(--deck-muted);
+}
+.slide .legend i {
+  display: inline-block;
+  width: calc(10 * var(--u));
+  height: calc(10 * var(--u));
+  margin-right: calc(6 * var(--u));
+  border-radius: calc(3 * var(--u));
+  vertical-align: middle;
+}
+
+/* Slide themes. */
+.slide.tint {
+  background: var(--deck-tint);
+}
+.slide.tint .panel,
+.slide.tint .flow > div {
+  background: #fbfcf8;
+}
+.slide.dark {
+  color: #eef2ec;
+  background: var(--deck-forest);
+}
+.slide.dark .mark {
+  filter: invert(1);
+}
+.slide.dark p,
+.slide.dark .lead,
+.slide.dark td {
+  color: #c5cec7;
+}
+.slide.dark strong,
+.slide.dark h2,
+.slide.dark h3,
+.slide.dark .stat {
+  color: #fff;
+}
+.slide.dark .section,
+.slide.dark .foot,
+.slide.dark .small,
+.slide.dark .caption,
+.slide.dark .num {
+  color: #93a196;
+}
+.slide.dark .kicker,
+.slide.dark .section b {
+  color: var(--deck-lime);
+}
+.slide.dark .card {
+  border-color: #ffffff2b;
+}
+.slide.dark .panel {
+  background: #ffffff0f;
+}
+.slide.dark .callout {
+  color: #fff;
+  background: #ffffff12;
+}
+
+/* The cover. */
+.slide.cover h1 {
+  position: relative;
+  z-index: 1;
+  max-width: calc(780 * var(--u));
+  font-size: calc(78 * var(--u));
+  line-height: 0.98;
+}
+.slide.cover .cover-art {
+  position: absolute;
+  right: calc(-24 * var(--u));
+  top: calc(92 * var(--u));
+  width: calc(560 * var(--u));
+}
+
+@page deck {
+  size: 13.333in 7.5in;
+  margin: 0;
+}
+@media print {
+  .deck {
+    display: block;
+    max-width: none;
+  }
+  .slide {
+    page: deck;
+    width: 13.333in;
+    height: 7.5in;
+    aspect-ratio: auto;
+    break-after: page;
+    border-radius: 0;
+    box-shadow: none;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .slide:last-child {
+    break-after: auto;
+  }
+  .deck .slide video {
+    display: none;
+  }
+  .deck .slide .print-only {
+    display: block;
+  }
+}

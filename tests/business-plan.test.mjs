@@ -121,7 +121,34 @@ test("keeps a version's PDF until nothing uses it", async () => {
 
   await plan.removeVersion(v1.id);
   assert.equal(await plan.readPart("u1", 0), null);
-  assert.ok(![...upstash.data.keys()].some((key) => key.includes(":pdf:")));
+  assert.ok(![...upstash.data.keys()].some((key) => key.includes(":file:")));
+});
+
+test("keeps images and videos as assets until deleted", async () => {
+  const upstash = fakeUpstash();
+  const plan = store(upstash);
+  const id = "0b6f1c3e-2a54-4f0e-9f55-9d6c1c1e2f70";
+  await plan.putPart(id, 0, "AAA=");
+  assert.equal(await plan.addAsset({ upload: id, name: "demo.mp4", type: "video/mp4", size: 5, parts: 2 }), null);
+  await plan.putPart(id, 1, "BBB=");
+  const asset = await plan.addAsset(
+    { upload: id, name: "demo.mp4", type: "video/mp4", size: 5, parts: 2 },
+    at("10:00"),
+  );
+  assert.deepEqual(asset, {
+    id,
+    name: "demo.mp4",
+    type: "video/mp4",
+    size: "5",
+    parts: "2",
+    createdAt: "2026-10-06T10:00:00.000Z",
+  });
+  assert.deepEqual((await plan.assets()).map((item) => item.id), [id]);
+  assert.equal(await plan.readPart(id, 1), "BBB=");
+  assert.equal(await plan.removeAsset(id), true);
+  assert.equal(await plan.removeAsset(id), false);
+  assert.deepEqual(await plan.assets(), []);
+  assert.ok(![...upstash.data.keys()].some((key) => key.includes(id)));
 });
 
 test("shows each recipient live Latest unless pinned to a version", async () => {

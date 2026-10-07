@@ -9,8 +9,9 @@
    version (v1, v2, ...) that never changes afterwards, and a recipient can
    be pinned to one.
 
-   Everything lives in the same Upstash database as the waitlist; PDFs are
-   split into base64 parts that each fit in one request. The site's
+   Everything lives in the same Upstash database as the waitlist. PDFs, and
+   the images and videos the plan shows, are split into base64 parts that
+   each fit in one request, and are only served to signed-in viewers. The site's
    repository is public, so nothing confidential can ship with the code.
    Plain JavaScript so the tests run it directly. */
 
@@ -25,6 +26,18 @@ import { upstash, upstashFromEnv } from "./waitlist.mjs";
 export const partBytes = 2 * 1024 * 1024;
 export const maxPdfBytes = 40 * 1024 * 1024;
 export const maxParts = Math.ceil(maxPdfBytes / partBytes);
+
+/** Files the plan can show. SVG is left out: opened directly, it could run
+    script on the site. */
+export const assetTypes = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+  "video/mp4",
+  "video/webm",
+];
+export const maxAssetBytes = maxPdfBytes;
 export const maxHtmlLength = 500_000;
 
 export const sessionSeconds = 7 * 24 * 60 * 60;
@@ -118,7 +131,9 @@ export function createBusinessPlan({ url, token, prefix = "bp", fetch: send = fe
   const versionIndex = `${prefix}:versions`;
   const versionKey = (id) => `${prefix}:version:${id}`;
   const counterKey = `${prefix}:version-number`;
-  const partKey = (upload, index) => `${prefix}:pdf:${upload}:${index}`;
+  const partKey = (upload, index) => `${prefix}:file:${upload}:${index}`;
+  const assetIndex = `${prefix}:assets`;
+  const assetKey = (id) => `${prefix}:asset:${id}`;
   const partKeys = (upload, parts) =>
     Array.from({ length: Number(parts) }, (_, i) => partKey(upload, i));
   let secretValue;
@@ -187,7 +202,8 @@ export function createBusinessPlan({ url, token, prefix = "bp", fetch: send = fe
       return store.latest();
     },
 
-    /** Stores one part of a PDF upload. Parts never attached expire in a day. */
+    /** Stores one part of an upload, a PDF or an asset. Parts never
+        attached expire in a day. */
     async putPart(upload, index, base64) {
       await pipeline([["SET", partKey(upload, index), base64, "EX", 86400]]);
     },
@@ -292,7 +308,43 @@ export function createBusinessPlan({ url, token, prefix = "bp", fetch: send = fe
       return true;
     },
 
-    /** @returns {Promise<string | null>} one part of a PDF, base64 */
+    /* Assets: images and videos the plan's HTML shows. Each is stored once
+       and never changes, so its id can be cached against. */
+
+    /** Keeps an upload as an asset. Resolves null if a part is missing.
+        @param {{ upload: string, name: string, type: string, size: number, parts: number }} file */
+    async addAsset({ upload, name, type, size, parts }, now = new Date()) {
+      const keys = partKeys(upload, parts);
+      const [present] = await pipeline([["EXISTS", ...keys]]);
+      if (present !== parts) return null;
+      const asset = { id: upload, name, type, size: String(size), parts: String(parts), createdAt: now.toISOString() };
+      await pipeline([
+        ...keys.map((key) => ["PERSIST", key]),
+        ["HSET", assetKey(upload), ...Object.entries(asset).flat()],
+        ["ZADD", assetIndex, now.getTime(), upload],
+      ]);
+      return asset;
+    },
+
+    asset: (id) => read(assetKey(id)),
+
+    /** Every asset, newest first. */
+    async assets() {
+      const [ids] = await pipeline([["ZREVRANGE", assetIndex, 0, -1]]);
+      return readAll(ids.map(assetKey));
+    },
+
+    async removeAsset(id) {
+      const asset = await store.asset(id);
+      if (!asset) return false;
+      await pipeline([
+        ["DEL", assetKey(id), ...partKeys(id, asset.parts)],
+        ["ZREM", assetIndex, id],
+      ]);
+      return true;
+    },
+
+    /** @returns {Promise<string | null>} one part of an upload, base64 */
     async readPart(upload, index) {
       const [part] = await pipeline([["GET", partKey(upload, index)]]);
       return part;
