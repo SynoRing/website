@@ -1,20 +1,22 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { CloseIcon, GlobeIcon } from "./icons";
+import type { LanguageOption } from "./i18n";
+import { CloseIcon } from "./icons";
+import { LanguageOptions } from "./language-options";
 
 export function MobileNavigation({
   active,
   copy,
   links,
-  language,
+  languages,
 }: {
   active: string;
   copy: { label: string; open: string; close: string };
   /** [href in this language, label, page path] */
   links: [string, string, string][];
-  /** This page in the other language. */
-  language: { href: string; label: string; lang: string };
+  /** "中文 / EN", shown here on narrow phones. */
+  languages: LanguageOption[];
 }) {
   const [open, setOpen] = useState(false);
   const trigger = useRef<HTMLButtonElement>(null);
@@ -58,15 +60,9 @@ export function MobileNavigation({
               {label}
             </a>
           ))}
-          <a
-            className="menu-language"
-            href={language.href}
-            hrefLang={language.lang}
-            lang={language.lang}
-          >
-            <GlobeIcon />
-            {language.label}
-          </a>
+          <div className="menu-language">
+            <LanguageOptions options={languages} />
+          </div>
         </nav>
       )}
     </div>

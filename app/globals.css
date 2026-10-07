@@ -375,35 +375,41 @@ details[open] > summary > .icon {
   gap: 10px;
   align-items: center;
 }
+/* "中文 / EN": the current language bold, the other a quieter link. */
 .language-switch {
   display: flex;
   flex-shrink: 0;
   align-items: center;
-  gap: 6px;
-  white-space: nowrap;
+  gap: 7px;
   height: 38px;
-  padding: 0 13px 0 11px;
+  padding: 0 14px;
   border: 1px solid #ffffff40;
   border-radius: var(--pill);
   font-size: 14px;
+  white-space: nowrap;
   color: #fff;
-  transition:
-    background 0.2s,
-    border-color 0.2s;
 }
-.language-switch:hover {
-  background: #ffffff14;
+.language-switch strong,
+.menu-language strong {
+  font-weight: 600;
 }
-.language-switch .icon {
-  width: 16px;
-  height: 16px;
+.language-switch a,
+.language-switch span {
+  color: #ffffffa6;
+}
+.language-switch a:hover {
+  color: #fff;
 }
 .nav-solid .language-switch {
   color: var(--ink);
   border-color: var(--line-strong);
 }
-.nav-solid .language-switch:hover {
-  background: var(--surface);
+.nav-solid .language-switch a,
+.nav-solid .language-switch span {
+  color: var(--muted);
+}
+.nav-solid .language-switch a:hover {
+  color: var(--ink);
 }
 .mobile-navigation {
   display: none;
@@ -472,11 +478,25 @@ details[open] > summary > .icon {
 .mobile-navigation nav .menu-language {
   display: none;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  padding: 15px 0;
+  font-size: 17px;
+  color: #fff;
 }
-.menu-language .icon {
-  width: 17px;
-  height: 17px;
+.mobile-navigation nav .menu-language a {
+  padding: 0;
+  border: 0;
+  color: #ffffffa6;
+}
+.mobile-navigation nav .menu-language span {
+  color: #ffffff59;
+}
+.nav-solid .mobile-navigation nav .menu-language {
+  color: var(--ink);
+}
+.nav-solid .mobile-navigation nav .menu-language a,
+.nav-solid .mobile-navigation nav .menu-language span {
+  color: var(--muted);
 }
 @media (min-width: 561px) {
   .mobile-navigation nav a:nth-last-child(2) {

@@ -1,9 +1,10 @@
 import type { ReactNode } from "react";
 import { siteCopy } from "./copy/site";
 import { fill } from "./text";
-import { languages, localePath, locales, type Lang } from "./i18n";
-import { ArrowIcon, GitHubIcon, GlobeIcon, PlusIcon, XIcon } from "./icons";
+import { languageOptions, localePath, type Lang } from "./i18n";
+import { ArrowIcon, GitHubIcon, PlusIcon, XIcon } from "./icons";
 import { MobileNavigation } from "./interactions";
+import { LanguageOptions } from "./language-options";
 import { navigation, site, type NavigationPath } from "./site";
 import { breadcrumb, jsonLd } from "./structured-data";
 
@@ -20,25 +21,6 @@ export function Note({ lang, number }: { lang: Lang; number: number }) {
   );
 }
 
-/** Links to this page in the other language, named in that language. */
-function LanguageSwitch({ lang, path }: { lang: Lang; path: string }) {
-  return locales
-    .filter((code) => code !== lang)
-    .map((code) => (
-      <a
-        key={code}
-        className="language-switch"
-        href={localePath(code, path)}
-        hrefLang={languages[code].htmlLang}
-        lang={languages[code].htmlLang}
-        aria-label={languages[code].name}
-      >
-        <GlobeIcon />
-        {code === "zh" ? "中文" : "EN"}
-      </a>
-    ));
-}
-
 export function SiteHeader({
   lang,
   active = "/",
@@ -49,7 +31,7 @@ export function SiteHeader({
   home?: boolean;
 }) {
   const copy = siteCopy[lang];
-  const other = locales.find((code) => code !== lang)!;
+  const languageChoices = languageOptions(lang, active);
   return (
     <header className={`nav-wrap${home ? "" : " nav-solid"}`}>
       <a className="brand" href={localePath(lang, "/")} aria-label={copy.homeLabel}>
@@ -73,7 +55,9 @@ export function SiteHeader({
         ))}
       </nav>
       <div className="nav-actions">
-        <LanguageSwitch lang={lang} path={active} />
+        <div className="language-switch">
+          <LanguageOptions options={languageChoices} />
+        </div>
         <a
           className={`button button-small${home ? "" : " button-dark"}`}
           href={localePath(lang, "/store#early-access")}
@@ -84,11 +68,7 @@ export function SiteHeader({
           active={active}
           copy={copy.mobileNavigation}
           links={navigation.map((href) => [localePath(lang, href), copy.navigation[href], href])}
-          language={{
-            href: localePath(other, active),
-            label: languages[other].name,
-            lang: languages[other].htmlLang,
-          }}
+          languages={languageChoices}
         />
       </div>
     </header>

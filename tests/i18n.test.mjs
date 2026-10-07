@@ -24,9 +24,11 @@ test("serves every page in Chinese under /zh with its own links", async () => {
     assert.ok(html.includes(`href="/zh/store#early-access"`));
     assert.match(html, />抢先体验</);
     assert.doesNotMatch(html, />Get early access</);
-    // The switch leads back to the same page in English.
+    // "中文 / EN": Chinese is current, EN leads to the same page in English.
     assert.ok(
-      html.includes(`class="language-switch" href="${page || "/"}" hrefLang="en-US"`),
+      html.includes(
+        `<div class="language-switch"><strong lang="zh-CN" aria-current="true">中文</strong><span aria-hidden="true">/</span><a href="${page || "/"}" hrefLang="en-US" lang="en-US" aria-label="English">EN</a></div>`,
+      ),
       `${page} switches to English`,
     );
     assert.doesNotMatch(html, /href="#"(?:\s|>)/);
@@ -38,10 +40,11 @@ test("offers Chinese from every English page", async () => {
     const html = await read(file("en", page));
     assert.match(html, /<html lang="en-US"/);
     assert.ok(
-      html.includes(`class="language-switch" href="/zh${page}" hrefLang="zh-CN" lang="zh-CN"`),
+      html.includes(
+        `<div class="language-switch"><a href="/zh${page}" hrefLang="zh-CN" lang="zh-CN" aria-label="简体中文">中文</a><span aria-hidden="true">/</span><strong lang="en-US" aria-current="true">EN</strong></div>`,
+      ),
       `${page || "/"} switches to Chinese`,
     );
-    assert.ok(html.includes(">中文</a>"));
   }
 });
 
