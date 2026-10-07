@@ -78,9 +78,8 @@ export function BusinessPlanView({ onNotice }: { onNotice: Notify }) {
           ))}
         </div>
         <p className="mk-hint">
-          Each recipient gets their own link, like{" "}
-          {data.url.replace("https://", "")}/k7pd3m, that opens the plan in one
-          click. Latest is live: edits save as you type. Numbered versions are
+          Each recipient gets their own password, and a link that fills it in,
+          like {data.url.replace("https://", "")}?p=k7pd3m. Latest is live: edits save as you type. Numbered versions are
           locked.
         </p>
       </div>
@@ -521,8 +520,8 @@ function RecipientList({ data, reload, onNotice }: Props) {
   const [busy, setBusy] = useState(false);
   const fail = (error: unknown) => onNotice({ tone: "error", text: message(error) });
   const latestReady = Boolean(latest.html?.trim() || latest.pdfUpload);
-  // The password is the last part of the link.
-  const link = (recipient: Recipient) => `${url}/${recipient.password}`;
+  // The link fills the recipient's password in on the form.
+  const link = (recipient: Recipient) => `${url}?p=${recipient.password}`;
 
   async function create(event: FormEvent) {
     event.preventDefault();

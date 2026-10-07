@@ -19,16 +19,21 @@ export const metadata: Metadata = {
 };
 
 /* The confidential business plan. Visitors enter the password made for
-   them in the marketing dashboard; then they see the version chosen for
-   them, on the web or as a PDF. */
+   them in the marketing dashboard, which their link (?p=) fills in; then
+   they see the version chosen for them, on the web or as a PDF. */
 export default async function BusinessPlan({
   searchParams,
 }: {
-  searchParams: Promise<{ view?: string }>;
+  searchParams: Promise<{ view?: string; p?: string }>;
 }) {
+  const { view, p } = await searchParams;
+  const linked = typeof p === "string" ? p.trim().toLowerCase() : "";
   const plan = businessPlanFromEnv();
   const session = plan && (await currentViewer(plan));
-  if (!plan || !session) return <PlanGate available={Boolean(plan)} />;
+  // A link with someone else's password asks again, rather than showing
+  // the plan this browser opened before.
+  if (!plan || !session || (linked && linked !== session.recipient.password))
+    return <PlanGate available={Boolean(plan)} initialPassword={linked} />;
 
   const { viewer, recipient } = session;
   const version = await plan.versionFor(recipient);
@@ -46,7 +51,6 @@ export default async function BusinessPlan({
       </main>
     );
 
-  const { view } = await searchParams;
   const pdf = Boolean(version.pdfUpload) && (view === "pdf" || !version.html?.trim());
   // The PDF route counts PDF openings; the page counts the web version.
   if (!pdf) await plan.recordView(viewer, version);

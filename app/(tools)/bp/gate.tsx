@@ -4,21 +4,19 @@ import { site } from "../../site";
 
 const errors: Record<string, string> = {
   wrong_password: "That password isn’t valid, or it has been turned off.",
-  wrong_link: "This link isn’t valid, or it has been turned off.",
   rate_limited: "Too many attempts. Try again in an hour.",
 };
 
-/** The password form at /bp, or, given the password from a recipient's
-    link (/bp/k7pd3m), a single button. Opening still takes a click, so
-    link previews in chat apps don't count as views. */
+/** The password form. A recipient's link (/bp?p=k7pd3m) fills the
+    password in, so they only press the button. */
 export function PlanGate({
   available,
-  link,
+  initialPassword = "",
 }: {
   available: boolean;
-  link?: string;
+  initialPassword?: string;
 }) {
-  const [password, setPassword] = useState(link ?? "");
+  const [password, setPassword] = useState(initialPassword);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -32,10 +30,10 @@ export function PlanGate({
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ password }),
       });
+      // Drops the password from the address bar.
       if (response.ok) return location.replace("/bp");
       const result = await response.json().catch(() => ({}));
-      const code = link && result.error === "wrong_password" ? "wrong_link" : result.error;
-      setError(errors[code] ?? "Couldn’t open the plan. Please try again.");
+      setError(errors[result.error] ?? "Couldn’t open the plan. Please try again.");
     } catch {
       setError("Couldn’t reach the server. Check your connection and try again.");
     }
@@ -56,27 +54,6 @@ export function PlanGate({
             <a href={`mailto:${site.email}`}>{site.email}</a> and we’ll send it
             to you.
           </p>
-        ) : link ? (
-          <>
-            <p className="bp-lede">Shared with you privately.</p>
-            <p className="bp-note">
-              This link is just for you and your team, and we can see when
-              it’s used. Please don’t forward it. If someone else should see
-              the plan, like a co-investor, just ask and we’ll send them their
-              own.
-            </p>
-            {error && (
-              <p className="bp-error" role="alert">
-                {error}
-              </p>
-            )}
-            <button className="button button-dark" disabled={busy}>
-              {busy ? "Opening…" : "Open the plan"}
-            </button>
-            <p className="bp-help">
-              Questions? Email <a href={`mailto:${site.email}`}>{site.email}</a>
-            </p>
-          </>
         ) : (
           <>
             <p className="bp-lede">Enter the password we sent you.</p>
@@ -88,7 +65,7 @@ export function PlanGate({
                 autoCapitalize="none"
                 spellCheck={false}
                 required
-                autoFocus
+                autoFocus={!initialPassword}
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
               />

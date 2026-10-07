@@ -1,7 +1,7 @@
 /* The confidential business plan at /bp. Everyone it is sent to gets their
    own password, so access can be followed, and turned off, one recipient at
-   a time. The password goes in their link (/bp/k7pd3m), so they open the
-   plan with one click; each time someone does is recorded.
+   a time. Their link (/bp?p=k7pd3m) fills the password in, so they only
+   press the button; each time someone opens the plan is recorded.
 
    The plan is written in the marketing dashboard as HTML, with an optional
    PDF alongside. That working copy is Latest: it is live, so recipients
