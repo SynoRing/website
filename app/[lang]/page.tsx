@@ -63,13 +63,20 @@ export default async function Home({ params }: PageProps) {
             <div className="hero-copy">
               <h1 id="hero-title">
                 <span className="sr-only">{copy.hero.summary}</span>
-                <span className="hero-title-line" aria-hidden="true">
-                  {copy.hero.lead}
-                  <RotatingWords words={copy.hero.devices} />
-                </span>
-                <span className="hero-title-line" aria-hidden="true">
-                  {copy.hero.tail}
-                </span>
+                {copy.hero.lines.map((line) => {
+                  const [before, after] = line.split("{device}");
+                  return (
+                    <span key={line} className="hero-title-line" aria-hidden="true">
+                      {before}
+                      {after !== undefined && (
+                        <>
+                          <RotatingWords words={copy.hero.devices} />
+                          {after}
+                        </>
+                      )}
+                    </span>
+                  );
+                })}
               </h1>
               <p>{copy.hero.subtitle}</p>
               <a className="button" href="#why">

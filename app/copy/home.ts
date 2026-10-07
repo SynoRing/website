@@ -6,8 +6,8 @@ const en = {
   hero: {
     summary:
       "Control your AR glasses, smart glasses, headset, phone, laptop, PC, or robot without breaking the moment.",
-    // Ends with the space before the rotating word.
-    lead: "Control ",
+    /** The two headline lines; {device} is where the device names rotate. */
+    lines: ["Control {device}", "without breaking the moment."],
     devices: [
       "your AR glasses",
       "your smart glasses",
@@ -17,7 +17,6 @@ const en = {
       "your PC",
       "your robot",
     ],
-    tail: "without breaking the moment.",
     subtitle: "Your world, at your fingertips.",
     cta: "Discover SynoRing",
     alt: "SynoRing seen from the front, its touch surface at the top",
@@ -142,11 +141,10 @@ const zh: typeof en = {
   news: "WACV 2027 SEAI 研讨会，与我们相见",
   newsDate: "2027 年 1 月 4–8 日",
   hero: {
-    summary:
-      "掌控 AR 眼镜、智能眼镜、头显、手机、笔记本电脑、电脑或机器人，不必打断当下。",
-    lead: "掌控\u2009",
+    summary: "弹指之间，掌控 AR 眼镜、智能眼镜、头显、手机、笔记本电脑、电脑或机器人。",
+    // A thin space keeps "AR" from touching 掌控.
+    lines: ["弹指之间，", "掌控\u2009{device}"],
     devices: ["AR 眼镜", "智能眼镜", "头显", "手机", "笔记本电脑", "电脑", "机器人"],
-    tail: "不必打断当下。",
     subtitle: "你的世界，尽在指尖。",
     cta: "了解 SynoRing",
     alt: "SynoRing 正面视图，触控面位于顶部",
