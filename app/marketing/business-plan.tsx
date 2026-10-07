@@ -6,7 +6,7 @@ import { api, formatDate, message, type Notify } from "./api";
 type Row = Record<string, string>;
 type Recipient = Row & { viewers: Row[] };
 type Overview = {
-  draft: Row;
+  latest: Row;
   versions: Row[];
   recipients: Recipient[];
   nextNumber: number;
@@ -30,15 +30,16 @@ const day = (value: string) =>
     year: "numeric",
   });
 
-const versionName = (version: Row) => `v${version.number} · ${day(version.publishedAt)}`;
+const versionName = (version: Row) => `v${version.number} · ${day(version.lockedAt)}`;
 
-/** The version a recipient sees: their pinned one if it still exists,
-    otherwise the latest. */
-const shownVersion = (recipient: Row, versions: Row[]) =>
-  versions.find((version) => version.id === recipient.versionId) ?? versions[0];
+/** The version a recipient is pinned to, if it still exists. Otherwise
+    they see Latest. */
+const pinnedVersion = (recipient: Row, versions: Row[]) =>
+  versions.find((version) => version.id === recipient.versionId);
 
-/* The business plan at /bp: write it, publish numbered versions, and give
-   each recipient a password and a version. */
+/* The business plan at /bp. Latest is the live plan: every saved edit
+   reaches recipients who see Latest. Locking makes numbered versions that
+   never change, and each recipient sees Latest or a version. */
 export function BusinessPlanView({ onNotice }: { onNotice: Notify }) {
   const [data, setData] = useState<Overview | null>(null);
   const [section, setSection] = useState<Section>("editor");
@@ -55,9 +56,8 @@ export function BusinessPlanView({ onNotice }: { onNotice: Notify }) {
   }, []);
 
   if (!data) return <p className="mk-empty">Loading…</p>;
-  const latest = data.versions[0];
   const sections: [Section, string][] = [
-    ["editor", "Editor"],
+    ["editor", "Latest"],
     ["versions", `Versions (${data.versions.length})`],
     ["recipients", `Recipients (${data.recipients.length})`],
   ];
@@ -82,113 +82,106 @@ export function BusinessPlanView({ onNotice }: { onNotice: Notify }) {
           <a href="/bp" target="_blank" rel="noopener">
             {data.url.replace("https://", "")}
           </a>{" "}
-          with their own password.{" "}
-          {latest
-            ? `Latest: version ${latest.number}, ${day(latest.publishedAt)}.`
-            : "Nothing published yet."}
+          with their own password. Latest is live: edits save as you type.
+          Numbered versions are locked.
         </p>
       </div>
       {section === "editor" && (
-        <PlanEditor {...props} onPublished={() => setSection("versions")} />
+        <PlanEditor {...props} onLocked={() => setSection("versions")} />
       )}
       {section === "versions" && (
-        <VersionList {...props} onEdit={() => setSection("editor")} />
+        <VersionList {...props} onRestored={() => setSection("editor")} />
       )}
       {section === "recipients" && <RecipientList {...props} />}
     </section>
   );
 }
 
-function PlanEditor({
-  data,
-  reload,
-  onNotice,
-  onPublished,
-}: Props & { onPublished: () => void }) {
-  const fresh = !data.draft.updatedAt && !data.versions.length;
-  const [html, setHtml] = useState(fresh ? planTemplate : (data.draft.html ?? ""));
-  const [note, setNote] = useState(data.draft.note ?? "");
-  const [saved, setSaved] = useState(!fresh);
-  const [busy, setBusy] = useState<"" | "save" | "publish" | "pdf">("");
+function PlanEditor({ data, reload, onNotice, onLocked }: Props & { onLocked: () => void }) {
+  const latest = data.latest;
+  const [html, setHtml] = useState(latest.updatedAt ? (latest.html ?? "") : planTemplate);
+  // "fresh" is the outline template, not saved until the first edit.
+  const [status, setStatus] = useState<"fresh" | "saved" | "pending" | "saving" | "failed">(
+    latest.updatedAt ? "saved" : "fresh",
+  );
+  const [savedAt, setSavedAt] = useState(latest.updatedAt ?? "");
+  const [note, setNote] = useState("");
+  const [busy, setBusy] = useState<"" | "lock" | "pdf">("");
   const [uploading, setUploading] = useState("");
   const [width, setWidth] = useState<"desktop" | "mobile">("desktop");
   const area = useRef<HTMLTextAreaElement>(null);
   const picker = useRef<HTMLInputElement>(null);
-  const draft = data.draft;
+  const latestHtml = useRef(html);
+  latestHtml.current = html;
   const fail = (error: unknown) => onNotice({ tone: "error", text: message(error) });
+  const live = data.recipients.filter(
+    (recipient) => !recipient.revokedAt && !pinnedVersion(recipient, data.versions),
+  );
 
-  // Unsaved edits survive switching sections, and leaving asks first.
+  async function save() {
+    const sent = latestHtml.current;
+    setStatus("saving");
+    try {
+      const { latest } = await api("bp/latest", "PUT", { html: sent });
+      setSavedAt(latest.updatedAt);
+      // Typing during the save leaves the newer text to save next.
+      setStatus(latestHtml.current === sent ? "saved" : "pending");
+      return true;
+    } catch (error) {
+      setStatus("failed");
+      fail(error);
+      return false;
+    }
+  }
+
+  // Saves a moment after typing stops, so Latest stays live.
   useEffect(() => {
-    if (saved) return;
+    if (status !== "pending") return;
+    const timer = setTimeout(save, 1200);
+    return () => clearTimeout(timer);
+  }, [html, status]);
+
+  useEffect(() => {
+    if (status === "saved" || status === "fresh") return;
     const warn = (event: BeforeUnloadEvent) => event.preventDefault();
     addEventListener("beforeunload", warn);
     return () => removeEventListener("beforeunload", warn);
-  }, [saved]);
+  }, [status]);
 
-  const edit = (setter: (value: string) => void) => (value: string) => {
-    setter(value);
-    setSaved(false);
-  };
+  function change(value: string) {
+    setHtml(value);
+    setStatus("pending");
+  }
 
   function insert(snippet: string) {
     const element = area.current;
     if (!element) return;
     const { selectionStart: start, selectionEnd: end, value } = element;
-    edit(setHtml)(`${value.slice(0, start)}${snippet}${value.slice(end)}`);
+    change(`${value.slice(0, start)}${snippet}${value.slice(end)}`);
     requestAnimationFrame(() => {
       element.focus();
       element.setSelectionRange(start, start + snippet.length);
     });
   }
 
-  async function startFrom(choice: string) {
-    if (!saved && !confirm("Replace the draft? Unsaved changes will be lost.")) return;
-    try {
-      if (choice === "template") {
-        setHtml(planTemplate);
-        setSaved(false);
-        return;
-      }
-      const { draft } = await api("bp/draft", "PUT", { fromVersion: choice });
-      setHtml(draft.html ?? "");
-      setNote("");
-      setSaved(true);
-      await reload();
-      onNotice({ tone: "ok", text: "The draft is now a copy of that version, PDF included." });
-    } catch (error) {
-      fail(error);
-    }
-  }
-
-  async function save() {
-    setBusy("save");
-    try {
-      await api("bp/draft", "PUT", { html, note });
-      setSaved(true);
-      await reload();
-      return true;
-    } catch (error) {
-      fail(error);
-      return false;
-    } finally {
-      setBusy("");
-    }
-  }
-
-  async function publish() {
-    if (
-      !confirm(
-        `Publish this draft as version ${data.nextNumber}? Recipients set to the latest version see it right away.`,
-      )
-    )
+  function useTemplate() {
+    if (html.trim() && !confirm("Replace Latest with the outline template? It goes live once saved."))
       return;
-    if (!saved && !(await save())) return;
-    setBusy("publish");
+    change(planTemplate);
+  }
+
+  async function lock() {
+    if (status !== "saved" && !(await save())) return;
+    setBusy("lock");
     try {
-      const { version } = await api("bp/versions", "POST");
+      const { version } = await api("bp/versions", "POST", { note });
+      setNote("");
       await reload();
-      onNotice({ tone: "ok", text: `Version ${version.number} is published.` });
-      onPublished();
+      onNotice({
+        tone: "ok",
+        text: `Locked as version ${version.number}. Latest stays editable.`,
+      });
+      onLocked();
     } catch (error) {
       fail(error);
     } finally {
@@ -224,7 +217,7 @@ function PlanEditor({
       setUploading("Attaching");
       await api("bp/pdf", "POST", { upload: id, name: file.name, size: file.size, parts });
       await reload();
-      onNotice({ tone: "ok", text: `${file.name} is attached to the draft.` });
+      onNotice({ tone: "ok", text: `${file.name} is now Latest’s PDF.` });
     } catch (error) {
       fail(error);
     } finally {
@@ -235,7 +228,7 @@ function PlanEditor({
   }
 
   async function removePdf() {
-    if (!confirm("Take the PDF off the draft? Published versions keep theirs.")) return;
+    if (!confirm("Take the PDF off Latest? Locked versions keep theirs.")) return;
     try {
       await api("bp/pdf", "DELETE");
       await reload();
@@ -244,33 +237,28 @@ function PlanEditor({
     }
   }
 
+  const statusText = {
+    fresh: "Not saved yet. Edits go live as you type.",
+    saved: savedAt ? `Saved ${formatDate(savedAt)} · live` : "Saved · live",
+    pending: "Unsaved changes",
+    saving: "Saving…",
+    failed: "Couldn’t save. Keep typing to retry.",
+  }[status];
+
   return (
     <div className="mk-compose">
       <div className="mk-editor">
         <div className="mk-draft-bar">
-          <select aria-label="Start from" value="" onChange={(event) => startFrom(event.target.value)}>
-            <option value="" disabled>
-              Start from…
-            </option>
-            <option value="template">Outline template</option>
-            {data.versions.length > 0 && (
-              <optgroup label="A published version">
-                {data.versions.map((version) => (
-                  <option key={version.id} value={version.id}>
-                    Version {versionName(version)}
-                  </option>
-                ))}
-              </optgroup>
-            )}
-          </select>
-          <span className="mk-draft-status">
-            {saved
-              ? draft.updatedAt
-                ? `Draft saved ${formatDate(draft.updatedAt)}`
-                : "Draft"
-              : "Unsaved changes"}
-          </span>
+          <button className="mk-quiet" onClick={useTemplate}>
+            Use outline template
+          </button>
+          <span className={`mk-draft-status mk-draft-${status}`}>{statusText}</span>
         </div>
+        <p className="mk-hint">
+          {live.length
+            ? `Live for ${live.map((recipient) => recipient.label).join(", ")}.`
+            : "No recipient sees Latest right now."}
+        </p>
 
         <div className="mk-field">
           <span id="mk-plan-label">Web version (HTML)</span>
@@ -286,7 +274,7 @@ function PlanEditor({
             aria-labelledby="mk-plan-label"
             spellCheck={false}
             value={html}
-            onChange={(event) => edit(setHtml)(event.target.value)}
+            onChange={(event) => change(event.target.value)}
           />
           <p className="mk-hint">
             Plain tags take the plan’s style. <code>class="lede"</code>,{" "}
@@ -300,16 +288,16 @@ function PlanEditor({
           <span>PDF version</span>
           <div className="mk-pdf-row">
             <p>
-              {draft.pdfUpload
-                ? `${draft.pdfName} · ${megabytes(draft.pdfSize)}`
+              {latest.pdfUpload
+                ? `${latest.pdfName} · ${megabytes(latest.pdfSize)}`
                 : "None. Viewers can save the web version as a PDF."}
             </p>
             <div className="mk-inline">
-              {draft.pdfUpload && (
+              {latest.pdfUpload && (
                 <>
                   <a
                     className="mk-quiet mk-link-button"
-                    href="/api/marketing/bp/pdf?version=draft"
+                    href="/api/marketing/bp/pdf?version=latest"
                     target="_blank"
                     rel="noopener"
                   >
@@ -335,7 +323,7 @@ function PlanEditor({
                 disabled={busy !== ""}
                 onClick={() => picker.current?.click()}
               >
-                {uploading ? `${uploading}…` : draft.pdfUpload ? "Replace" : "Upload PDF"}
+                {uploading ? `${uploading}…` : latest.pdfUpload ? "Replace" : "Upload PDF"}
               </button>
             </div>
           </div>
@@ -343,48 +331,42 @@ function PlanEditor({
 
         <div className="mk-send">
           <label className="mk-field">
-            <span>What changed</span>
+            <span>Lock a version</span>
             <input
               value={note}
               maxLength={500}
-              placeholder="Optional, shown in Versions"
-              onChange={(event) => edit(setNote)(event.target.value)}
+              placeholder={`What’s in version ${data.nextNumber} (optional)`}
+              onChange={(event) => setNote(event.target.value)}
             />
           </label>
           <div className="mk-inline">
-            <button className="mk-quiet" onClick={save} disabled={busy !== "" || saved}>
-              {busy === "save" ? "Saving…" : "Save draft"}
-            </button>
             <a
               className="mk-quiet mk-link-button"
-              href="/marketing/plan/draft"
+              href="/marketing/plan/latest"
               target="_blank"
               rel="noopener"
-              aria-disabled={!saved}
-              onClick={(event) => {
-                if (!saved) {
-                  event.preventDefault();
-                  onNotice({ tone: "error", text: "Save the draft to preview it in full." });
-                }
-              }}
             >
               Full preview
             </a>
             <button
               className="button button-small button-dark"
-              onClick={publish}
-              disabled={busy !== "" || (!html.trim() && !draft.pdfUpload)}
+              onClick={lock}
+              disabled={busy !== "" || (!html.trim() && !latest.pdfUpload)}
             >
-              {busy === "publish" ? "Publishing…" : `Publish as version ${data.nextNumber}`}
+              {busy === "lock" ? "Locking…" : `Lock as version ${data.nextNumber}`}
             </button>
           </div>
+          <p className="mk-hint">
+            Locking saves a copy of Latest that never changes, for recipients you
+            pin to it. Latest stays live.
+          </p>
         </div>
       </div>
 
       <div className="mk-preview">
         <div className="mk-preview-bar">
           <div className="mk-inbox-line">
-            <strong>Web version preview</strong>
+            <strong>Latest, web version</strong>
           </div>
           <div className="mk-segments" role="group" aria-label="Preview width">
             <button aria-pressed={width === "desktop"} onClick={() => setWidth("desktop")}>
@@ -403,21 +385,26 @@ function PlanEditor({
   );
 }
 
-function VersionList({ data, reload, onNotice, onEdit }: Props & { onEdit: () => void }) {
+function VersionList({
+  data,
+  reload,
+  onNotice,
+  onRestored,
+}: Props & { onRestored: () => void }) {
   const { versions, recipients } = data;
   const fail = (error: unknown) => onNotice({ tone: "error", text: message(error) });
 
-  async function edit(version: Row) {
+  async function restore(version: Row) {
     if (
       !confirm(
-        `Replace the draft with a copy of version ${version.number}? Unsaved changes in the editor will be lost.`,
+        `Replace Latest with a copy of version ${version.number}? Recipients who see Latest get it right away.`,
       )
     )
       return;
     try {
-      await api("bp/draft", "PUT", { fromVersion: version.id });
+      await api("bp/latest", "PUT", { fromVersion: version.id });
       await reload();
-      onEdit();
+      onRestored();
     } catch (error) {
       fail(error);
     }
@@ -426,7 +413,7 @@ function VersionList({ data, reload, onNotice, onEdit }: Props & { onEdit: () =>
   async function remove(version: Row) {
     if (
       !confirm(
-        `Delete version ${version.number}? Recipients who see it will see the latest version instead.`,
+        `Delete version ${version.number}? Recipients pinned to it will see Latest instead.`,
       )
     )
       return;
@@ -441,14 +428,15 @@ function VersionList({ data, reload, onNotice, onEdit }: Props & { onEdit: () =>
   if (!versions.length)
     return (
       <p className="mk-empty">
-        No versions yet. Write the plan in the editor and publish it.
+        No locked versions yet. Lock Latest when you want a copy that never
+        changes, for example the one you sent a fund.
       </p>
     );
   return (
     <div className="mk-campaigns">
-      {versions.map((version, index) => {
-        const seenBy = recipients.filter(
-          (recipient) => shownVersion(recipient, versions)?.id === version.id,
+      {versions.map((version) => {
+        const pinned = recipients.filter(
+          (recipient) => pinnedVersion(recipient, versions)?.id === version.id,
         );
         const formats = [
           version.html?.trim() && "Web",
@@ -458,18 +446,15 @@ function VersionList({ data, reload, onNotice, onEdit }: Props & { onEdit: () =>
           <article key={version.id} className="mk-panel mk-recipient">
             <div className="mk-campaign-head">
               <div>
-                <h3>
-                  Version {version.number}
-                  {index === 0 && <span className="mk-tag mk-tag-ok">Latest</span>}
-                </h3>
+                <h3>Version {version.number}</h3>
                 <p>
-                  Published {formatDate(version.publishedAt)} · {formats.join(" + ")}
+                  Locked {formatDate(version.lockedAt)} · {formats.join(" + ")}
                 </p>
                 {version.note && <p className="mk-note">{version.note}</p>}
                 <p>
-                  {seenBy.length
-                    ? `Shown to ${seenBy.map((recipient) => recipient.label).join(", ")}`
-                    : "Not shown to anyone"}
+                  {pinned.length
+                    ? `Shown to ${pinned.map((recipient) => recipient.label).join(", ")}`
+                    : "No recipient is pinned to it"}
                 </p>
               </div>
               <div className="mk-inline mk-wrap">
@@ -481,8 +466,8 @@ function VersionList({ data, reload, onNotice, onEdit }: Props & { onEdit: () =>
                 >
                   Preview
                 </a>
-                <button className="mk-quiet" onClick={() => edit(version)}>
-                  Edit as new draft
+                <button className="mk-quiet" onClick={() => restore(version)}>
+                  Copy to Latest
                 </button>
                 <button className="mk-quiet" onClick={() => remove(version)}>
                   Delete
@@ -510,9 +495,7 @@ function VersionSelect({
   const known = versions.some((version) => version.id === value) ? value : "";
   return (
     <select aria-label={label} value={known} onChange={(event) => onChange(event.target.value)}>
-      <option value="">
-        Latest{versions[0] ? ` (v${versions[0].number})` : ""}
-      </option>
+      <option value="">Latest (live)</option>
       {versions.map((version) => (
         <option key={version.id} value={version.id}>
           {versionName(version)}
@@ -523,12 +506,13 @@ function VersionSelect({
 }
 
 function RecipientList({ data, reload, onNotice }: Props) {
-  const { versions, recipients, url } = data;
+  const { versions, recipients, url, latest } = data;
   const [label, setLabel] = useState("");
   const [password, setPassword] = useState("");
   const [versionId, setVersionId] = useState("");
   const [busy, setBusy] = useState(false);
   const fail = (error: unknown) => onNotice({ tone: "error", text: message(error) });
+  const latestReady = Boolean(latest.html?.trim() || latest.pdfUpload);
 
   async function create(event: FormEvent) {
     event.preventDefault();
@@ -561,8 +545,13 @@ function RecipientList({ data, reload, onNotice }: Props) {
     try {
       await api("bp", "PATCH", { id: recipient.id, ...changes });
       await reload();
-      if (changes.versionId !== undefined)
-        onNotice({ tone: "ok", text: `${recipient.label} now sees ${changes.versionId ? "the chosen version" : "the latest version"}.` });
+      if (changes.versionId !== undefined) {
+        const version = versions.find((item) => item.id === changes.versionId);
+        onNotice({
+          tone: "ok",
+          text: `${recipient.label} now sees ${version ? `version ${version.number}` : "Latest"}.`,
+        });
+      }
     } catch (error) {
       fail(error);
     }
@@ -623,9 +612,9 @@ function RecipientList({ data, reload, onNotice }: Props) {
             />
           </label>
           <label className="mk-field">
-            <span>Version</span>
+            <span>Sees</span>
             <VersionSelect
-              label="Version"
+              label="Sees"
               value={versionId}
               versions={versions}
               onChange={setVersionId}
@@ -644,7 +633,7 @@ function RecipientList({ data, reload, onNotice }: Props) {
         </p>
       )}
       {recipients.map((recipient) => {
-        const shown = shownVersion(recipient, versions);
+        const pinned = pinnedVersion(recipient, versions);
         return (
           <article key={recipient.id} className="mk-panel mk-recipient">
             <div className="mk-campaign-head">
@@ -663,7 +652,7 @@ function RecipientList({ data, reload, onNotice }: Props) {
               </div>
               <div className="mk-inline mk-wrap">
                 <VersionSelect
-                  label={`Version for ${recipient.label}`}
+                  label={`What ${recipient.label} sees`}
                   value={recipient.versionId ?? ""}
                   versions={versions}
                   onChange={(value) => update(recipient, { versionId: value })}
@@ -685,8 +674,8 @@ function RecipientList({ data, reload, onNotice }: Props) {
                 </button>
               </div>
             </div>
-            {!shown && (
-              <p className="mk-hint">Nothing is published yet, so this password opens an empty page.</p>
+            {!pinned && !latestReady && (
+              <p className="mk-hint">Latest is empty, so this password opens a “not ready yet” page.</p>
             )}
             {recipient.viewers.length ? (
               <div className="mk-table-wrap mk-viewers">
@@ -695,7 +684,7 @@ function RecipientList({ data, reload, onNotice }: Props) {
                     <tr>
                       <th>Accepted terms</th>
                       <th>Location</th>
-                      <th>Last version seen</th>
+                      <th>Last seen</th>
                       <th>Views</th>
                       <th>Last viewed</th>
                     </tr>
@@ -705,7 +694,13 @@ function RecipientList({ data, reload, onNotice }: Props) {
                       <tr key={viewer.id}>
                         <td className="mk-email">{formatDate(viewer.acceptedAt)}</td>
                         <td>{[viewer.country, viewer.ip].filter(Boolean).join(" · ") || "—"}</td>
-                        <td>{viewer.lastVersion ? `v${viewer.lastVersion}` : "—"}</td>
+                        <td>
+                          {viewer.lastVersion === "latest"
+                            ? "Latest"
+                            : viewer.lastVersion
+                              ? `v${viewer.lastVersion}`
+                              : "—"}
+                        </td>
                         <td>{viewer.views ?? 0}</td>
                         <td>{formatDate(viewer.lastViewedAt) || "—"}</td>
                       </tr>

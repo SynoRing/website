@@ -4,9 +4,10 @@
    terms; each acceptance is kept.
 
    The plan is written in the marketing dashboard as HTML, with an optional
-   PDF alongside. Publishing the draft makes a numbered version that never
-   changes afterwards. Each recipient sees the latest version unless they
-   are pinned to an earlier one.
+   PDF alongside. That working copy is Latest: it is live, so recipients
+   who see Latest get every saved edit. Locking Latest makes a numbered
+   version (v1, v2, ...) that never changes afterwards, and a recipient can
+   be pinned to one.
 
    Everything lives in the same Upstash database as the waitlist; PDFs are
    split into base64 parts that each fit in one request. The site's
@@ -113,7 +114,7 @@ export function createBusinessPlan({ url, token, prefix = "bp", fetch: send = fe
   const viewerIndex = (recipientId) => `${prefix}:viewers:${recipientId}`;
   const viewerKey = (id) => `${prefix}:viewer:${id}`;
   const failureKey = (client) => `${prefix}:failures:${client}`;
-  const draftKey = `${prefix}:draft`;
+  const latestKey = `${prefix}:latest`;
   const versionIndex = `${prefix}:versions`;
   const versionKey = (id) => `${prefix}:version:${id}`;
   const counterKey = `${prefix}:version-number`;
@@ -135,12 +136,12 @@ export function createBusinessPlan({ url, token, prefix = "bp", fetch: send = fe
     return rows.filter((row) => row.length).map(toObject);
   }
 
-  /** Deletes a PDF's parts unless the draft or a version still uses it. */
+  /** Deletes a PDF's parts unless Latest or a version still uses it. */
   async function releasePdf(upload, parts) {
     if (!upload) return;
     const [ids] = await pipeline([["ZRANGE", versionIndex, 0, -1]]);
     const uploads = await pipeline([
-      ["HGET", draftKey, "pdfUpload"],
+      ["HGET", latestKey, "pdfUpload"],
       ...ids.map((id) => ["HGET", versionKey(id), "pdfUpload"]),
     ]);
     if (!uploads.includes(upload)) await pipeline([["DEL", ...partKeys(upload, parts)]]);
@@ -174,19 +175,16 @@ export function createBusinessPlan({ url, token, prefix = "bp", fetch: send = fe
       return secretValue;
     },
 
-    /* The draft: the working copy the dashboard edits. */
+    /* Latest: the live plan the dashboard edits. */
 
     /** @returns {Promise<Row>} */
-    async draft() {
-      return (await read(draftKey)) ?? {};
+    async latest() {
+      return (await read(latestKey)) ?? {};
     },
 
-    /** @param {{ html: string, note: string }} draft */
-    async saveDraft({ html, note }, now = new Date()) {
-      await pipeline([
-        ["HSET", draftKey, "html", cleanHtml(html), "note", note, "updatedAt", now.toISOString()],
-      ]);
-      return store.draft();
+    async saveLatest(html, now = new Date()) {
+      await pipeline([["HSET", latestKey, "html", cleanHtml(html), "updatedAt", now.toISOString()]]);
+      return store.latest();
     },
 
     /** Stores one part of a PDF upload. Parts never attached expire in a day. */
@@ -194,70 +192,72 @@ export function createBusinessPlan({ url, token, prefix = "bp", fetch: send = fe
       await pipeline([["SET", partKey(upload, index), base64, "EX", 86400]]);
     },
 
-    /** Attaches an uploaded PDF to the draft, replacing its PDF. Resolves
-        null if a part is missing.
+    /** Attaches an uploaded PDF to Latest, replacing its PDF. Resolves null
+        if a part is missing.
         @param {{ upload: string, name: string, size: number, parts: number }} pdf */
-    async attachPdf({ upload, name, size, parts }) {
+    async attachPdf({ upload, name, size, parts }, now = new Date()) {
       const keys = partKeys(upload, parts);
       const [present] = await pipeline([["EXISTS", ...keys]]);
       if (present !== parts) return null;
-      const previous = await store.draft();
+      const previous = await store.latest();
       await pipeline([
         ...keys.map((key) => ["PERSIST", key]),
-        ["HSET", draftKey, "pdfUpload", upload, "pdfName", name, "pdfSize", size, "pdfParts", parts],
+        ["HSET", latestKey, "pdfUpload", upload, "pdfName", name, "pdfSize", size, "pdfParts", parts, "updatedAt", now.toISOString()],
       ]);
       if (previous.pdfUpload !== upload) await releasePdf(previous.pdfUpload, previous.pdfParts);
-      return store.draft();
+      return store.latest();
     },
 
-    /** Takes the PDF off the draft; versions that have it keep it. */
-    async detachPdf() {
-      const previous = await store.draft();
-      await pipeline([["HDEL", draftKey, ...pdfFields]]);
+    /** Takes the PDF off Latest; versions that have it keep it. */
+    async detachPdf(now = new Date()) {
+      const previous = await store.latest();
+      await pipeline([
+        ["HDEL", latestKey, ...pdfFields],
+        ["HSET", latestKey, "updatedAt", now.toISOString()],
+      ]);
       await releasePdf(previous.pdfUpload, previous.pdfParts);
-      return store.draft();
+      return store.latest();
     },
 
-    /** Replaces the draft with a copy of a version, its PDF included. */
-    async restoreDraft(id, now = new Date()) {
+    /** Replaces Latest with a copy of a version, its PDF included. */
+    async restoreLatest(id, now = new Date()) {
       const version = await store.version(id);
       if (!version) return null;
-      const previous = await store.draft();
+      const previous = await store.latest();
       const pdf = pdfFields.filter((field) => version[field]).flatMap((field) => [field, version[field]]);
       await pipeline([
-        ["DEL", draftKey],
-        ["HSET", draftKey, "html", version.html ?? "", "note", "", "updatedAt", now.toISOString(), ...pdf],
+        ["DEL", latestKey],
+        ["HSET", latestKey, "html", version.html ?? "", "updatedAt", now.toISOString(), ...pdf],
       ]);
       if (previous.pdfUpload !== version.pdfUpload)
         await releasePdf(previous.pdfUpload, previous.pdfParts);
-      return store.draft();
+      return store.latest();
     },
 
-    /* Versions: numbered snapshots of the draft, newest first. */
+    /* Versions: numbered, locked copies of Latest, newest first. */
 
-    /** Publishes the draft as the next version. Resolves null when the
-        draft has neither HTML nor a PDF. */
-    async publish(now = new Date()) {
-      const draft = await store.draft();
-      if (!draft.html?.trim() && !draft.pdfUpload) return null;
+    /** Locks a copy of Latest as the next version. Resolves null when
+        Latest has neither HTML nor a PDF. */
+    async lock(note = "", now = new Date()) {
+      const latest = await store.latest();
+      if (!latest.html?.trim() && !latest.pdfUpload) return null;
       const [number] = await pipeline([["INCR", counterKey]]);
       const version = {
         id: newId(now),
         number: String(number),
-        note: draft.note ?? "",
-        html: draft.html ?? "",
-        publishedAt: now.toISOString(),
-        ...Object.fromEntries(pdfFields.filter((field) => draft[field]).map((field) => [field, draft[field]])),
+        note,
+        html: latest.html ?? "",
+        lockedAt: now.toISOString(),
+        ...Object.fromEntries(pdfFields.filter((field) => latest[field]).map((field) => [field, latest[field]])),
       };
       await pipeline([
         ["HSET", versionKey(version.id), ...Object.entries(version).flat()],
         ["ZADD", versionIndex, number, version.id],
-        ["HSET", draftKey, "note", ""],
       ]);
       return version;
     },
 
-    /** The number the next published version will get. Numbers of deleted
+    /** The number the next locked version will get. Numbers of deleted
         versions aren't reused. */
     async nextNumber() {
       const [count] = await pipeline([["GET", counterKey]]);
@@ -271,19 +271,16 @@ export function createBusinessPlan({ url, token, prefix = "bp", fetch: send = fe
 
     version: (id) => read(versionKey(id)),
 
-    async latestVersion() {
-      const [[id]] = await pipeline([["ZREVRANGE", versionIndex, 0, 0]]);
-      return id ? store.version(id) : null;
-    },
-
-    /** The version a recipient sees: the one they are pinned to, or the
-        latest. */
+    /** What a recipient sees: the version they are pinned to, or Latest.
+        Null while there is nothing to show. */
     async versionFor(recipient) {
       const pinned = recipient.versionId && (await store.version(recipient.versionId));
-      return pinned || store.latestVersion();
+      if (pinned) return pinned;
+      const latest = await store.latest();
+      return latest.html?.trim() || latest.pdfUpload ? latest : null;
     },
 
-    /** Deletes a version. Recipients pinned to it see the latest instead. */
+    /** Deletes a version. Recipients pinned to it see Latest instead. */
     async removeVersion(id) {
       const version = await store.version(id);
       if (!version) return false;
@@ -356,7 +353,7 @@ export function createBusinessPlan({ url, token, prefix = "bp", fetch: send = fe
     },
 
     /** Turns a recipient's password off or on, or pins them to a version
-        ("" for the latest). False if the recipient is unknown.
+        ("" for Latest). False if the recipient is unknown.
         @param {string} id
         @param {{ revoked?: boolean, versionId?: string }} changes */
     async updateRecipient(id, { revoked, versionId }, now = new Date()) {
@@ -407,12 +404,13 @@ export function createBusinessPlan({ url, token, prefix = "bp", fetch: send = fe
       return recipient && !recipient.revokedAt ? { viewer, recipient } : null;
     },
 
-    /** Counts an opening of a version for the viewer and their recipient. */
+    /** Counts an opening of a version, or of Latest, for the viewer and
+        their recipient. */
     async recordView(viewer, version, now = new Date()) {
       const at = now.toISOString();
       await pipeline([
         ["HINCRBY", viewerKey(viewer.id), "views", 1],
-        ["HSET", viewerKey(viewer.id), "lastViewedAt", at, "lastVersion", version.number],
+        ["HSET", viewerKey(viewer.id), "lastViewedAt", at, "lastVersion", version.number || "latest"],
         ["HINCRBY", recipientKey(viewer.recipientId), "views", 1],
         ["HSET", recipientKey(viewer.recipientId), "lastViewedAt", at],
       ]);

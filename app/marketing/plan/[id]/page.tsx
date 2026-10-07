@@ -11,8 +11,8 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-/* A version of the business plan, or the saved draft ("draft"), shown
-   exactly as recipients see it. Previewing doesn't count as a view. */
+/* A version of the business plan, or Latest ("latest"), shown exactly as
+   recipients see it. Previewing doesn't count as a view. */
 export default async function PlanPreview({
   params,
   searchParams,
@@ -24,7 +24,7 @@ export default async function PlanPreview({
   const plan = businessPlanFromEnv();
   if (!plan) notFound();
   const { id } = await params;
-  const version = id === "draft" ? await plan.draft() : await plan.version(id);
+  const version = id === "latest" ? await plan.latest() : await plan.version(id);
   if (!version || (!version.html?.trim() && !version.pdfUpload)) notFound();
   const { view } = await searchParams;
   const pdf = Boolean(version.pdfUpload) && (view === "pdf" || !version.html?.trim());

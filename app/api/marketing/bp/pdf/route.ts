@@ -6,14 +6,14 @@ export const maxDuration = 60;
 
 const uploadPattern = /^[0-9a-f-]{36}$/;
 
-/** A version's PDF (?version=<id>, or "draft"), for checking it from the
+/** A version's PDF (?version=<id>, or "latest"), for checking it from the
     dashboard. Doesn't count as a view. */
 export async function GET(request: Request) {
   const { plan, denied } = await authorizePlan(request);
   if (denied) return denied;
   const params = new URL(request.url).searchParams;
   const id = params.get("version") ?? "";
-  const version = id === "draft" ? await plan.draft() : await plan.version(id);
+  const version = id === "latest" ? await plan.latest() : await plan.version(id);
   if (!version?.pdfUpload) return notFound();
   return pdfResponse(plan, version, { download: params.has("download") });
 }
@@ -36,7 +36,7 @@ export async function PUT(request: Request) {
   return json(200, { ok: true });
 }
 
-/** Attaches an upload to the draft once all its parts are in. */
+/** Attaches an upload to Latest once all its parts are in. */
 export async function POST(request: Request) {
   const { plan, denied } = await authorizePlan(request);
   if (denied) return denied;
@@ -51,14 +51,14 @@ export async function POST(request: Request) {
     parts !== Math.ceil(size / partBytes)
   )
     return json(400, { error: "invalid_request" });
-  const draft = await plan.attachPdf({ upload, name: name.slice(0, 200), size, parts });
-  if (!draft) return json(400, { error: "upload_incomplete" });
-  return json(200, { draft });
+  const latest = await plan.attachPdf({ upload, name: name.slice(0, 200), size, parts });
+  if (!latest) return json(400, { error: "upload_incomplete" });
+  return json(200, { latest });
 }
 
-/** Takes the PDF off the draft. */
+/** Takes the PDF off Latest. */
 export async function DELETE(request: Request) {
   const { plan, denied } = await authorizePlan(request);
   if (denied) return denied;
-  return json(200, { draft: await plan.detachPdf() });
+  return json(200, { latest: await plan.detachPdf() });
 }

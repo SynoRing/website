@@ -22,11 +22,12 @@ export const longDate = (value: string) =>
     year: "numeric",
   });
 
-/** "Version 3 · October 6, 2026", or "Draft" for the working copy. */
+/** "Version 3 · October 6, 2026", or "Latest · updated October 7, 2026"
+    for the live plan. */
 export const versionLabel = (version: Version) =>
   version.number
-    ? `Version ${version.number} · ${longDate(version.publishedAt)}`
-    : "Draft · not published";
+    ? `Version ${version.number} · ${longDate(version.lockedAt)}`
+    : `Latest · updated ${longDate(version.updatedAt)}`;
 
 /** Streams a version's PDF part by part. A streamed response isn't held to
     Vercel's 4.5 MB response limit. */
@@ -43,7 +44,7 @@ export function pdfResponse(plan: Plan, version: Version, { download = false } =
   });
   const name = version.number
     ? `SynoRing business plan v${version.number}.pdf`
-    : "SynoRing business plan draft.pdf";
+    : "SynoRing business plan.pdf";
   return new Response(body, {
     headers: {
       "content-type": "application/pdf",

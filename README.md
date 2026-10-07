@@ -114,18 +114,21 @@ Without email settings, signups still work and no email is sent.
 `/bp` is the confidential business plan. It is written under Business plan
 in `/marketing`:
 
-- Editor: the web version in HTML, with a live preview and snippets for
-  sections, key numbers, tables, and callouts, plus an optional PDF version
-  (up to 40 MB). Publishing the draft makes the next numbered version.
-- Versions: published versions never change. Preview one, copy it back into
-  the draft to edit, or delete it.
-- Recipients: one password per person or firm, each set to the latest
-  version or pinned to an earlier one. Copy invite copies the link and
-  password. Turning a password off ends access at once.
+- Latest: the live plan. The web version is HTML, with a live preview and
+  snippets for sections, key numbers, tables, and callouts; an optional PDF
+  version (up to 40 MB) sits beside it. Edits save as you type and reach
+  recipients who see Latest right away. Lock as version N saves a numbered
+  copy that never changes.
+- Versions: the locked copies. Preview one, copy it back to Latest, or
+  delete it.
+- Recipients: one password per person or firm, each seeing Latest or pinned
+  to a locked version. Copy invite copies the link and password. Turning a
+  password off ends access at once.
 
 A visitor enters their password and accepts the confidentiality terms
-(`app/bp/terms.ts`); then they see their version, labeled with its number and
-date, on the web or as the PDF, and can download the PDF or save the web
+(`app/bp/terms.ts`). They then see Latest, labeled with the date it was last
+updated, or their locked version, labeled with its number and date. It shows
+on the web or as the PDF, and they can download the PDF or save the web
 version as one. The dashboard records each acceptance with its time and
 location, how often each recipient viewed the plan, and the version they
 last saw.

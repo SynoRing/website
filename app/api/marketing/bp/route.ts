@@ -8,19 +8,19 @@ import type { Plan } from "../../../bp/server";
 import { authorizePlan, json } from "../../../marketing/server";
 import { site } from "../../../site";
 
-/** The draft, every version, every recipient with their visits, and the
+/** Latest, every version, every recipient with their visits, and the
     upload limits. */
 export async function GET(request: Request) {
   const { plan, denied } = await authorizePlan(request);
   if (denied) return denied;
-  const [draft, versions, recipients, nextNumber] = await Promise.all([
-    plan.draft(),
+  const [latest, versions, recipients, nextNumber] = await Promise.all([
+    plan.latest(),
     plan.versions(),
     plan.listRecipients(),
     plan.nextNumber(),
   ]);
   return json(200, {
-    draft,
+    latest,
     versions,
     recipients,
     nextNumber,
@@ -29,7 +29,7 @@ export async function GET(request: Request) {
   });
 }
 
-/** "" (the latest) or the id of an existing version. */
+/** "" (Latest) or the id of an existing version. */
 async function validVersion(plan: Plan, value: unknown) {
   if (value === undefined || value === "") return "";
   return typeof value === "string" && (await plan.version(value)) ? value : null;

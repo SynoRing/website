@@ -491,6 +491,12 @@
   font-size: 13px;
   color: var(--muted);
 }
+.mk-draft-saved {
+  color: var(--forest);
+}
+.mk-draft-failed {
+  color: #a4472f;
+}
 .mk-pdf-row {
   display: flex;
   flex-wrap: wrap;

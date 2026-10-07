@@ -39,7 +39,7 @@ export default async function BusinessPlan({
         <div className="bp-card">
           <h1>The plan is on its way.</h1>
           <p className="bp-lede">
-            It hasn’t been published yet. Please check back shortly, or email{" "}
+            It isn’t ready yet. Please check back shortly, or email{" "}
             <a href={`mailto:${site.email}`}>{site.email}</a>.
           </p>
         </div>
