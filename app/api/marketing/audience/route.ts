@@ -1,4 +1,4 @@
-import { authorize, json } from "../../../marketing/server";
+import { authorize, json } from "../../../(tools)/marketing/server";
 import { normalizeEmail, selectAudience } from "../../../waitlist.mjs";
 
 /** Every entry, newest first, with counts for each audience. */

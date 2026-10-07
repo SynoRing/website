@@ -38,6 +38,12 @@ test("accepts waitlist and pre-order requests and rejects the rest", () => {
       },
     },
   );
+  assert.deepEqual(parseSignup({ email: "ada@example.com", language: "zh" }, finishIds), {
+    signup: { email: "ada@example.com", source: "waitlist", language: "zh" },
+  });
+  assert.deepEqual(parseSignup({ email: "ada@example.com", language: "xx" }, finishIds), {
+    signup: { email: "ada@example.com", source: "waitlist" },
+  });
   assert.deepEqual(parseSignup({ email: "nope" }, finishIds), {
     error: "invalid_email",
   });
@@ -170,9 +176,9 @@ test("exports spreadsheet-safe CSV", () => {
   ]);
   assert.equal(
     csv,
-    "email,createdAt,waitlistAt,preorderAt,finish,quantity,country,updatedAt,unsubscribedAt\r\n" +
-      "ada@example.com,2026-10-05T10:00:00.000Z,,,gold,2,,,\r\n" +
-      `'=cmd@example.com,,,,,,"a,""b""",,\r\n`,
+    "email,createdAt,waitlistAt,preorderAt,finish,quantity,country,language,updatedAt,unsubscribedAt\r\n" +
+      "ada@example.com,2026-10-05T10:00:00.000Z,,,gold,2,,,,\r\n" +
+      `'=cmd@example.com,,,,,,"a,""b""",,,\r\n`,
   );
 });
 

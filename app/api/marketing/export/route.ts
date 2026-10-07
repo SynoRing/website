@@ -1,4 +1,4 @@
-import { authorize } from "../../../marketing/server";
+import { authorize } from "../../../(tools)/marketing/server";
 import { toCsv } from "../../../waitlist.mjs";
 
 /** The whole list as CSV. */

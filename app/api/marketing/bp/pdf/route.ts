@@ -1,6 +1,6 @@
 import { maxParts, maxPdfBytes, partBytes } from "../../../../business-plan.mjs";
-import { notFound, pdfResponse } from "../../../../bp/server";
-import { authorizePlan, json } from "../../../../marketing/server";
+import { notFound, pdfResponse } from "../../../../(tools)/bp/server";
+import { authorizePlan, json } from "../../../../(tools)/marketing/server";
 
 export const maxDuration = 60;
 

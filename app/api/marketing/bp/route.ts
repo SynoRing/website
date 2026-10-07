@@ -4,8 +4,8 @@ import {
   normalizePassword,
   partBytes,
 } from "../../../business-plan.mjs";
-import type { Plan } from "../../../bp/server";
-import { authorizePlan, json } from "../../../marketing/server";
+import type { Plan } from "../../../(tools)/bp/server";
+import { authorizePlan, json } from "../../../(tools)/marketing/server";
 import { site } from "../../../site";
 
 /** Latest, every version, every recipient with their visits, and the

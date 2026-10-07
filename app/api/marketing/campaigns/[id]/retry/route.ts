@@ -1,4 +1,4 @@
-import { authorize, json } from "../../../../../marketing/server";
+import { authorize, json } from "../../../../../(tools)/marketing/server";
 
 /** Moves failed recipients back onto the queue. */
 export async function POST(

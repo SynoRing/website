@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
+import { alternates, languages, type Lang } from "./i18n";
 
 export const site = {
   name: "SynoRing",
   organization: "SynoRing Labs",
   url: "https://www.synoring.ai",
-  locale: "en_US",
-  language: "en-US",
   title: "SynoRing R1 — Gesture Control Ring for AR & Smart Glasses",
   description:
     "SynoRing R1 is a gesture control ring for AR and smart glasses. Tap, glide, and circle to control what you see. Pre-order for $99, shipping Q1 2027.",
@@ -19,35 +18,30 @@ export const site = {
   github: "https://github.com/SynoRing",
 } as const;
 
-export const navigation = [
-  ["/", "The ring"],
-  ["/demo", "Demo"],
-  ["/developers", "Developers"],
-  ["/store", "Store"],
-  ["/about", "About"],
-] as const;
+/** The main navigation, in order. Labels live in copy/site.ts. */
+export const navigation = ["/", "/demo", "/developers", "/store", "/about"] as const;
+export type NavigationPath = (typeof navigation)[number];
 
-export const developerEmail =
-  "mailto:contact@synoring.ai?subject=SynoRing%20Developer%20Pilot&body=Hi%20SynoRing%20team%2C%0A%0AI%27m%20interested%20in%20a%20developer%20pilot.%0A%0AProject%3A%0ATarget%20device%3A%0AInteraction%20use%20case%3A%0A";
-
-/** Page metadata. Open Graph images come from each route's
+/** Page metadata in a language. Open Graph images come from each route's
     opengraph-image.tsx, so they are not listed here. */
 export function pageMetadata(
+  lang: Lang,
   title: string,
   description: string,
   path: string,
 ): Metadata {
+  const links = alternates(lang, path);
   return {
     title,
     description,
-    alternates: { canonical: path },
+    alternates: links,
     openGraph: {
       title: `${title} | ${site.name}`,
       description,
-      url: path,
+      url: links.canonical,
       type: "website",
       siteName: site.name,
-      locale: site.locale,
+      locale: languages[lang].ogLocale,
     },
     twitter: {
       card: "summary_large_image",

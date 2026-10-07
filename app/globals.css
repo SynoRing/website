@@ -42,7 +42,9 @@ body {
   margin: 0;
   color: var(--ink);
   background: var(--paper);
-  font-family: var(--font-sans), "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: var(--font-sans), "Helvetica Neue", Helvetica, Arial,
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC",
+    sans-serif;
   font-feature-settings: "ss01";
   font-size: var(--text-md);
   -webkit-font-smoothing: antialiased;
@@ -373,6 +375,36 @@ details[open] > summary > .icon {
   gap: 10px;
   align-items: center;
 }
+.language-switch {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  height: 38px;
+  padding: 0 13px 0 11px;
+  border: 1px solid #ffffff40;
+  border-radius: var(--pill);
+  font-size: 14px;
+  color: #fff;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+}
+.language-switch:hover {
+  background: #ffffff14;
+}
+.language-switch .icon {
+  width: 16px;
+  height: 16px;
+}
+.nav-solid .language-switch {
+  color: var(--ink);
+  border-color: var(--line-strong);
+}
+.nav-solid .language-switch:hover {
+  background: var(--surface);
+}
 .mobile-navigation {
   display: none;
 }
@@ -435,6 +467,29 @@ details[open] > summary > .icon {
 }
 .nav-solid .mobile-navigation nav a[aria-current="page"] {
   color: var(--accent);
+}
+/* On narrow phones the switch moves from the bar into the menu. */
+.mobile-navigation nav .menu-language {
+  display: none;
+  align-items: center;
+  gap: 8px;
+}
+.menu-language .icon {
+  width: 17px;
+  height: 17px;
+}
+@media (min-width: 561px) {
+  .mobile-navigation nav a:nth-last-child(2) {
+    border-bottom: 0;
+  }
+}
+@media (max-width: 560px) {
+  .nav-actions > .language-switch {
+    display: none;
+  }
+  .mobile-navigation nav .menu-language {
+    display: flex;
+  }
 }
 
 /* Hero */

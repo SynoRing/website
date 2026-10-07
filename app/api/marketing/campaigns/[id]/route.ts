@@ -1,4 +1,4 @@
-import { authorize, json } from "../../../../marketing/server";
+import { authorize, json } from "../../../../(tools)/marketing/server";
 
 /** One campaign with its counts and the reason each failure was reported. */
 export async function GET(

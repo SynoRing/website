@@ -1,5 +1,5 @@
 import { mailerFromEnv } from "../../../mailer.mjs";
-import { authorize, json, postalAddress } from "../../../marketing/server";
+import { authorize, json, postalAddress } from "../../../(tools)/marketing/server";
 import { audiences, selectAudience } from "../../../waitlist.mjs";
 
 export async function GET(request: Request) {

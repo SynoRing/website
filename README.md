@@ -36,8 +36,9 @@ unsubscribe links.
 
 ## Search and sharing
 
-- Titles and descriptions: `site` in `app/site.ts` sets the homepage defaults;
-  each page passes its own to `pageMetadata`.
+- Titles and descriptions: `app/copy/site.ts` sets the homepage defaults in
+  each language; each page passes its own to `pageMetadata`, which also adds
+  the canonical URL and hreflang links to the page in every language.
 - Share images: every route has an `opengraph-image.tsx`, rendered at build
   time to a 1200 × 630 PNG. `twitter-image.tsx` re-exports the same image.
   Shared layout pieces are in `app/_og/shared.tsx`; their source PNGs live in
@@ -47,7 +48,8 @@ unsubscribe links.
   homepage and store include the product; every inner page adds a breadcrumb.
 - Icons: `favicon.svg`, `app/apple-icon.png` (180 px), and 192/512 px PNGs in
   `public/` for the manifest, including a maskable one.
-- The sitemap lists product renders as image entries for image search.
+- The sitemap lists every page in every language, with hreflang alternates,
+  and product renders as image entries for image search.
 
 ## Production
 
@@ -81,7 +83,7 @@ included for Gmail and Yahoo. `/unsubscribe` asks for a click before
 unsubscribing, so link scanners can't unsubscribe anyone; signing up again
 opts back in. Templates and the confirmation emails are in
 `app/email-template.mjs`; storage is `app/waitlist.mjs`; sending is
-`app/mailer.mjs`; the dashboard is `app/marketing/`.
+`app/mailer.mjs`; the dashboard is `app/(tools)/marketing/`.
 
 Setup:
 
@@ -126,7 +128,7 @@ in `/marketing`:
   password off ends access at once.
 
 A visitor enters their password and accepts the confidentiality terms
-(`app/bp/terms.ts`). They then see Latest, labeled with the date it was last
+(`app/(tools)/bp/terms.ts`). They then see Latest, labeled with the date it was last
 updated, or their locked version, labeled with its number and date. It shows
 on the web or as the PDF, and they can download the PDF or save the web
 version as one. The dashboard records each acceptance with its time and
@@ -137,7 +139,7 @@ The repository is public, so the plan is never committed: it lives in the
 same Upstash database (`bp:*` keys; `preview:bp:*` and `development:bp:*`
 elsewhere), with PDFs in 2 MB parts that are streamed to viewers. Wrong
 passwords are limited to 10 an hour per connection. Storage is
-`app/business-plan.mjs`; the page is `app/bp/`.
+`app/business-plan.mjs`; the page is `app/(tools)/bp/`.
 
 ## Product artwork
 
@@ -150,7 +152,7 @@ store finishes, and `productMedia` assigns them to page slots:
 - `lifestyle`: none yet; the section stays hidden until an image is supplied.
 
 The hero headline cycles through the devices SynoRing can control
-(`heroDevices` in `app/page.tsx`, animated by `app/rotating-words.tsx`); a
+(`hero.devices` in `app/copy/home.ts`, animated by `app/rotating-words.tsx`); a
 screen-reader sentence in the heading lists them all, and reduced-motion users
 see the first one only.
 
@@ -202,6 +204,26 @@ Playback is visual and silent. The route is fictional. The demo requests no
 hardware, camera, audio, location, or browser fullscreen permissions.
 Closing it restores page scrolling and focus to Try it.
 
+## Languages
+
+The site is in English and Simplified Chinese. English keeps its plain URLs
+(`/store`); Chinese lives under `/zh` (`/zh/store`). The pages are in
+`app/[lang]/`, and `next.config.ts` rewrites the English URLs onto
+`/en/...` (`/en` itself redirects back). The language switch sits left of
+"Get early access" in the navigation bar, and inside the menu on narrow
+phones; it links to the same page in the other language.
+
+All copy lives in `app/copy/`, one module per page plus `site.ts` for the
+navigation, footer, forms, and product data. Each module holds the English
+and the Chinese side by side, and the Chinese must have the English one's
+shape, so a missing string fails the type check. Client components get
+their copy as props, so a page only ships its own language. Signups record
+the language they were made in, shown in the mailing list.
+
+The marketing dashboard, `/bp`, and `/unsubscribe` stay in English. They
+live in `app/(tools)/`, which has its own root layout. Share images are still
+English in both languages.
+
 ## Site pages
 
 - `/`: product story, interactive preview, technology, integration direction, and development stages.
@@ -212,7 +234,7 @@ Closing it restores page scrolling and focus to Try it.
 - `/marketing`: password-protected mailing list and email dashboard (not indexed).
 
 Shared navigation and footer live in `app/site-components.tsx`; route metadata
-and links are in `app/site.ts`. The editorial layouts are in `app/pages.css`.
+and links are in `app/site.ts`, and the languages in `app/i18n.ts`. The editorial layouts are in `app/pages.css`.
 The waitlist and pre-order requests are stored by `/api/waitlist` (see
 Waitlist below). Developer pilot and general contact links open a prefilled
 email; there is no SDK download.

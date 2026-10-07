@@ -1,7 +1,10 @@
 "use client";
 import { useId, useState, type FormEvent, type ReactNode } from "react";
+import type { WaitlistCopy } from "./copy/site";
+import type { Lang } from "./i18n";
 import { CheckIcon } from "./icons";
 import { site } from "./site";
+import { fill } from "./text";
 
 /* Email signup posted to /api/waitlist. The homepage joins the waitlist;
    the pre-order review sends the same request with the chosen finish. */
@@ -15,18 +18,17 @@ type State =
   | { status: "error"; message: ReactNode }
   | { status: "done"; created: boolean };
 
-const errorMessages: Record<string, string> = {
-  invalid_email: "Please enter a valid email address.",
-  rate_limited: "Too many attempts from this connection. Please try again later.",
-};
-
 export function WaitlistForm({
+  lang,
+  copy,
   details = { source: "waitlist" },
-  submitLabel = "Join the waitlist",
+  submitLabel,
   layout = "inline",
   done,
   onDone,
 }: {
+  lang: Lang;
+  copy: WaitlistCopy;
   details?: Details;
   submitLabel?: string;
   layout?: "inline" | "stacked";
@@ -34,6 +36,10 @@ export function WaitlistForm({
   onDone?: () => void;
 }) {
   const id = useId();
+  const errorMessages: Record<string, string> = {
+    invalid_email: copy.invalidEmail,
+    rate_limited: copy.rateLimited,
+  };
   const [email, setEmail] = useState("");
   const [state, setState] = useState<State>({ status: "idle" });
 
@@ -45,7 +51,7 @@ export function WaitlistForm({
       const response = await fetch("/api/waitlist", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ ...details, email, website }),
+        body: JSON.stringify({ ...details, email, website, language: lang }),
       });
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(result.error);
@@ -57,8 +63,7 @@ export function WaitlistForm({
         status: "error",
         message: errorMessages[code] ?? (
           <>
-            Something went wrong. Please try again, or email{" "}
-            <a href={`mailto:${site.email}`}>{site.email}</a>.
+            {copy.failed} <a href={`mailto:${site.email}`}>{site.email}</a>.
           </>
         ),
       });
@@ -78,14 +83,14 @@ export function WaitlistForm({
     <form className={`waitlist-form waitlist-${layout}`} onSubmit={submit}>
       <div className="waitlist-field">
         <label className="sr-only" htmlFor={`${id}-email`}>
-          Email address
+          {copy.email}
         </label>
         <input
           id={`${id}-email`}
           type="email"
           name="email"
           autoComplete="email"
-          placeholder="Email address"
+          placeholder={copy.email}
           required
           maxLength={254}
           value={email}
@@ -94,7 +99,7 @@ export function WaitlistForm({
           aria-describedby={`${id}-message`}
         />
         <button className="button button-dark" disabled={sending}>
-          {sending ? "Sending…" : submitLabel}
+          {sending ? copy.sending : (submitLabel ?? copy.join)}
         </button>
       </div>
       {/* Left empty by people; automated form fillers tend to complete it. */}
@@ -114,22 +119,17 @@ export function WaitlistForm({
 }
 
 /** The homepage signup. */
-export function WaitlistSignup() {
+export function WaitlistSignup({ lang, copy }: { lang: Lang; copy: WaitlistCopy }) {
   return (
     <WaitlistForm
-      done={(email, created) =>
-        created ? (
-          <>
-            <strong>You’re on the list.</strong> We’ll email {email} with
-            launch updates.
-          </>
-        ) : (
-          <>
-            <strong>You’re already on the list.</strong> We’ll keep {email}{" "}
-            posted.
-          </>
-        )
-      }
+      lang={lang}
+      copy={copy}
+      done={(email, created) => (
+        <>
+          <strong>{created ? copy.joined : copy.already}</strong>{" "}
+          {fill(created ? copy.joinedDetail : copy.alreadyDetail, { email })}
+        </>
+      )}
     />
   );
 }

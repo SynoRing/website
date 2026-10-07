@@ -1,10 +1,10 @@
 import { cookies } from "next/headers";
-import { json } from "../../../marketing/server";
+import { json } from "../../../(tools)/marketing/server";
 import {
   createSession,
   passwordMatches,
   sessionCookie,
-} from "../../../marketing/session";
+} from "../../../(tools)/marketing/session";
 import { waitlistFromEnv } from "../../../waitlist.mjs";
 
 export async function POST(request: Request) {

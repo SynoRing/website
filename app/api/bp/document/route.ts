@@ -1,5 +1,5 @@
 import { businessPlanFromEnv } from "../../../business-plan.mjs";
-import { currentViewer, notFound, pdfResponse } from "../../../bp/server";
+import { currentViewer, notFound, pdfResponse } from "../../../(tools)/bp/server";
 
 export const maxDuration = 60;
 

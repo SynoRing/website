@@ -251,9 +251,12 @@ export function RingVisual({
 
 export function ProductVisual({
   slot,
+  alt,
   className = "",
 }: {
   slot: keyof typeof productMedia;
+  /** Alt text in the page's language; defaults to the English. */
+  alt?: string;
   className?: string;
 }) {
   const media = productMedia[slot];
@@ -267,7 +270,7 @@ export function ProductVisual({
       height={ringRenderSize.height}
       loading="lazy"
       decoding="async"
-      alt={media.alt}
+      alt={alt ?? media.alt}
     />
   ) : (
     <RingVisual className={className} />

@@ -1,7 +1,7 @@
 import { after } from "next/server";
 import { confirmationEmail } from "../../email-template.mjs";
 import { mailerFromEnv } from "../../mailer.mjs";
-import { deliver, recipientVariables } from "../../marketing/server";
+import { deliver, recipientVariables } from "../../(tools)/marketing/server";
 import { finishes, preorderPrice } from "../../store/product";
 import { parseSignup, waitlistFromEnv } from "../../waitlist.mjs";
 

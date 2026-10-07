@@ -1,4 +1,4 @@
-import { authorizePlan, json } from "../../../../marketing/server";
+import { authorizePlan, json } from "../../../../(tools)/marketing/server";
 
 /** Locks a copy of Latest as the next numbered version. */
 export async function POST(request: Request) {

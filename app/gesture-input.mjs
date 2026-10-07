@@ -96,43 +96,40 @@ export const sceneNames = /** @type {const} */ ([
   "reading",
   "navigation",
 ]);
+/* Track and stop names live with the demo's copy (copy/demo.ts), in the
+   same order. */
 export const tracks = [
-  { title: "Open spaces", artist: "Morning collection", duration: "3:42" },
-  { title: "A slower morning", artist: "Morning collection", duration: "4:08" },
-  { title: "Room to breathe", artist: "Morning collection", duration: "3:16" },
-  { title: "Soft focus", artist: "Evening collection", duration: "2:54" },
-  { title: "Homeward", artist: "Evening collection", duration: "4:21" },
+  { duration: "3:42" },
+  { duration: "4:08" },
+  { duration: "3:16" },
+  { duration: "2:54" },
+  { duration: "4:21" },
 ];
 export const waypoints = [
-  {
-    title: "Riverside path",
-    instruction: "Follow the river",
-    distance: "350 m",
-    x: 100,
-    y: 275,
-  },
-  {
-    title: "Garden bridge",
-    instruction: "Turn right at the bridge",
-    distance: "180 m",
-    x: 205,
-    y: 235,
-  },
-  {
-    title: "Willow grove",
-    instruction: "Continue through the grove",
-    distance: "240 m",
-    x: 305,
-    y: 145,
-  },
-  {
-    title: "The lookout",
-    instruction: "You’ve reached the lookout",
-    distance: "Destination",
-    x: 420,
-    y: 90,
-  },
+  { x: 100, y: 275 },
+  { x: 205, y: 235 },
+  { x: 305, y: 145 },
+  { x: 420, y: 90 },
 ];
+
+/** What the status line says after each action. The demo turns these into
+    sentences in the page's language, naming the current track or stop. */
+export const feedbackKeys = /** @type {const} */ ([
+  "intro",
+  "scene",
+  "apps-open",
+  "apps-closed",
+  "glide",
+  "rotate-up",
+  "rotate-down",
+  "track",
+  "heading",
+  "playing",
+  "paused",
+  "bookmarked",
+  "unbookmarked",
+  "navigation-paused",
+]);
 
 export const initialDemoState = {
   scene: /** @type {"music" | "reading" | "navigation"} */ ("music"),
@@ -147,7 +144,7 @@ export const initialDemoState = {
   zoom: 1,
   navigating: false,
   launcher: false,
-  feedback: "Your cursor is the ring. Try scrolling the playlist.",
+  feedback: /** @type {(typeof feedbackKeys)[number]} */ ("intro"),
 };
 /** @typedef {typeof initialDemoState} DemoState */
 /** @typedef {{type:"scene", scene:DemoState["scene"]} | {type:"slide", amount:number} | {type:"rotate", direction:1|-1} | {type:"select"} | {type:"track", index:number} | {type:"waypoint", index:number} | {type:"launcher", open:boolean} | {type:"reset"}} DemoAction */
@@ -167,20 +164,13 @@ export function demoReducer(state, action) {
         ...state,
         scene: action.scene,
         launcher: false,
-        feedback:
-          action.scene === "music"
-            ? "Scroll to browse. Click to play."
-            : action.scene === "reading"
-              ? "Scroll to read. Draw a circle to resize the text."
-              : "Scroll through stops. Draw a circle to zoom.",
+        feedback: "scene",
       };
     case "launcher":
       return {
         ...state,
         launcher: action.open,
-        feedback: action.open
-          ? "Apps open · Choose a scene."
-          : "Back to your view.",
+        feedback: action.open ? "apps-open" : "apps-closed",
       };
     case "slide": {
       if (state.launcher) return state;
@@ -192,13 +182,13 @@ export function demoReducer(state, action) {
             0,
             tracks.length - 1,
           ),
-          feedback: "Touch glide · Browsing your playlist",
+          feedback: "glide",
         };
       if (state.scene === "reading")
         return {
           ...state,
           readingProgress: clamp(state.readingProgress + action.amount, 0, 100),
-          feedback: "Touch glide · Moving through the page",
+          feedback: "glide",
         };
       return {
         ...state,
@@ -207,17 +197,17 @@ export function demoReducer(state, action) {
           0,
           waypoints.length - 1,
         ),
-        feedback: "Touch glide · Exploring the route",
+        feedback: "glide",
       };
     }
     case "rotate": {
       if (state.launcher) return state;
-      const direction = action.direction > 0 ? "Clockwise" : "Counterclockwise";
+      const feedback = action.direction > 0 ? "rotate-up" : "rotate-down";
       if (state.scene === "music")
         return {
           ...state,
           volume: clamp(state.volume + action.direction * 10, 0, 100),
-          feedback: `${direction} · Volume ${action.direction > 0 ? "up" : "down"}`,
+          feedback,
         };
       if (state.scene === "reading")
         return {
@@ -226,7 +216,7 @@ export function demoReducer(state, action) {
             Math.round(
               clamp(state.textScale + action.direction * 0.1, 0.8, 1.6) * 10,
             ) / 10,
-          feedback: `${direction} · ${action.direction > 0 ? "Larger" : "Smaller"} text`,
+          feedback,
         };
       return {
         ...state,
@@ -234,7 +224,7 @@ export function demoReducer(state, action) {
           Math.round(
             clamp(state.zoom + action.direction * 0.25, 0.75, 2.5) * 100,
           ) / 100,
-        feedback: `${direction} · Zoom ${action.direction > 0 ? "in" : "out"}`,
+        feedback,
       };
     }
     case "track":
@@ -243,14 +233,14 @@ export function demoReducer(state, action) {
         selectedTrack: action.index,
         activeTrack: action.index,
         playing: true,
-        feedback: `Tap · ${tracks[action.index].title} selected`,
+        feedback: "track",
       };
     case "waypoint":
       return {
         ...state,
         waypoint: action.index,
         navigating: true,
-        feedback: `Tap · Heading to ${waypoints[action.index].title}`,
+        feedback: "heading",
       };
     case "select": {
       if (state.launcher) return state;
@@ -261,25 +251,19 @@ export function demoReducer(state, action) {
           ...state,
           activeTrack: state.selectedTrack,
           playing,
-          feedback: playing
-            ? `Tap · Playing ${tracks[state.selectedTrack].title}`
-            : "Tap · Playback paused",
+          feedback: playing ? "playing" : "paused",
         };
       }
       if (state.scene === "reading")
         return {
           ...state,
           saved: !state.saved,
-          feedback: state.saved
-            ? "Tap · Bookmark removed"
-            : "Tap · Page bookmarked",
+          feedback: state.saved ? "unbookmarked" : "bookmarked",
         };
       return {
         ...state,
         navigating: !state.navigating,
-        feedback: state.navigating
-          ? "Tap · Navigation paused"
-          : `Tap · Heading to ${waypoints[state.waypoint].title}`,
+        feedback: state.navigating ? "navigation-paused" : "heading",
       };
     }
     default:

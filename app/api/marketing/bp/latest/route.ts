@@ -1,5 +1,5 @@
 import { maxHtmlLength } from "../../../../business-plan.mjs";
-import { authorizePlan, json } from "../../../../marketing/server";
+import { authorizePlan, json } from "../../../../(tools)/marketing/server";
 
 /** Saves Latest's HTML, live for recipients who see Latest. With
     { fromVersion } it instead replaces Latest with a copy of that version. */

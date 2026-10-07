@@ -4,7 +4,7 @@ import test from "node:test";
 
 const outputPath = new URL("../.next/server/app/", import.meta.url);
 
-async function render(artifact = "index.html") {
+async function render(artifact = "en.html") {
   return readFile(new URL(artifact, outputPath), "utf8");
 }
 
@@ -25,11 +25,11 @@ test("renders the complete SynoRing campaign page", async () => {
   assert.match(html, /"sameAs":\["https:\/\/x\.com\/SynoRing","https:\/\/github\.com\/SynoRing"\]/);
   assert.match(
     html,
-    /property="og:image" content="https:\/\/www\.synoring\.ai\/opengraph-image\?[^"]+"/,
+    /property="og:image" content="https:\/\/www\.synoring\.ai\/en\/opengraph-image\?[^"]+"/,
   );
   assert.match(
     html,
-    /name="twitter:image" content="https:\/\/www\.synoring\.ai\/twitter-image\?[^"]+"/,
+    /name="twitter:image" content="https:\/\/www\.synoring\.ai\/en\/twitter-image\?[^"]+"/,
   );
   assert.match(html, /name="twitter:site" content="@SynoRing"/);
   assert.match(html, /rel="apple-touch-icon" href="\/apple-icon\.png"/);

@@ -1,5 +1,5 @@
 import { mailerFromEnv } from "../../../mailer.mjs";
-import { authorize, deliver, json } from "../../../marketing/server";
+import { authorize, deliver, json } from "../../../(tools)/marketing/server";
 import { normalizeEmail } from "../../../waitlist.mjs";
 
 /** Sends one copy of a draft to a single address, marked as a test. */

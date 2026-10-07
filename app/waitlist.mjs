@@ -8,10 +8,12 @@
    keeps its drafts and campaign send queues in the same database. */
 
 /** @typedef {Record<string, string>} Entry */
-/** @typedef {{ email: string, source: "waitlist" } | { email: string, source: "preorder", finish: string, quantity: number }} Signup */
+/** @typedef {({ email: string, source: "waitlist" } | { email: string, source: "preorder", finish: string, quantity: number }) & { language?: string }} Signup */
 /** @typedef {{ id: string, subject: string, preheader: string, body: string, audience: string, createdAt: string, total: number, pending: number, sent: number, failed: number, skipped: number }} Campaign */
 
 export const sources = ["waitlist", "preorder"];
+/** The site's languages, recorded with each signup. */
+export const signupLanguages = ["en", "zh"];
 export const maxQuantity = 99;
 
 const emailPattern = /^[^\s@"<>()[\]\\,;:]+@[^\s@"<>()[\]\\,;:]+\.[a-z]{2,}$/i;
@@ -34,7 +36,8 @@ export function parseSignup(body, finishIds) {
   if (!email) return { error: "invalid_email" };
   const source = body.source ?? "waitlist";
   if (!sources.includes(source)) return { error: "invalid_request" };
-  if (source === "waitlist") return { signup: { email, source } };
+  const language = signupLanguages.includes(body.language) ? { language: body.language } : {};
+  if (source === "waitlist") return { signup: { email, source, ...language } };
   const quantity = Number(body.quantity);
   if (
     !finishIds.includes(body.finish) ||
@@ -43,7 +46,7 @@ export function parseSignup(body, finishIds) {
     quantity > maxQuantity
   )
     return { error: "invalid_request" };
-  return { signup: { email, source, finish: body.finish, quantity } };
+  return { signup: { email, source, finish: body.finish, quantity, ...language } };
 }
 
 /** Production keeps the plain prefix; previews and local runs write to
@@ -126,6 +129,7 @@ export function createWaitlist({
       const key = entryKey(signup.email);
       const fields = ["email", signup.email, "updatedAt", at];
       if (country) fields.push("country", country);
+      if (signup.language) fields.push("language", signup.language);
       if (signup.source === "preorder")
         fields.push("finish", signup.finish, "quantity", signup.quantity);
       // Signing up again is a fresh opt-in, so it lifts an unsubscribe.
@@ -355,6 +359,7 @@ export const csvColumns = [
   "finish",
   "quantity",
   "country",
+  "language",
   "updatedAt",
   "unsubscribedAt",
 ];

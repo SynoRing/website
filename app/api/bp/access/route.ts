@@ -5,8 +5,8 @@ import {
   sessionSeconds,
   signSession,
 } from "../../../business-plan.mjs";
-import { viewerCookie } from "../../../bp/server";
-import { termsVersion } from "../../../bp/terms";
+import { viewerCookie } from "../../../(tools)/bp/server";
+import { termsVersion } from "../../../(tools)/bp/terms";
 
 function reply(status: number, body: object) {
   return Response.json(body, {

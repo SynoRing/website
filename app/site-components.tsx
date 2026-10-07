@@ -1,15 +1,18 @@
 import type { ReactNode } from "react";
-import { ArrowIcon, GitHubIcon, PlusIcon, XIcon } from "./icons";
+import { siteCopy } from "./copy/site";
+import { fill } from "./text";
+import { languages, localePath, locales, type Lang } from "./i18n";
+import { ArrowIcon, GitHubIcon, GlobeIcon, PlusIcon, XIcon } from "./icons";
 import { MobileNavigation } from "./interactions";
-import { navigation, site } from "./site";
+import { navigation, site, type NavigationPath } from "./site";
 import { breadcrumb, jsonLd } from "./structured-data";
 
-export function Note({ number }: { number: number }) {
+export function Note({ lang, number }: { lang: Lang; number: number }) {
   return (
     <sup className="note-ref">
       <a
         href={`#product-note-${number}`}
-        aria-label={`See product note ${number}`}
+        aria-label={fill(siteCopy[lang].noteLabel, { number })}
       >
         {number}
       </a>
@@ -17,16 +20,39 @@ export function Note({ number }: { number: number }) {
   );
 }
 
+/** Links to this page in the other language, named in that language. */
+function LanguageSwitch({ lang, path }: { lang: Lang; path: string }) {
+  return locales
+    .filter((code) => code !== lang)
+    .map((code) => (
+      <a
+        key={code}
+        className="language-switch"
+        href={localePath(code, path)}
+        hrefLang={languages[code].htmlLang}
+        lang={languages[code].htmlLang}
+        aria-label={languages[code].name}
+      >
+        <GlobeIcon />
+        {code === "zh" ? "中文" : "EN"}
+      </a>
+    ));
+}
+
 export function SiteHeader({
+  lang,
   active = "/",
   home = false,
 }: {
-  active?: string;
+  lang: Lang;
+  active?: NavigationPath;
   home?: boolean;
 }) {
+  const copy = siteCopy[lang];
+  const other = locales.find((code) => code !== lang)!;
   return (
     <header className={`nav-wrap${home ? "" : " nav-solid"}`}>
-      <a className="brand" href="/" aria-label="SynoRing home">
+      <a className="brand" href={localePath(lang, "/")} aria-label={copy.homeLabel}>
         <img
           className="brand-wordmark"
           src="/wordmark.svg"
@@ -35,43 +61,54 @@ export function SiteHeader({
           height="122"
         />
       </a>
-      <nav className="desktop-navigation" aria-label="Main navigation">
-        {navigation.map(([href, label]) => (
+      <nav className="desktop-navigation" aria-label={copy.mainNavigation}>
+        {navigation.map((href) => (
           <a
             key={href}
-            href={href}
+            href={localePath(lang, href)}
             aria-current={active === href ? "page" : undefined}
           >
-            {label}
+            {copy.navigation[href]}
           </a>
         ))}
       </nav>
       <div className="nav-actions">
+        <LanguageSwitch lang={lang} path={active} />
         <a
           className={`button button-small${home ? "" : " button-dark"}`}
-          href="/store#early-access"
+          href={localePath(lang, "/store#early-access")}
         >
-          Get early access
+          {copy.earlyAccess}
         </a>
-        <MobileNavigation active={active} />
+        <MobileNavigation
+          active={active}
+          copy={copy.mobileNavigation}
+          links={navigation.map((href) => [localePath(lang, href), copy.navigation[href], href])}
+          language={{
+            href: localePath(other, active),
+            label: languages[other].name,
+            lang: languages[other].htmlLang,
+          }}
+        />
       </div>
     </header>
   );
 }
 
-export function SiteFooter() {
+export function SiteFooter({ lang }: { lang: Lang }) {
+  const { footer } = siteCopy[lang];
   return (
     <footer className="footer content-width">
       <div className="footer-top">
         <div className="footer-brand">
           <a
             className="footer-wordmark"
-            href="/"
-            aria-label="SynoRing — back to top"
+            href={localePath(lang, "/")}
+            aria-label={footer.backToTop}
           >
             <img src="/wordmark.svg" alt="" width="368" height="122" />
           </a>
-          <p>Gesture becomes intent.</p>
+          <p>{footer.tagline}</p>
           <div className="footer-social">
             {site.social.map((profile) => (
               <a
@@ -79,7 +116,7 @@ export function SiteFooter() {
                 href={profile.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label={`SynoRing on ${profile.name}`}
+                aria-label={fill(footer.social, { name: profile.name })}
               >
                 {profile.id === "github" ? <GitHubIcon /> : <XIcon />}
               </a>
@@ -87,59 +124,35 @@ export function SiteFooter() {
           </div>
         </div>
         <div className="footer-link-groups">
-          <div>
-            <span>Explore</span>
-            <a href="/#why">The ring</a>
-            <a href="/demo">Demo</a>
-            <a href="/store">Store</a>
-          </div>
-          <div>
-            <span>Build with us</span>
-            <a href="/developers">Developers</a>
-            <a href="/#technology">Technology</a>
-            <a href="/about#development">Development</a>
-          </div>
-          <div>
-            <span>SynoRing</span>
-            <a href="/about">About</a>
-            <a href="mailto:contact@synoring.ai">Contact</a>
-            <a href="/#faq">Questions</a>
-          </div>
+          {footer.groups.map((group) => (
+            <div key={group.title}>
+              <span>{group.title}</span>
+              {group.links.map(([href, label]) => (
+                <a
+                  key={href}
+                  href={href.startsWith("/") ? localePath(lang, href) : href}
+                >
+                  {label}
+                </a>
+              ))}
+            </div>
+          ))}
         </div>
       </div>
       <div className="footer-bottom">
-        <span>© 2026 SynoRing Labs</span>
-        <span>Designed in the US. Manufactured in China.</span>
+        <span>{footer.copyright}</span>
+        <span>{footer.origin}</span>
       </div>
       <details className="product-notes" id="product-notes">
         <summary>
-          Product notes <PlusIcon />
+          {footer.notesTitle} <PlusIcon />
         </summary>
         <ol>
-          <li id="product-note-1">
-            Product imagery is a concept rendering for illustrative purposes.
-            Final industrial design, materials, dimensions, controls, and finish
-            may change.
-          </li>
-          <li id="product-note-2">
-            Roadmap stages and launch timing reflect current development plans
-            and may change as testing and validation progress.
-          </li>
-          <li id="product-note-3">
-            Features, materials, compatibility, sensing architecture, and other
-            specifications are development targets, not final shipping
-            specifications.
-          </li>
-          <li id="product-note-4">
-            Joining the waitlist or sending a pre-order request is free and is
-            not a purchase, deposit, reservation, or guarantee of prototype
-            access or product availability. No payment is collected on this
-            website.
-          </li>
-          <li id="product-note-5">
-            The browser demo is an interaction concept. Music is silent, the
-            route is fictional, and final hardware mappings may evolve.
-          </li>
+          {footer.notes.map((note, index) => (
+            <li key={index} id={`product-note-${index + 1}`}>
+              {note}
+            </li>
+          ))}
         </ol>
       </details>
     </footer>
@@ -147,11 +160,13 @@ export function SiteFooter() {
 }
 
 export function PageShell({
+  lang,
   active,
   structuredData = [],
   children,
 }: {
-  active: string;
+  lang: Lang;
+  active: NavigationPath;
   /** schema.org items for this page; a breadcrumb is always added. */
   structuredData?: object[];
   children: ReactNode;
@@ -161,16 +176,16 @@ export function PageShell({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: jsonLd(...structuredData, breadcrumb(active)),
+          __html: jsonLd(...structuredData, breadcrumb(lang, active)),
         }}
       />
       <a className="skip-link" href="#main">
-        Skip to content
+        {siteCopy[lang].skipLink}
       </a>
       <div className="site-frame inner-site" id="top">
-        <SiteHeader active={active} />
+        <SiteHeader lang={lang} active={active} />
         <main id="main">{children}</main>
-        <SiteFooter />
+        <SiteFooter lang={lang} />
       </div>
     </>
   );
@@ -191,29 +206,16 @@ export function ArrowLink({
   );
 }
 
-export function DevelopmentSteps() {
+export function DevelopmentSteps({ lang }: { lang: Lang }) {
   return (
     <ol className="development-steps">
-      <li className="current">
-        <span>01 / Current focus</span>
-        <h3>Interaction prototype</h3>
-        <p>Refining the gestures, feedback, and everyday control experience.</p>
-      </li>
-      <li>
-        <span>02 / Next</span>
-        <h3>Developer pilots</h3>
-        <p>
-          Explore real applications and device integrations with early partners.
-        </p>
-      </li>
-      <li>
-        <span>03 / Ahead</span>
-        <h3>Production validation</h3>
-        <p>
-          Validate the hardware and publish confirmed specifications before
-          launch.
-        </p>
-      </li>
+      {siteCopy[lang].developmentSteps.map((step, index) => (
+        <li key={step.stage} className={index === 0 ? "current" : undefined}>
+          <span>{step.stage}</span>
+          <h3>{step.title}</h3>
+          <p>{step.text}</p>
+        </li>
+      ))}
     </ol>
   );
 }

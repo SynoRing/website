@@ -1,10 +1,21 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { CloseIcon } from "./icons";
-import { navigation } from "./site";
+import { CloseIcon, GlobeIcon } from "./icons";
 
-export function MobileNavigation({ active }: { active: string }) {
+export function MobileNavigation({
+  active,
+  copy,
+  links,
+  language,
+}: {
+  active: string;
+  copy: { label: string; open: string; close: string };
+  /** [href in this language, label, page path] */
+  links: [string, string, string][];
+  /** This page in the other language. */
+  language: { href: string; label: string; lang: string };
+}) {
   const [open, setOpen] = useState(false);
   const trigger = useRef<HTMLButtonElement>(null);
   return (
@@ -14,7 +25,7 @@ export function MobileNavigation({ active }: { active: string }) {
         className="menu-toggle"
         aria-expanded={open}
         aria-controls="mobile-menu"
-        aria-label={open ? "Close navigation" : "Open navigation"}
+        aria-label={open ? copy.close : copy.open}
         onClick={() => setOpen(!open)}
       >
         {open ? (
@@ -29,7 +40,7 @@ export function MobileNavigation({ active }: { active: string }) {
       {open && (
         <nav
           id="mobile-menu"
-          aria-label="Mobile navigation"
+          aria-label={copy.label}
           onKeyDown={(event) => {
             if (event.key === "Escape") {
               setOpen(false);
@@ -37,16 +48,25 @@ export function MobileNavigation({ active }: { active: string }) {
             }
           }}
         >
-          {navigation.map(([href, label]) => (
+          {links.map(([href, label, path]) => (
             <a
               key={href}
               href={href}
-              aria-current={active === href ? "page" : undefined}
+              aria-current={active === path ? "page" : undefined}
               onClick={() => setOpen(false)}
             >
               {label}
             </a>
           ))}
+          <a
+            className="menu-language"
+            href={language.href}
+            hrefLang={language.lang}
+            lang={language.lang}
+          >
+            <GlobeIcon />
+            {language.label}
+          </a>
         </nav>
       )}
     </div>

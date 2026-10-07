@@ -1,4 +1,4 @@
-import { authorize, json } from "../../../marketing/server";
+import { authorize, json } from "../../../(tools)/marketing/server";
 
 export async function GET(request: Request) {
   const { store, denied } = await authorize(request);

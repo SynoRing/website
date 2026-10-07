@@ -8,7 +8,7 @@ const output = new URL("../.next/server/app/", import.meta.url);
 test("every public page has unique discovery metadata and complete navigation", async () => {
   const sitemap = await readFile(new URL("sitemap.xml.body", output), "utf8");
   for (const page of pages) {
-    const html = await readFile(new URL(`${page}.html`, output), "utf8");
+    const html = await readFile(new URL(`en/${page}.html`, output), "utf8");
     assert.match(
       html,
       new RegExp(`rel="canonical" href="https://www\\.synoring\\.ai/${page}"`),
@@ -33,7 +33,7 @@ test("every public page has unique discovery metadata and complete navigation", 
     assert.match(
       html,
       new RegExp(
-        `property="og:image" content="https://www\\.synoring\\.ai/${page}/opengraph-image\\?`,
+        `property="og:image" content="https://www\\.synoring\\.ai/en/${page}/opengraph-image\\?`,
       ),
       `${page} has its own Open Graph image`,
     );
@@ -52,9 +52,9 @@ test("every public page has unique discovery metadata and complete navigation", 
 });
 
 test("pre-order route publishes confirmed pricing and keeps enquiry status clear", async () => {
-  const store = await readFile(new URL("store.html", output), "utf8");
-  const developers = await readFile(new URL("developers.html", output), "utf8");
-  const demo = await readFile(new URL("demo.html", output), "utf8");
+  const store = await readFile(new URL("en/store.html", output), "utf8");
+  const developers = await readFile(new URL("en/developers.html", output), "utf8");
+  const demo = await readFile(new URL("en/demo.html", output), "utf8");
   assert.match(store, /Pre-order/);
   assert.match(store, /\$99/);
   assert.match(store, /<del>[\s\S]*?\$129<\/del>/);

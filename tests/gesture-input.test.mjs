@@ -132,3 +132,17 @@ test("the app launcher isolates the underlying scene from gestures", () => {
     false,
   );
 });
+
+test("reports each action as a message key the page translates", () => {
+  let state = demoReducer(initialDemoState, { type: "rotate", direction: 1 });
+  assert.equal(state.feedback, "rotate-up");
+  state = demoReducer(state, { type: "track", index: 2 });
+  assert.equal(state.feedback, "track");
+  assert.equal(state.selectedTrack, 2);
+  state = demoReducer(state, { type: "select" });
+  assert.equal(state.feedback, "paused");
+  state = demoReducer(state, { type: "scene", scene: "navigation" });
+  assert.equal(state.feedback, "scene");
+  state = demoReducer(state, { type: "select" });
+  assert.equal(state.feedback, "heading");
+});

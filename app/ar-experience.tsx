@@ -33,25 +33,55 @@ import {
   PlusIcon,
   ReadingIcon,
 } from "./icons";
+import type { ExperienceCopy } from "./copy/demo";
+import { Br, fill } from "./text";
 import { WorldScene } from "./world-scenes";
 import "./ar-experience.css";
 
 type Scene = DemoState["scene"];
-const scenes: { id: Scene; title: string; Icon: typeof MusicIcon }[] = [
-  { id: "music", title: "Music", Icon: MusicIcon },
-  { id: "reading", title: "Reading", Icon: ReadingIcon },
-  { id: "navigation", title: "Navigation", Icon: NavigationIcon },
+const scenes: { id: Scene; Icon: typeof MusicIcon }[] = [
+  { id: "music", Icon: MusicIcon },
+  { id: "reading", Icon: ReadingIcon },
+  { id: "navigation", Icon: NavigationIcon },
 ];
-const paragraphs = [
-  "A walk can be a walk again. Your next turn is there when you need it, while the trees, the light, and the people around you stay in view.",
-  "Spatial computing puts information into the world around us. The next question is how to interact with it without constantly reaching for another screen.",
-  "A ring offers a small, familiar place for that interaction. A touch can select a track. A glide can move through this page. A circular movement can make the text a little larger.",
-  "The same gesture can do something different in another setting. In your music player, a clockwise circle turns the volume up. In a map, it brings the route closer. Here, it gives the words more room.",
-  "Try it as you read. Scroll to move down the page. Draw a clockwise circle with your cursor to increase the text size, or go counterclockwise to reduce it. Click the bookmark to save your place.",
-  "Keeping the interaction small makes room for everything around it. You can stay with the task in front of you and let the controls sit quietly within reach.",
-  "This is an interactive concept of the experience we are exploring. Hardware gestures and software mappings will continue to develop through testing.",
-  "You have reached the end. Hold anywhere in the open view to bring up your apps, then try the same movements in music or navigation.",
-];
+
+/** The status line's sentence for the last action, naming the current
+    track or stop. */
+function feedbackText(state: DemoState, copy: ExperienceCopy) {
+  const text = copy.feedback;
+  const track = copy.music.tracks[state.selectedTrack].title;
+  const place = copy.navigation.stops[state.waypoint].title;
+  switch (state.feedback) {
+    case "intro":
+      return text.intro;
+    case "scene":
+      return text.scene[state.scene];
+    case "apps-open":
+      return text.appsOpen;
+    case "apps-closed":
+      return text.appsClosed;
+    case "glide":
+      return text.glide[state.scene];
+    case "rotate-up":
+      return `${text.clockwise} · ${text.up[state.scene]}`;
+    case "rotate-down":
+      return `${text.counterclockwise} · ${text.down[state.scene]}`;
+    case "track":
+      return fill(text.track, { track });
+    case "heading":
+      return fill(text.heading, { place });
+    case "playing":
+      return fill(text.playing, { track });
+    case "paused":
+      return text.paused;
+    case "bookmarked":
+      return text.bookmarked;
+    case "unbookmarked":
+      return text.unbookmarked;
+    case "navigation-paused":
+      return text.navigationPaused;
+  }
+}
 
 /** The ring's pointer: a green circle that fills its outer track while held. */
 function RingCursor() {
@@ -84,7 +114,7 @@ function HudCorners() {
   );
 }
 
-export function GestureExperience() {
+export function GestureExperience({ copy }: { copy: ExperienceCopy }) {
   const [open, setOpen] = useState(false);
   const [entry, setEntry] = useState({ x: 0, y: 0, scaleX: 1, scaleY: 1 });
   const card = useRef<HTMLDivElement>(null);
@@ -102,13 +132,13 @@ export function GestureExperience() {
           <div className="hud-head">
             <span className="hud-app">
               <MusicIcon />
-              Music
+              {copy.scenes.music}
             </span>
             <span className="hud-meta">1 / 5</span>
           </div>
-          <span className="hud-label">Now playing</span>
-          <strong>Open spaces</strong>
-          <span className="hud-sub">Morning collection</span>
+          <span className="hud-label">{copy.music.playing}</span>
+          <strong>{copy.music.tracks[0].title}</strong>
+          <span className="hud-sub">{copy.music.tracks[0].artist}</span>
           <span className="hud-track">
             <span>1:12</span>
             <i>
@@ -122,11 +152,9 @@ export function GestureExperience() {
         </div>
         <div className="ar-card-copy">
           <h2>
-            See through the glasses.
-            <br />
-            Control it with the ring.
+            <Br text={copy.card.title} />
           </h2>
-          <p>Music, reading, navigation. Try the gestures for yourself.</p>
+          <p>{copy.card.text}</p>
         </div>
         <button
           ref={trigger}
@@ -143,19 +171,24 @@ export function GestureExperience() {
             setOpen(true);
           }}
         >
-          Try it
+          {copy.card.button}
         </button>
       </div>
       {open &&
-        createPortal(<ARDemo onClose={close} entry={entry} />, document.body)}
+        createPortal(
+          <ARDemo copy={copy} onClose={close} entry={entry} />,
+          document.body,
+        )}
     </>
   );
 }
 
 function ARDemo({
+  copy,
   onClose,
   entry,
 }: {
+  copy: ExperienceCopy;
   onClose: () => void;
   entry: { x: number; y: number; scaleX: number; scaleY: number };
 }) {
@@ -419,14 +452,9 @@ function ARDemo({
       send(keys[event.key]);
     }
   }
-  const adjustment =
-    state.scene === "music"
-      ? "volume"
-      : state.scene === "reading"
-        ? "text size"
-        : "map zoom";
-  const track = tracks[state.activeTrack],
-    waypoint = waypoints[state.waypoint];
+  const adjustment = copy.adjustments[state.scene];
+  const track = copy.music.tracks[state.activeTrack],
+    waypoint = copy.navigation.stops[state.waypoint];
   return (
     <dialog
       ref={dialog}
@@ -456,34 +484,34 @@ function ARDemo({
           <img src="/logo.svg" alt="" width="26" height="26" />
           <span id="ar-demo-title">
             SynoRing{" "}
-            <span className="ar-title-detail">/ Smart glasses demo</span>
+            <span className="ar-title-detail">{copy.header.detail}</span>
           </span>
         </div>
-        <nav className="ar-scene-switcher" aria-label="Demo scenes">
+        <nav className="ar-scene-switcher" aria-label={copy.header.scenes}>
           {scenes.map((scene) => (
             <button
               key={scene.id}
               aria-pressed={state.scene === scene.id}
               onClick={() => switchScene(scene.id)}
             >
-              {scene.title}
+              {copy.scenes[scene.id]}
             </button>
           ))}
         </nav>
         <button
           className="ar-close"
           onClick={onClose}
-          aria-label="Close the demo"
+          aria-label={copy.header.close}
         >
           <CloseIcon />
-          <span>Exit</span>
+          <span>{copy.header.exit}</span>
         </button>
       </header>
       <div
         ref={world}
         className="ar-world"
         role="region"
-        aria-label="Smart glasses view"
+        aria-label={copy.header.view}
         aria-describedby="ar-controls-hint"
         tabIndex={0}
         onPointerMove={move}
@@ -514,14 +542,14 @@ function ARDemo({
               <div className="hud-head">
                 <span className="hud-app">
                   <MusicIcon />
-                  Music
+                  {copy.scenes.music}
                 </span>
-                <span className="hud-meta">Demo playlist · silent</span>
+                <span className="hud-meta">{copy.music.meta}</span>
               </div>
               <div className="hud-music">
                 <div className="hud-now">
                   <span className="hud-label">
-                    {state.playing ? "Now playing" : "Paused"}
+                    {state.playing ? copy.music.playing : copy.music.paused}
                   </span>
                   <h3>{track.title}</h3>
                   <p>{track.artist}</p>
@@ -544,17 +572,13 @@ function ARDemo({
                   <button
                     className="hud-round"
                     onClick={() => send({ type: "select" })}
-                    aria-label={
-                      state.playing
-                        ? "Pause selected track"
-                        : "Play selected track"
-                    }
+                    aria-label={state.playing ? copy.music.pause : copy.music.play}
                   >
                     {state.playing ? <PauseIcon /> : <PlayIcon />}
                   </button>
                 </div>
                 <div className="hud-list">
-                  {tracks.map((item, index) => (
+                  {copy.music.tracks.map((item, index) => (
                     <button
                       key={item.title}
                       className={
@@ -574,24 +598,24 @@ function ARDemo({
                         <strong>{item.title}</strong>
                         <small>{item.artist}</small>
                       </span>
-                      <span className="hud-time">{item.duration}</span>
+                      <span className="hud-time">{tracks[index].duration}</span>
                     </button>
                   ))}
                 </div>
               </div>
               <div className="hud-meter">
-                <span>Volume</span>
+                <span>{copy.music.volume}</span>
                 <span
                   className="hud-bar"
                   role="meter"
-                  aria-label="Demo volume"
+                  aria-label={copy.music.volumeMeter}
                   aria-valuemin={0}
                   aria-valuemax={100}
                   aria-valuenow={state.volume}
                 >
                   <i style={{ width: `${state.volume}%` }} />
                 </span>
-                <output aria-label="Volume level">{state.volume}%</output>
+                <output aria-label={copy.music.volumeLevel}>{state.volume}%</output>
               </div>
             </>
           )}
@@ -600,7 +624,7 @@ function ARDemo({
               <div className="hud-head">
                 <span className="hud-app">
                   <ReadingIcon />
-                  Field notes / 01
+                  {copy.reading.app}
                 </span>
                 <button
                   className={`hud-pill ${state.saved ? "is-on" : ""}`}
@@ -608,7 +632,7 @@ function ARDemo({
                   onClick={() => send({ type: "select" })}
                 >
                   {state.saved ? <CheckIcon /> : <PlusIcon />}
-                  {state.saved ? "Bookmarked" : "Bookmark"}
+                  {state.saved ? copy.reading.bookmarked : copy.reading.bookmark}
                 </button>
               </div>
               <div
@@ -616,21 +640,19 @@ function ARDemo({
                 className="hud-article"
                 style={{ fontSize: `${17 * state.textScale}px` }}
               >
-                <h3>A calmer way to compute.</h3>
-                <p className="hud-article-intro">
-                  Information within reach. The rest of the world in view.
-                </p>
-                {paragraphs.map((p) => (
+                <h3>{copy.reading.title}</h3>
+                <p className="hud-article-intro">{copy.reading.intro}</p>
+                {copy.reading.paragraphs.map((p) => (
                   <p key={p}>{p}</p>
                 ))}
-                <span className="hud-label">End of article</span>
+                <span className="hud-label">{copy.reading.end}</span>
               </div>
               <div className="hud-meter">
-                <span>Read</span>
+                <span>{copy.reading.read}</span>
                 <span
                   className="hud-bar"
                   role="progressbar"
-                  aria-label="Reading progress"
+                  aria-label={copy.reading.progress}
                   aria-valuemin={0}
                   aria-valuemax={100}
                   aria-valuenow={Math.round(state.readingProgress)}
@@ -639,7 +661,9 @@ function ARDemo({
                 </span>
                 <output>{Math.round(state.readingProgress)}%</output>
                 <span className="hud-meter-extra">
-                  Text {Math.round(state.textScale * 100)}%
+                  {fill(copy.reading.textSize, {
+                    percent: Math.round(state.textScale * 100),
+                  })}
                 </span>
               </div>
             </>
@@ -649,14 +673,14 @@ function ARDemo({
               <div className="hud-head">
                 <span className="hud-app">
                   <NavigationIcon />
-                  Riverside walk
+                  {copy.navigation.app}
                 </span>
                 <button
                   className={`hud-pill ${state.navigating ? "is-on" : ""}`}
                   onClick={() => send({ type: "select" })}
                 >
                   {state.navigating ? <PauseIcon /> : <PlayIcon />}
-                  {state.navigating ? "Pause" : "Start"}
+                  {state.navigating ? copy.navigation.pause : copy.navigation.start}
                 </button>
               </div>
               <div className="hud-nav">
@@ -669,7 +693,10 @@ function ARDemo({
                   <svg
                     viewBox="0 0 520 350"
                     role="img"
-                    aria-label={`Route map, ${state.zoom} times zoom, ${waypoint.title} selected`}
+                    aria-label={fill(copy.navigation.map, {
+                      zoom: state.zoom,
+                      place: waypoint.title,
+                    })}
                   >
                     <g
                       style={{
@@ -691,7 +718,7 @@ function ARDemo({
                         d="M100 275L160 275Q205 275 205 235L205 175Q205 145 245 145L305 145L380 145Q420 145 420 90"
                       />
                       {waypoints.map((point, index) => (
-                        <g key={point.title}>
+                        <g key={index}>
                           <circle
                             className={
                               state.waypoint === index
@@ -704,7 +731,7 @@ function ARDemo({
                           />
                           {state.waypoint === index && (
                             <text x={point.x + 16} y={point.y - 12}>
-                              {point.title}
+                              {copy.navigation.stops[index].title}
                             </text>
                           )}
                         </g>
@@ -717,10 +744,10 @@ function ARDemo({
                 </div>
               </div>
               <div className="hud-stops">
-                {waypoints.map((point, index) => (
+                {copy.navigation.stops.map((point, index) => (
                   <button
                     key={point.title}
-                    aria-label={`Navigate to ${point.title}`}
+                    aria-label={fill(copy.navigation.goTo, { place: point.title })}
                     aria-pressed={state.waypoint === index}
                     onClick={() => send({ type: "waypoint", index })}
                   >
@@ -735,14 +762,14 @@ function ARDemo({
           <div className="ar-launcher">
             <div className="hud-launcher">
               <HudCorners />
-              <span className="hud-label">Where next?</span>
+              <span className="hud-label">{copy.launcher.title}</span>
               <div className="hud-apps">
                 {scenes.map((scene) => (
                   <button key={scene.id} onClick={() => switchScene(scene.id)}>
                     <span>
                       <scene.Icon />
                     </span>
-                    {scene.title}
+                    {copy.scenes[scene.id]}
                   </button>
                 ))}
               </div>
@@ -751,15 +778,15 @@ function ARDemo({
                 onClick={() => send({ type: "launcher", open: false })}
               >
                 <ArrowIcon className="icon-back" />
-                Back to view
+                {copy.launcher.back}
               </button>
-              <span className="hud-hint">Or tap outside to go back</span>
+              <span className="hud-hint">{copy.launcher.hint}</span>
             </div>
           </div>
         )}
         <div className="ar-feedback" role="status">
           <span className="ar-live-dot" />
-          {state.feedback}
+          {feedbackText(state, copy)}
         </div>
         <svg className="ar-gesture-trail" aria-hidden="true">
           <polyline
@@ -776,41 +803,34 @@ function ARDemo({
       </div>
       <footer className="ar-demo-footer">
         <div className="ar-input-legend" id="ar-controls-hint">
-          <span>
-            <b>Click</b> Select
-          </span>
-          <span>
-            <b>Scroll / swipe</b> Glide
-          </span>
-          <span>
-            <b>Draw a circle</b> {adjustment}
-          </span>
-          <span>
-            <b>Hold</b> Apps
-          </span>
+          {copy.legend.map(([gesture, action]) => (
+            <span key={gesture}>
+              <b>{gesture}</b> {fill(action, { adjustment })}
+            </span>
+          ))}
         </div>
         <div className="ar-fallback-controls">
           <button
             onClick={() => send({ type: "rotate", direction: -1 })}
-            aria-label={`Rotate counterclockwise to decrease ${adjustment}`}
+            aria-label={fill(copy.controls.decrease, { adjustment })}
           >
             <CircleIcon className="icon-ccw" />
           </button>
           <span>{adjustment}</span>
           <button
             onClick={() => send({ type: "rotate", direction: 1 })}
-            aria-label={`Rotate clockwise to increase ${adjustment}`}
+            aria-label={fill(copy.controls.increase, { adjustment })}
           >
             <CircleIcon />
           </button>
           <button
             onClick={() => send({ type: "launcher", open: !state.launcher })}
-            aria-label="Open app launcher"
+            aria-label={copy.controls.launcher}
           >
             <AppsIcon />
           </button>
           <button
-            aria-label="Show interaction help"
+            aria-label={copy.controls.help}
             aria-expanded={help}
             onClick={() => setHelp(!help)}
           >
@@ -822,31 +842,18 @@ function ARDemo({
         <aside className="ar-help">
           <button
             onClick={() => setHelp(false)}
-            aria-label="Close interaction help"
+            aria-label={copy.controls.closeHelp}
           >
             <CloseIcon />
           </button>
-          <h3>Your mouse is the ring.</h3>
+          <h3>{copy.help.title}</h3>
+          {copy.help.paragraphs.map((paragraph) => (
+            <p key={paragraph}>{fill(paragraph, { adjustment })}</p>
+          ))}
           <p>
-            Move the ring cursor over a control and click to select. Use your
-            wheel or trackpad to simulate a thumb glide.
+            <b>{copy.help.keyboardLabel}</b> {copy.help.keyboard}
           </p>
-          <p>
-            Draw a complete circle anywhere in the view. Clockwise increases{" "}
-            {adjustment}; counterclockwise decreases it. Press and hold until
-            the ring fills to open your apps.
-          </p>
-          <p>
-            On touch screens, swipe to scroll, draw circles to adjust, and
-            long-press for apps. The rotate buttons work too.
-          </p>
-          <p>
-            <b>Keyboard:</b> Focus the view, then use ↑ ↓ to glide, ← → to
-            rotate, Enter to select, H for apps, and Esc to exit.
-          </p>
-          <small>
-            Interactive concept. Final hardware gesture mappings may change.
-          </small>
+          <small>{copy.help.note}</small>
         </aside>
       )}
     </dialog>

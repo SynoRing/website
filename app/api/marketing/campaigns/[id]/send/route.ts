@@ -4,7 +4,7 @@ import {
   deliver,
   json,
   recipientVariables,
-} from "../../../../../marketing/server";
+} from "../../../../../(tools)/marketing/server";
 
 export const maxDuration = 60;
 
