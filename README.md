@@ -109,6 +109,23 @@ attempts likewise. Without storage, production returns 503 and the form
 offers the contact email; `npm run dev` accepts signups and only logs them.
 Without email settings, signups still work and no email is sent.
 
+## Business plan
+
+`/bp` is the confidential business plan. Each person or firm it goes to gets
+their own password, made under Business plan in `/marketing`; Copy invite
+copies the link and password. A visitor enters the password, their name and
+email, and accepts the confidentiality terms (`app/bp/terms.ts`) before the
+PDF opens. The dashboard lists who accepted through each password, when,
+from where, and how often they opened it. Turning a password off ends access
+at once, including for people already viewing.
+
+The repository is public, so the PDF is never committed: it is uploaded in
+the dashboard (up to 40 MB) and kept in the same Upstash database in 2 MB
+parts (`bp:*` keys; `preview:bp:*` and `development:bp:*` elsewhere), then
+streamed to signed-in viewers. Uploading a new version keeps every password
+working. Wrong passwords are limited to 10 an hour per connection. Storage
+is `app/business-plan.mjs`; the page is `app/bp/`.
+
 ## Product artwork
 
 The V11 renders live in `public/images/` as transparent WebP files

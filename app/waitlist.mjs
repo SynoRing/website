@@ -54,23 +54,13 @@ export function keyPrefix(environment) {
     : `${environment || "development"}:waitlist`;
 }
 
-export function createWaitlist({
-  url,
-  token,
-  prefix = "waitlist",
-  fetch: send = fetch,
-}) {
+/** Sends a batch of Redis commands to Upstash in one round trip and
+    resolves to their results, in order. Every argument goes as a string. */
+export function upstash({ url, token, fetch: send = fetch }) {
   const endpoint = `${url.replace(/\/$/, "")}/pipeline`;
-  const indexKey = `${prefix}:emails`;
-  const entryKey = (email) => `${prefix}:entry:${email}`;
-  const draftIndex = `${prefix}:drafts`;
-  const draftKey = (id) => `${prefix}:draft:${id}`;
-  const campaignIndex = `${prefix}:campaigns`;
-  const campaignKey = (id) => `${prefix}:campaign:${id}`;
-  const queueKey = (id, queue) => `${campaignKey(id)}:${queue}`;
-  let secretValue;
-
-  async function pipeline(commands) {
+  /** @param {any[][]} commands
+      @returns {Promise<any[]>} */
+  return async function pipeline(commands) {
     const response = await send(endpoint, {
       method: "POST",
       headers: {
@@ -80,13 +70,44 @@ export function createWaitlist({
       body: JSON.stringify(commands.map((command) => command.map(String))),
       cache: "no-store",
     });
-    if (!response.ok)
-      throw new Error(`Waitlist storage responded ${response.status}`);
+    if (!response.ok) throw new Error(`Storage responded ${response.status}`);
     const results = await response.json();
     const failed = results.find((item) => item.error);
-    if (failed) throw new Error(`Waitlist storage error: ${failed.error}`);
+    if (failed) throw new Error(`Storage error: ${failed.error}`);
     return results.map((item) => item.result);
-  }
+  };
+}
+
+/** Upstash credentials from the environment, or null. Vercel's Upstash
+    integration sets KV_* (STORAGE_KV_* with its default prefix); a direct
+    Upstash link sets UPSTASH_REDIS_REST_*. */
+export function upstashFromEnv(env = process.env) {
+  const url =
+    env.KV_REST_API_URL ||
+    env.STORAGE_KV_REST_API_URL ||
+    env.UPSTASH_REDIS_REST_URL;
+  const token =
+    env.KV_REST_API_TOKEN ||
+    env.STORAGE_KV_REST_API_TOKEN ||
+    env.UPSTASH_REDIS_REST_TOKEN;
+  return url && token ? { url, token } : null;
+}
+
+export function createWaitlist({
+  url,
+  token,
+  prefix = "waitlist",
+  fetch: send = fetch,
+}) {
+  const pipeline = upstash({ url, token, fetch: send });
+  const indexKey = `${prefix}:emails`;
+  const entryKey = (email) => `${prefix}:entry:${email}`;
+  const draftIndex = `${prefix}:drafts`;
+  const draftKey = (id) => `${prefix}:draft:${id}`;
+  const campaignIndex = `${prefix}:campaigns`;
+  const campaignKey = (id) => `${prefix}:campaign:${id}`;
+  const queueKey = (id, queue) => `${campaignKey(id)}:${queue}`;
+  let secretValue;
 
   const store = {
     /** Counts a request from `client` in a one-hour window. */
@@ -319,20 +340,11 @@ export function selectAudience(entries, audience) {
   );
 }
 
-/** The store configured for this deployment, or null without credentials.
-    Vercel's Upstash integration sets KV_* (STORAGE_KV_* with its default
-    prefix); a direct Upstash link sets UPSTASH_REDIS_REST_*. */
+/** The store configured for this deployment, or null without credentials. */
 export function waitlistFromEnv(env = process.env) {
-  const url =
-    env.KV_REST_API_URL ||
-    env.STORAGE_KV_REST_API_URL ||
-    env.UPSTASH_REDIS_REST_URL;
-  const token =
-    env.KV_REST_API_TOKEN ||
-    env.STORAGE_KV_REST_API_TOKEN ||
-    env.UPSTASH_REDIS_REST_TOKEN;
-  if (!url || !token) return null;
-  return createWaitlist({ url, token, prefix: keyPrefix(env.VERCEL_ENV) });
+  const credentials = upstashFromEnv(env);
+  if (!credentials) return null;
+  return createWaitlist({ ...credentials, prefix: keyPrefix(env.VERCEL_ENV) });
 }
 
 export const csvColumns = [

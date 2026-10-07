@@ -1,3 +1,4 @@
+import { businessPlanFromEnv } from "../business-plan.mjs";
 import { renderEmail } from "../email-template.mjs";
 import {
   mailerFromEnv,
@@ -13,6 +14,7 @@ import { isSignedIn } from "./session";
 
 type Store = NonNullable<ReturnType<typeof waitlistFromEnv>>;
 type Mailer = NonNullable<ReturnType<typeof mailerFromEnv>>;
+type Plan = NonNullable<ReturnType<typeof businessPlanFromEnv>>;
 
 export function json(status: number, body: object) {
   return Response.json(body, {
@@ -33,6 +35,14 @@ export async function authorize(
   const store = waitlistFromEnv();
   if (!store) return { denied: json(503, { error: "storage_unavailable" }) };
   return { store };
+}
+
+/** Like authorize, for the business plan's routes. */
+export async function authorizePlan(
+  request: Request,
+): Promise<{ plan: Plan; denied?: never } | { denied: Response; plan?: never }> {
+  const { denied } = await authorize(request);
+  return denied ? { denied } : { plan: businessPlanFromEnv()! };
 }
 
 export function postalAddress() {

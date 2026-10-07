@@ -83,6 +83,7 @@ test("publishes crawl and discovery metadata", async () => {
     /Sitemap: https:\/\/www\.synoring\.ai\/sitemap\.xml/,
   );
   assert.match(robots, /Disallow: \/api\//);
+  assert.match(robots, /Disallow: \/bp\n/);
 
   assert.match(sitemap, /<loc>https:\/\/www\.synoring\.ai\/<\/loc>/);
 

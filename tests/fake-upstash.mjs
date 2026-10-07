@@ -15,7 +15,7 @@ export function fakeUpstash() {
     SET: (key, value, flag) =>
       flag === "NX" && data.has(key) ? null : (data.set(key, value), "OK"),
     GET: (key) => data.get(key) ?? null,
-    EXISTS: (key) => (data.has(key) ? 1 : 0),
+    EXISTS: (...keys) => keys.filter((key) => data.has(key)).length,
     DEL: (...keys) => keys.filter((key) => data.delete(key)).length,
     INCR: (key) => {
       const value = Number(data.get(key) ?? 0) + 1;
@@ -23,6 +23,7 @@ export function fakeUpstash() {
       return value;
     },
     EXPIRE: () => 1,
+    PERSIST: (key) => (data.has(key) ? 1 : 0),
     HSET: (key, ...pairs) => {
       const h = hash(key);
       let added = 0;
@@ -37,6 +38,12 @@ export function fakeUpstash() {
       if (h.has(field)) return 0;
       h.set(field, value);
       return 1;
+    },
+    HINCRBY: (key, field, by) => {
+      const h = hash(key);
+      const value = Number(h.get(field) ?? 0) + Number(by);
+      h.set(field, String(value));
+      return value;
     },
     HDEL: (key, ...fields) => {
       const h = data.get(key);

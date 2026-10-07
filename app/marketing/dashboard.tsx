@@ -1,6 +1,8 @@
 "use client";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { renderEmail, starterDrafts } from "../email-template.mjs";
+import { api, formatDate, message, type Notify } from "./api";
+import { BusinessPlanView } from "./business-plan";
 
 type Entry = Record<string, string>;
 type Counts = Record<"total" | "all" | "preorder" | "waitlist" | "unsubscribed", number>;
@@ -24,55 +26,20 @@ type Campaign = {
   skipped: number;
 };
 type Audience = "all" | "preorder" | "waitlist";
-type Tab = "audience" | "compose" | "campaigns";
+type Tab = "audience" | "compose" | "campaigns" | "plan";
+
+const tabNames: Record<Tab, string> = {
+  audience: "Mailing list",
+  compose: "Compose",
+  campaigns: "Campaigns",
+  plan: "Business plan",
+};
 
 const audienceNames: Record<Audience, string> = {
   all: "All subscribers",
   preorder: "Pre-orders",
   waitlist: "Waitlist only",
 };
-
-const errorText: Record<string, string> = {
-  storage_unavailable: "The database isn’t connected yet.",
-  email_unavailable:
-    "Email sending isn’t set up yet. Add CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_EMAIL_TOKEN in Vercel.",
-  postal_address_missing:
-    "Add MAIL_POSTAL_ADDRESS in Vercel first. US law requires a postal address in marketing email.",
-  empty_audience: "Nobody is in this audience yet.",
-  invalid_email: "Enter a valid email address.",
-  missing_content: "Add a subject and a body first.",
-};
-
-class ApiError extends Error {}
-
-async function api(path: string, method = "GET", body?: object) {
-  const response = await fetch(`/api/marketing/${path}`, {
-    method,
-    headers: body ? { "content-type": "application/json" } : undefined,
-    body: body ? JSON.stringify(body) : undefined,
-  });
-  if (response.status === 401) location.reload();
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok)
-    throw new ApiError(
-      errorText[data.error] ?? data.detail ?? `Request failed (${response.status}).`,
-    );
-  return data;
-}
-
-const message = (error: unknown) =>
-  error instanceof Error ? error.message : "Something went wrong.";
-
-const formatDate = (value?: string) =>
-  value
-    ? new Date(value).toLocaleString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-        hour: "numeric",
-        minute: "2-digit",
-      })
-    : "";
 
 const emptyDraft: Draft = { name: "", subject: "", preheader: "", body: "" };
 
@@ -100,7 +67,7 @@ export function Dashboard({ setup }: { setup: Setup }) {
   }
   useEffect(() => {
     const saved = location.hash.slice(1);
-    if (saved === "compose" || saved === "campaigns") setTab(saved);
+    if (saved in tabNames) setTab(saved as Tab);
     if (setup.storage) {
       loadAudience();
       loadCampaigns();
@@ -108,6 +75,10 @@ export function Dashboard({ setup }: { setup: Setup }) {
   }, []);
   useEffect(() => {
     history.replaceState(null, "", `#${tab}`);
+    // On phones the tabs scroll sideways; keep the open one in view.
+    document
+      .querySelector(".mk-tabs [aria-current]")
+      ?.scrollIntoView({ block: "nearest", inline: "nearest" });
   }, [tab]);
 
   // Keep the tab open while a campaign is sending.
@@ -161,13 +132,13 @@ export function Dashboard({ setup }: { setup: Setup }) {
           <span>Marketing</span>
         </a>
         <nav className="mk-tabs" aria-label="Dashboard">
-          {(["audience", "compose", "campaigns"] as const).map((name) => (
+          {(Object.keys(tabNames) as Tab[]).map((name) => (
             <button
               key={name}
               aria-current={tab === name ? "page" : undefined}
               onClick={() => setTab(name)}
             >
-              {name === "audience" ? "Mailing list" : name === "compose" ? "Compose" : "Campaigns"}
+              {tabNames[name]}
             </button>
           ))}
         </nav>
@@ -177,7 +148,7 @@ export function Dashboard({ setup }: { setup: Setup }) {
       </header>
 
       <main className="mk-main">
-        {missing.length > 0 && (
+        {missing.length > 0 && tab !== "plan" && (
           <p className="mk-banner">Still to set up: {missing.join(", ")}.</p>
         )}
         {notice && (
@@ -223,12 +194,16 @@ export function Dashboard({ setup }: { setup: Setup }) {
             onNotice={setNotice}
           />
         )}
+        {tab === "plan" &&
+          (setup.storage ? (
+            <BusinessPlanView onNotice={setNotice} />
+          ) : (
+            <p className="mk-empty">Connect the database to share the business plan.</p>
+          ))}
       </main>
     </div>
   );
 }
-
-type Notify = (notice: { tone: "error" | "ok"; text: string } | null) => void;
 
 function AudienceView({
   entries,
