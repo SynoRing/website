@@ -390,21 +390,28 @@
   display: grid;
   grid-auto-columns: minmax(0, 1fr);
   grid-auto-flow: column;
-  gap: calc(14 * var(--u));
+  gap: calc(28 * var(--u));
 }
 .slide .flow > div {
   position: relative;
-  padding: calc(18 * var(--u)) calc(20 * var(--u));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: calc(16 * var(--u)) calc(14 * var(--u));
   border-radius: calc(14 * var(--u));
+  text-align: center;
   background: #fff;
 }
+/* The arrow sits in the middle of the gap between two steps. */
 .slide .flow > div + div::before {
   content: "→";
   position: absolute;
-  left: calc(-12 * var(--u));
+  left: calc(-14 * var(--u));
   top: 50%;
   transform: translate(-50%, -50%);
   font-size: calc(16 * var(--u));
+  line-height: 1;
   color: var(--deck-muted);
 }
 .slide .flow h3 {
@@ -538,7 +545,7 @@
 .slide .timeline {
   display: grid;
   grid-template-columns: calc(150 * var(--u)) repeat(4, minmax(0, 1fr));
-  gap: calc(10 * var(--u)) calc(8 * var(--u));
+  gap: calc(14 * var(--u)) calc(8 * var(--u));
   align-items: center;
   font-size: calc(14 * var(--u));
 }
@@ -555,7 +562,7 @@
   font-weight: 500;
 }
 .slide .timeline .bar {
-  padding: calc(8 * var(--u)) calc(12 * var(--u));
+  padding: calc(12 * var(--u)) calc(14 * var(--u));
   border-radius: calc(9 * var(--u));
   font-size: calc(13 * var(--u));
   line-height: 1.3;
