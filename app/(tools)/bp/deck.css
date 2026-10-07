@@ -245,6 +245,26 @@
 .slide .facts p {
   margin-top: calc(4 * var(--u));
 }
+.slide .chart-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.slide .chart-panel .chart-note {
+  margin-top: calc(10 * var(--u));
+  text-align: center;
+}
+.slide .person .links {
+  display: flex;
+  gap: calc(14 * var(--u));
+  margin-top: calc(8 * var(--u));
+  font-size: calc(13 * var(--u));
+}
+.slide .person .links a {
+  color: var(--deck-accent);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
 .slide .margin-bar {
   display: flex;
   height: calc(34 * var(--u));
@@ -388,7 +408,8 @@
   color: var(--deck-muted);
 }
 .slide .flow h3 {
-  font-size: calc(18 * var(--u));
+  font-size: calc(17 * var(--u));
+  white-space: nowrap;
 }
 .slide .flow.muted > div {
   background: #f1f3ee;
@@ -440,8 +461,8 @@
   background: var(--deck-tint);
 }
 .slide tr.us td:first-child {
-  padding-left: calc(12 * var(--u));
   border-radius: calc(10 * var(--u)) 0 0 calc(10 * var(--u));
+  box-shadow: calc(-12 * var(--u)) 0 0 var(--deck-tint);
 }
 .slide tr.us td:last-child {
   border-radius: 0 calc(10 * var(--u)) calc(10 * var(--u)) 0;
