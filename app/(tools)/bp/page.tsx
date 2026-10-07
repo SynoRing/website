@@ -3,13 +3,13 @@ import { businessPlanFromEnv } from "../../business-plan.mjs";
 import { site } from "../../site";
 import { PlanGate } from "./gate";
 import { PlanView } from "./plan-view";
-import { currentViewer, longDate } from "./server";
+import { currentViewer } from "./server";
 import "./bp.css";
 
 // Always checks the visitor's session, never prerendered.
 export const dynamic = "force-dynamic";
 
-const description = "Confidential. Open it with the password you were given.";
+const description = "Open it with the password we sent you.";
 
 export const metadata: Metadata = {
   title: "Business plan",
@@ -19,8 +19,8 @@ export const metadata: Metadata = {
 };
 
 /* The confidential business plan. Visitors enter the password made for
-   them in the marketing dashboard and accept the confidentiality terms;
-   then they see the version chosen for them, on the web or as a PDF. */
+   them in the marketing dashboard; then they see the version chosen for
+   them, on the web or as a PDF. */
 export default async function BusinessPlan({
   searchParams,
 }: {
@@ -57,7 +57,7 @@ export default async function BusinessPlan({
       view={pdf ? "pdf" : "web"}
       base="/bp"
       pdfUrl="/api/bp/document"
-      footer={`Confidential. Shared with ${recipient.label} under the terms accepted on ${longDate(viewer.acceptedAt)}.`}
+      footer={`Shared privately with ${recipient.label}. Please don’t forward it.`}
     />
   );
 }

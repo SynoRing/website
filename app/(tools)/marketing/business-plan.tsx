@@ -692,7 +692,7 @@ function RecipientList({ data, reload, onNotice }: Props) {
                 <table className="mk-table">
                   <thead>
                     <tr>
-                      <th>Accepted terms</th>
+                      <th>Opened</th>
                       <th>Location</th>
                       <th>Last seen</th>
                       <th>Views</th>
@@ -702,7 +702,7 @@ function RecipientList({ data, reload, onNotice }: Props) {
                   <tbody>
                     {recipient.viewers.map((viewer) => (
                       <tr key={viewer.id}>
-                        <td className="mk-email">{formatDate(viewer.acceptedAt)}</td>
+                        <td className="mk-email">{formatDate(viewer.openedAt ?? viewer.acceptedAt)}</td>
                         <td>{[viewer.country, viewer.ip].filter(Boolean).join(" · ") || "—"}</td>
                         <td>
                           {viewer.lastVersion === "latest"

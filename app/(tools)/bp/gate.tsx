@@ -1,20 +1,16 @@
 "use client";
 import { useState, type FormEvent } from "react";
 import { site } from "../../site";
-import { terms } from "./terms";
 
 const errors: Record<string, string> = {
   wrong_password: "That password isn’t valid, or it has been turned off.",
   rate_limited: "Too many attempts. Try again in an hour.",
-  terms_not_accepted: "Please accept the confidentiality terms.",
 };
 
 export function PlanGate({ available }: { available: boolean }) {
-  const [form, setForm] = useState({ password: "", agree: false });
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
-  const set = (field: keyof typeof form) => (value: string | boolean) =>
-    setForm((current) => ({ ...current, [field]: value }));
 
   async function submit(event: FormEvent) {
     event.preventDefault();
@@ -24,7 +20,7 @@ export function PlanGate({ available }: { available: boolean }) {
       const response = await fetch("/api/bp/access", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ password }),
       });
       if (response.ok) return location.reload();
       const result = await response.json().catch(() => ({}));
@@ -41,7 +37,7 @@ export function PlanGate({ available }: { available: boolean }) {
         <img src="/wordmark.svg" width="132" height="44" alt="SynoRing" />
       </a>
       <form className="bp-card" onSubmit={submit}>
-        <p className="bp-eyebrow">Confidential</p>
+        <p className="bp-eyebrow">Private</p>
         <h1>SynoRing business plan</h1>
         {!available ? (
           <p className="bp-lede">
@@ -51,10 +47,7 @@ export function PlanGate({ available }: { available: boolean }) {
           </p>
         ) : (
           <>
-            <p className="bp-lede">
-              Enter the password you were given and agree to keep the plan
-              confidential.
-            </p>
+            <p className="bp-lede">Enter the password we sent you.</p>
             <label className="bp-field">
               Password
               <input
@@ -64,40 +57,24 @@ export function PlanGate({ available }: { available: boolean }) {
                 spellCheck={false}
                 required
                 autoFocus
-                value={form.password}
-                onChange={(event) => set("password")(event.target.value)}
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
               />
             </label>
-            <section
-              className="bp-terms"
-              tabIndex={0}
-              aria-labelledby="bp-terms-title"
-            >
-              <h2 id="bp-terms-title">Confidentiality terms</h2>
-              <p>By opening the business plan, you agree with SynoRing Labs that:</p>
-              <ol>
-                {terms.map((term) => (
-                  <li key={term}>{term}</li>
-                ))}
-              </ol>
-              <p>When you accept, we record the time and your IP address.</p>
-            </section>
-            <label className="bp-check">
-              <input
-                type="checkbox"
-                required
-                checked={form.agree}
-                onChange={(event) => set("agree")(event.target.checked)}
-              />
-              I have read and agree to these confidentiality terms.
-            </label>
+            <p className="bp-note">
+              Each password is made for one person or team, and we can see
+              when it’s used. Please keep the plan among the people you work
+              with, and don’t forward it or the password. If someone else
+              should see it, like a co-investor, just ask and we’ll send
+              them their own.
+            </p>
             {error && (
               <p className="bp-error" role="alert">
                 {error}
               </p>
             )}
             <button className="button button-dark" disabled={busy}>
-              {busy ? "Opening…" : "Agree and open the plan"}
+              {busy ? "Opening…" : "Open the plan"}
             </button>
             <p className="bp-help">
               Need access? Email <a href={`mailto:${site.email}`}>{site.email}</a>

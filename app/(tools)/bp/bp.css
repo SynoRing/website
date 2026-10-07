@@ -1,5 +1,5 @@
-/* The confidential business plan: the password and terms form, then the
-   PDF viewer. */
+/* The confidential business plan: the password form, then the PDF
+   viewer. */
 .bp-gate {
   display: flex;
   flex-direction: column;
@@ -59,54 +59,15 @@
   border-radius: var(--radius-sm);
   background: #fff;
 }
-.bp-field input:focus,
-.bp-terms:focus-visible {
+.bp-field input:focus {
   outline: 0;
   border-color: var(--accent);
   box-shadow: 0 0 0 3px #4b6a3c24;
 }
-.bp-terms {
-  max-height: 260px;
-  overflow-y: auto;
-  padding: 18px 20px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
+.bp-note {
   font-size: 14px;
   line-height: 1.55;
-  color: var(--text);
-  background: #f8f9f6;
-}
-.bp-terms h2 {
-  margin-bottom: 8px;
-  font-size: var(--text-sm);
-  font-weight: 500;
-  color: var(--ink);
-}
-.bp-terms ol {
-  display: grid;
-  gap: 8px;
-  margin: 10px 0 12px;
-  padding-left: 20px;
-}
-.bp-terms p:last-child {
-  font-size: 13px;
   color: var(--muted);
-}
-.bp-check {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  font-size: var(--text-sm);
-  line-height: 1.45;
-  color: var(--ink);
-  cursor: pointer;
-}
-.bp-check input {
-  flex-shrink: 0;
-  width: 18px;
-  height: 18px;
-  margin-top: 2px;
-  accent-color: var(--forest);
 }
 .bp-error {
   font-size: 14px;

@@ -6,7 +6,6 @@ import {
   signSession,
 } from "../../../business-plan.mjs";
 import { viewerCookie } from "../../../(tools)/bp/server";
-import { termsVersion } from "../../../(tools)/bp/terms";
 
 function reply(status: number, body: object) {
   return Response.json(body, {
@@ -15,8 +14,8 @@ function reply(status: number, body: object) {
   });
 }
 
-/** Checks a recipient's password, records the acceptance of the terms,
-    and signs the visitor in to view the plan. */
+/** Checks a recipient's password, records the sign-in, and lets the
+    visitor view the plan. */
 export async function POST(request: Request) {
   const origin = request.headers.get("origin");
   if (origin && origin !== new URL(request.url).origin)
@@ -38,7 +37,6 @@ export async function POST(request: Request) {
       return reply(401, { error: "wrong_password" });
     }
     const viewer = await plan.addViewer(recipient.id, {
-      terms: termsVersion,
       country: request.headers.get("x-vercel-ip-country") ?? "",
       ip: client,
     });

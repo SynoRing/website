@@ -1,7 +1,7 @@
 /* The confidential business plan at /bp. Everyone it is sent to gets their
    own password, so access can be followed, and turned off, one recipient at
-   a time. A visitor enters the password and accepts the confidentiality
-   terms; each acceptance is kept.
+   a time. A visitor only needs the password; each time
+   someone opens the plan with it is recorded.
 
    The plan is written in the marketing dashboard as HTML, with an optional
    PDF alongside. That working copy is Latest: it is live, so recipients
@@ -69,14 +69,13 @@ export function normalizePassword(value) {
   return password.length >= 8 && password.length <= 64 ? password : null;
 }
 
-/** Validates the /bp form: the password and the terms box.
+/** Validates the /bp form's password.
     @param {any} body
     @returns {{ password: string, error?: undefined } | { error: string, password?: undefined }} */
 export function parseAccess(body) {
   if (!body || typeof body !== "object") return { error: "invalid_request" };
   const password = typeof body.password === "string" ? body.password.trim().toLowerCase() : "";
   if (!password) return { error: "wrong_password" };
-  if (body.agree !== true) return { error: "terms_not_accepted" };
   return { password };
 }
 
@@ -430,14 +429,15 @@ export function createBusinessPlan({ url, token, prefix = "bp", fetch: send = fe
       return true;
     },
 
-    /* Viewers: one per accepted set of terms. */
+    /* Viewers: one per sign-in with a recipient's password. (Viewers from
+       before the terms were dropped have acceptedAt instead of openedAt.) */
 
-    /** Records an acceptance of the terms through a recipient's password.
+    /** Records a sign-in through a recipient's password.
         @param {string} recipientId
-        @param {{ terms: string, country?: string, ip?: string }} details */
-    async addViewer(recipientId, { terms, country = "", ip = "" }, now = new Date()) {
+        @param {{ country?: string, ip?: string }} details */
+    async addViewer(recipientId, { country = "", ip = "" } = {}, now = new Date()) {
       const id = newId(now);
-      const viewer = { id, recipientId, terms, acceptedAt: now.toISOString(), country, ip, views: "0" };
+      const viewer = { id, recipientId, openedAt: now.toISOString(), country, ip, views: "0" };
       await pipeline([
         ["HSET", viewerKey(id), ...Object.entries(viewer).flat()],
         ["ZADD", viewerIndex(recipientId), now.getTime(), id],

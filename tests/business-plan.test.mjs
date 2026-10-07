@@ -28,10 +28,9 @@ test("generates readable passwords that name the recipient", () => {
   for (const bad of ["short", "x".repeat(65), 42, undefined]) assert.equal(normalizePassword(bad), null);
 });
 
-test("asks only for the password and the terms", () => {
-  assert.deepEqual(parseAccess({ password: " YC-k7pd-3mqx ", agree: true }), { password: "yc-k7pd-3mqx" });
-  assert.deepEqual(parseAccess({ password: " ", agree: true }), { error: "wrong_password" });
-  assert.deepEqual(parseAccess({ password: "yc-k7pd-3mqx", agree: "true" }), { error: "terms_not_accepted" });
+test("asks only for the password", () => {
+  assert.deepEqual(parseAccess({ password: " YC-k7pd-3mqx " }), { password: "yc-k7pd-3mqx" });
+  assert.deepEqual(parseAccess({ password: " " }), { error: "wrong_password" });
   assert.deepEqual(parseAccess(null), { error: "invalid_request" });
 });
 
@@ -184,15 +183,15 @@ test("gives each recipient a unique password that can be turned off", async () =
   assert.equal(await plan.updateRecipient("missing", { revoked: true }), false);
 });
 
-test("records each acceptance and which version was opened", async () => {
+test("records each sign-in and which version was opened", async () => {
   const upstash = fakeUpstash();
   const plan = store(upstash);
   await plan.saveLatest("<p>Plan</p>");
   const v1 = await plan.lock();
   const yc = await plan.createRecipient({ label: "YC", password: "yc-k7pd-3mqx" }, at("10:00"));
   const sequoia = await plan.createRecipient({ label: "Sequoia", password: "sequoia-2a2a-3b3b" }, at("11:00"));
-  const first = await plan.addViewer(yc.id, { terms: "2026-10-06", country: "US", ip: "1.2.3.4" }, at("12:00"));
-  await plan.addViewer(yc.id, { terms: "2026-10-06" }, at("13:00"));
+  const first = await plan.addViewer(yc.id, { country: "US", ip: "1.2.3.4" }, at("12:00"));
+  await plan.addViewer(yc.id, {}, at("13:00"));
   await plan.recordView(first, await plan.latest(), at("12:01"));
   await plan.recordView(first, v1, at("12:05"));
 
@@ -205,6 +204,7 @@ test("records each acceptance and which version was opened", async () => {
   assert.equal(listed.viewers[1].views, "2");
   assert.equal(listed.viewers[1].lastVersion, "1");
   assert.equal(listed.viewers[1].country, "US");
+  assert.equal(listed.viewers[1].openedAt, "2026-10-06T12:00:00.000Z");
   assert.deepEqual(recipients[0].viewers, []);
 
   const cookie = signSession(await plan.secret(), first.id);

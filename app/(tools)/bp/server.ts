@@ -9,8 +9,8 @@ export type Version = Record<string, string>;
 
 export const viewerCookie = "synoring_bp";
 
-/** The visitor's viewer record and recipient, if they have accepted the
-    terms and their recipient's password is still on. */
+/** The visitor's viewer record and recipient, if they have signed in and
+    their recipient's password is still on. */
 export async function currentViewer(plan: Plan) {
   return plan.session((await cookies()).get(viewerCookie)?.value);
 }

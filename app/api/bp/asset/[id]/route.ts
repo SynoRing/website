@@ -4,8 +4,8 @@ import { isSignedIn } from "../../../../(tools)/marketing/session";
 
 export const maxDuration = 60;
 
-/** An image or video in the plan, for a visitor who accepted the terms or
-    a signed-in dashboard user. Supports byte ranges for video. */
+/** An image or video in the plan, for a signed-in visitor or a signed-in
+    dashboard user. Supports byte ranges for video. */
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
