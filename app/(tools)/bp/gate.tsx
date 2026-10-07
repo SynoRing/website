@@ -71,11 +71,9 @@ export function PlanGate({
               />
             </label>
             <p className="bp-note">
-              Each password is made for one person or team, and we can see
-              when it’s used. Please keep the plan among the people you work
-              with, and don’t forward it or the password. If someone else
-              should see it, like a co-investor, just ask and we’ll send
-              them their own.
+              Please keep the plan among the people you work with, and don’t
+              forward it or the password. If someone else should see it, like
+              a co-investor, just ask and we’ll send them their own.
             </p>
             {error && (
               <p className="bp-error" role="alert">
