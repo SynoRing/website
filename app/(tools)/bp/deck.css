@@ -408,6 +408,9 @@
   color: var(--deck-muted);
 }
 .slide .flow h3 {
+  font-size: calc(18 * var(--u));
+}
+.slide .flow.tight h3 {
   font-size: calc(17 * var(--u));
   white-space: nowrap;
 }
