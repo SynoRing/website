@@ -522,6 +522,8 @@ function RecipientList({ data, reload, onNotice }: Props) {
   const latestReady = Boolean(latest.html?.trim() || latest.pdfUpload);
   // The link fills the recipient's password in on the form.
   const link = (recipient: Recipient) => `${url}?p=${recipient.password}`;
+  const invite = (recipient: Recipient) =>
+    `Here is the SynoRing business plan, shared with you in confidence:\n${link(recipient)}\nPassword: ${recipient.password}`;
 
   async function create(event: FormEvent) {
     event.preventDefault();
@@ -534,7 +536,7 @@ function RecipientList({ data, reload, onNotice }: Props) {
       setVersionId("");
       onNotice({
         tone: "ok",
-        text: `${recipient.label}’s link is ${link(recipient)}. Copy it below to send it.`,
+        text: `${recipient.label}’s password is ${recipient.password}. Copy the invite below to send it.`,
       });
     } catch (error) {
       fail(error);
@@ -669,9 +671,9 @@ function RecipientList({ data, reload, onNotice }: Props) {
                 />
                 <button
                   className="mk-quiet"
-                  onClick={() => copy(link(recipient), "Link")}
+                  onClick={() => copy(invite(recipient), "Invite")}
                 >
-                  Copy link
+                  Copy invite
                 </button>
                 <button
                   className="mk-quiet"
