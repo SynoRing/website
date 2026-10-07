@@ -154,6 +154,19 @@
 .slide .body.grid {
   align-content: start;
 }
+/* Sparse slides: center the content in the space below the title. */
+.slide .body.center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-bottom: calc(20 * var(--u));
+}
+.slide .body.center .statement {
+  margin-top: calc(44 * var(--u));
+}
+.slide .body.grid.middle {
+  align-content: center;
+}
 .slide .row {
   display: flex;
   align-items: center;
@@ -185,13 +198,94 @@
   margin-top: calc(28 * var(--u));
 }
 
+/* Spacing helpers. */
+.slide .gap-sm {
+  margin-top: calc(6 * var(--u));
+}
+.slide .gap {
+  margin-top: calc(14 * var(--u));
+}
+
+/* A short, labelled section name; used sparingly. */
+.slide .eyebrow {
+  margin-bottom: calc(8 * var(--u));
+  font-size: calc(12 * var(--u));
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--deck-accent);
+}
+
+/* The slide's takeaway, set apart by a rule rather than a box. */
+.slide .statement {
+  margin-top: calc(24 * var(--u));
+  padding-left: calc(18 * var(--u));
+  border-left: calc(3 * var(--u)) solid var(--deck-accent);
+  font-size: calc(21 * var(--u));
+  line-height: 1.4;
+  color: var(--deck-ink);
+}
+
 /* Blocks. */
 .slide .card {
   padding-top: calc(16 * var(--u));
   border-top: 1px solid var(--deck-line);
 }
-.slide .card h3 + p {
-  margin-top: calc(8 * var(--u));
+.slide .card.accent,
+.slide .card.clay {
+  border-top-width: 2px;
+  border-color: var(--deck-accent);
+}
+.slide .card.clay {
+  border-color: var(--deck-clay);
+}
+.slide .facts > div + div {
+  margin-top: calc(18 * var(--u));
+}
+.slide .facts p {
+  margin-top: calc(4 * var(--u));
+}
+.slide .margin-bar {
+  display: flex;
+  height: calc(34 * var(--u));
+  margin-top: calc(16 * var(--u));
+  overflow: hidden;
+  border-radius: calc(8 * var(--u));
+  font-size: calc(13 * var(--u));
+}
+.slide .margin-bar span {
+  display: flex;
+  align-items: center;
+  padding-left: calc(10 * var(--u));
+  white-space: nowrap;
+  background: var(--deck-line);
+}
+.slide .margin-bar span + span {
+  flex: 1;
+  color: #fff;
+  background: var(--deck-accent);
+}
+.slide .runway {
+  margin-top: calc(26 * var(--u));
+  font-size: calc(20 * var(--u));
+}
+.slide .swatch {
+  display: inline-block;
+  width: calc(10 * var(--u));
+  height: calc(10 * var(--u));
+  margin-right: calc(10 * var(--u));
+  border-radius: calc(3 * var(--u));
+}
+.slide tr.group td {
+  padding-top: calc(16 * var(--u));
+  border-bottom: 0;
+  font-weight: 500;
+  color: var(--deck-accent);
+}
+.slide .sources p {
+  margin-top: calc(10 * var(--u));
+  font-size: calc(14 * var(--u));
+  line-height: 1.45;
 }
 .slide .num {
   display: block;
@@ -296,6 +390,9 @@
 .slide .flow h3 {
   font-size: calc(18 * var(--u));
 }
+.slide .flow.muted > div {
+  background: #f1f3ee;
+}
 .slide .flow p {
   margin-top: calc(4 * var(--u));
   font-size: calc(14 * var(--u));
@@ -389,6 +486,9 @@
   font-size: calc(13 * var(--u));
   font-weight: 500;
   color: var(--deck-accent);
+}
+.slide .person .past {
+  color: var(--deck-muted);
 }
 .slide .person p {
   margin-top: calc(10 * var(--u));
@@ -496,6 +596,16 @@
 .slide.dark .stat {
   color: #fff;
 }
+.slide.dark ul.ticks li {
+  color: #dfe6e0;
+}
+.slide.dark ul.ticks li::before {
+  background: var(--deck-lime);
+}
+.slide.dark .statement {
+  color: #fff;
+  border-color: var(--deck-lime);
+}
 .slide.dark .section,
 .slide.dark .foot,
 .slide.dark .small,
@@ -528,9 +638,14 @@
 }
 .slide.cover .cover-art {
   position: absolute;
-  right: calc(-24 * var(--u));
-  top: calc(92 * var(--u));
-  width: calc(560 * var(--u));
+  right: calc(64 * var(--u));
+  top: calc(118 * var(--u));
+  width: calc(460 * var(--u));
+}
+.slide.cover .raise {
+  margin-top: calc(34 * var(--u));
+  font-size: calc(19 * var(--u));
+  color: var(--deck-ink);
 }
 
 @page deck {
