@@ -18,7 +18,7 @@ const specifications = [
       ["Band width", "8 mm in every size"],
       ["Inner & outer diameter", "Varies by ring size"],
       ["Ring sizes", "Multiple sizes; confirmed with a sizing kit first"],
-      ["Materials", "Custom ceramic outer shell · Stainless steel inner band"],
+      ["Materials", "Zirconia ceramic outer shell · Stainless steel inner band"],
       ["Weight", "To be announced"],
     ],
   },

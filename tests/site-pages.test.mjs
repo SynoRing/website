@@ -61,6 +61,8 @@ test("pre-order route publishes confirmed pricing and keeps enquiry status clear
   for (const finish of ["Space Gray", "Platinum", "Rose Gold", "Gold"])
     assert.ok(store.includes(finish));
   assert.match(store, /Technical specifications/);
+  assert.match(store, /Zirconia ceramic outer shell/);
+  assert.match(store, /"material":"Zirconia ceramic, stainless steel"/);
   assert.match(store, /this website does not collect payment/);
   assert.doesNotMatch(
     store,

@@ -48,7 +48,7 @@ export const product = {
   manufacturer: { "@id": organizationId },
   category: "Wearable gesture controller",
   color: finishes.map((finish) => finish.name).join(", "),
-  material: "Ceramic, stainless steel",
+  material: "Zirconia ceramic, stainless steel",
   width: { "@type": "QuantitativeValue", value: 8, unitCode: "MMT" },
   offers: {
     "@type": "Offer",
