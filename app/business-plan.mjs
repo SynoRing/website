@@ -1,7 +1,7 @@
 /* The confidential business plan at /bp. Everyone it is sent to gets their
    own password, so access can be followed, and turned off, one recipient at
-   a time. A visitor only needs the password; each time
-   someone opens the plan with it is recorded.
+   a time. The password goes in their link (/bp/k7pd3m), so they open the
+   plan with one click; each time someone does is recorded.
 
    The plan is written in the marketing dashboard as HTML, with an optional
    PDF alongside. That working copy is Latest: it is live, so recipients
@@ -47,26 +47,19 @@ const pdfFields = ["pdfUpload", "pdfName", "pdfSize", "pdfParts"];
 // No 0/o or 1/i/l, so a password read aloud or retyped comes out right.
 const alphabet = "abcdefghjkmnpqrstuvwxyz23456789";
 
-/** A password like "y-combinator-k7pd-3mqx": who it is for, then eight
-    random characters. */
-export function generatePassword(label = "") {
-  const slug = label
-    .normalize("NFKD")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .slice(0, 16)
-    .replace(/^-+|-+$/g, "");
-  const chunk = () =>
-    Array.from({ length: 4 }, () => alphabet[randomInt(alphabet.length)]).join("");
-  return [slug, chunk(), chunk()].filter(Boolean).join("-");
+/** A password like "k7pd3m": six random characters, short enough for a
+    link. With failed attempts limited per hour, guessing one of the ~900
+    million isn't practical. */
+export function generatePassword() {
+  return Array.from({ length: 6 }, () => alphabet[randomInt(alphabet.length)]).join("");
 }
 
-/** Passwords ignore case and surrounding space. Null unless 8 to 64
-    characters. */
+/** Passwords ignore case and surrounding space. Null unless 6 to 64
+    letters, digits, or hyphens, so every password fits in a link. */
 export function normalizePassword(value) {
   if (typeof value !== "string") return null;
   const password = value.trim().toLowerCase();
-  return password.length >= 8 && password.length <= 64 ? password : null;
+  return /^[a-z0-9-]{6,64}$/.test(password) ? password : null;
 }
 
 /** Validates the /bp form's password.

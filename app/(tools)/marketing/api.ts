@@ -10,7 +10,7 @@ const errorText: Record<string, string> = {
   invalid_email: "Enter a valid email address.",
   missing_content: "Add a subject and a body first.",
   invalid_label: "Say who this password is for.",
-  invalid_password: "Passwords need 8 to 64 characters.",
+  invalid_password: "Passwords need 6 to 64 letters, digits, or hyphens.",
   password_taken: "Another recipient already has that password.",
   not_found: "That recipient no longer exists. Refresh the page.",
   not_pdf: "Choose a PDF file.",

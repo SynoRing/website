@@ -78,12 +78,10 @@ export function BusinessPlanView({ onNotice }: { onNotice: Notify }) {
           ))}
         </div>
         <p className="mk-hint">
-          Recipients open{" "}
-          <a href="/bp" target="_blank" rel="noopener">
-            {data.url.replace("https://", "")}
-          </a>{" "}
-          with their own password. Latest is live: edits save as you type.
-          Numbered versions are locked.
+          Each recipient gets their own link, like{" "}
+          {data.url.replace("https://", "")}/k7pd3m, that opens the plan in one
+          click. Latest is live: edits save as you type. Numbered versions are
+          locked.
         </p>
       </div>
       {section === "editor" && (
@@ -523,6 +521,8 @@ function RecipientList({ data, reload, onNotice }: Props) {
   const [busy, setBusy] = useState(false);
   const fail = (error: unknown) => onNotice({ tone: "error", text: message(error) });
   const latestReady = Boolean(latest.html?.trim() || latest.pdfUpload);
+  // The password is the last part of the link.
+  const link = (recipient: Recipient) => `${url}/${recipient.password}`;
 
   async function create(event: FormEvent) {
     event.preventDefault();
@@ -535,7 +535,7 @@ function RecipientList({ data, reload, onNotice }: Props) {
       setVersionId("");
       onNotice({
         tone: "ok",
-        text: `${recipient.label}’s password is ${recipient.password}. Copy the invite below to send it.`,
+        text: `${recipient.label}’s link is ${link(recipient)}. Copy it below to send it.`,
       });
     } catch (error) {
       fail(error);
@@ -548,7 +548,7 @@ function RecipientList({ data, reload, onNotice }: Props) {
     if (
       changes.revoked &&
       !confirm(
-        `Turn off ${recipient.label}’s password? Anyone viewing through it loses access right away.`,
+        `Turn off ${recipient.label}’s link? Anyone viewing through it loses access right away.`,
       )
     )
       return;
@@ -591,8 +591,6 @@ function RecipientList({ data, reload, onNotice }: Props) {
     }
   }
 
-  const invite = (recipient: Recipient) =>
-    `Here is the SynoRing business plan, shared with you in confidence:\n${url}\nPassword: ${recipient.password}`;
 
   return (
     <div className="mk-plan">
@@ -610,10 +608,12 @@ function RecipientList({ data, reload, onNotice }: Props) {
             />
           </label>
           <label className="mk-field">
-            <span>Password</span>
+            <span>Password in the link</span>
             <input
-              minLength={8}
+              minLength={6}
               maxLength={64}
+              pattern="[A-Za-z0-9\-]+"
+              title="Letters, digits, or hyphens"
               placeholder="Generated if left blank"
               autoComplete="off"
               spellCheck={false}
@@ -631,15 +631,15 @@ function RecipientList({ data, reload, onNotice }: Props) {
             />
           </label>
           <button className="button button-small button-dark" disabled={busy}>
-            {busy ? "Creating…" : "Create password"}
+            {busy ? "Creating…" : "Create link"}
           </button>
         </div>
       </form>
 
       {!recipients.length && (
         <p className="mk-empty">
-          No recipients yet. Create a password for each person or firm you send
-          the plan to.
+          No recipients yet. Create a link for each person or firm you send the
+          plan to.
         </p>
       )}
       {recipients.map((recipient) => {
@@ -653,7 +653,8 @@ function RecipientList({ data, reload, onNotice }: Props) {
                   {recipient.revokedAt && <span className="mk-tag">Turned off</span>}
                 </h3>
                 <p>
-                  <code className="mk-password">{recipient.password}</code> · created{" "}
+                  <code className="mk-password">{link(recipient).replace("https://", "")}</code> ·
+                  created{" "}
                   {day(recipient.createdAt)} · {recipient.views ?? 0}{" "}
                   {recipient.views === "1" ? "view" : "views"}
                   {recipient.lastViewedAt &&
@@ -669,9 +670,9 @@ function RecipientList({ data, reload, onNotice }: Props) {
                 />
                 <button
                   className="mk-quiet"
-                  onClick={() => copy(invite(recipient), "Link and password")}
+                  onClick={() => copy(link(recipient), "Link")}
                 >
-                  Copy invite
+                  Copy link
                 </button>
                 <button
                   className="mk-quiet"
@@ -685,7 +686,7 @@ function RecipientList({ data, reload, onNotice }: Props) {
               </div>
             </div>
             {!pinned && !latestReady && (
-              <p className="mk-hint">Latest is empty, so this password opens a “not ready yet” page.</p>
+              <p className="mk-hint">Latest is empty, so this link opens a “not ready yet” page.</p>
             )}
             {recipient.viewers.length ? (
               <div className="mk-table-wrap mk-viewers">
@@ -719,7 +720,7 @@ function RecipientList({ data, reload, onNotice }: Props) {
                 </table>
               </div>
             ) : (
-              <p className="mk-hint">No one has opened the plan with this password yet.</p>
+              <p className="mk-hint">No one has opened the plan with this link yet.</p>
             )}
           </article>
         );

@@ -44,7 +44,7 @@ export async function POST(request: Request) {
   if (!label || label.length > 80) return json(400, { error: "invalid_label" });
   const password = body.password?.trim()
     ? normalizePassword(body.password)
-    : generatePassword(label);
+    : generatePassword();
   if (!password) return json(400, { error: "invalid_password" });
   const versionId = await validVersion(plan, body.versionId);
   if (versionId === null) return json(400, { error: "invalid_request" });

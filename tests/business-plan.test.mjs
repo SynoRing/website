@@ -19,13 +19,14 @@ function store(upstash = fakeUpstash()) {
 
 const at = (time) => new Date(`2026-10-06T${time}:00Z`);
 
-test("generates readable passwords that name the recipient", () => {
-  assert.match(generatePassword("Y Combinator"), /^y-combinator-[a-hj-km-np-z2-9]{4}-[a-hj-km-np-z2-9]{4}$/);
-  assert.match(generatePassword("红杉"), /^[a-z2-9]{4}-[a-z2-9]{4}$/);
-  assert.match(generatePassword("Andreessen Horowitz Growth"), /^andreessen-horow-\w{4}-\w{4}$/);
-  assert.notEqual(generatePassword("yc"), generatePassword("yc"));
+test("generates short, readable passwords that fit in a link", () => {
+  assert.match(generatePassword(), /^[a-hj-km-np-z2-9]{6}$/);
+  assert.notEqual(generatePassword(), generatePassword());
   assert.equal(normalizePassword("  YC-Summer-2026 "), "yc-summer-2026");
-  for (const bad of ["short", "x".repeat(65), 42, undefined]) assert.equal(normalizePassword(bad), null);
+  assert.equal(normalizePassword("K7PD3M"), "k7pd3m");
+  assert.equal(normalizePassword("yc-k7pd-3mqx"), "yc-k7pd-3mqx");
+  for (const bad of ["k7pd3", "x".repeat(65), "yc 2026", "yc/2026", 42, undefined])
+    assert.equal(normalizePassword(bad), null);
 });
 
 test("asks only for the password", () => {
