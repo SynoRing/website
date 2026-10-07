@@ -613,7 +613,8 @@
   color: #eef2ec;
   background: var(--deck-forest);
 }
-.slide.dark .mark {
+/* Older decks use the SVG wordmark; newer ones bring a white PNG. */
+.slide.dark .mark[src$=".svg"] {
   filter: invert(1);
 }
 .slide.dark p,
