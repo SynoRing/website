@@ -1,10 +1,25 @@
 import { site } from "../../site";
 import { PlanFrame } from "./frame";
+import { LocalDate } from "./local-date";
 import { PrintButton } from "./print-button";
-import { versionLabel, type Version } from "./server";
+import type { Version } from "./server";
 import "./bp.css";
 import "./deck.css";
 import "./doc.css";
+
+/** "Version 3 · October 6, 2026", or "Latest · updated October 7, 2026"
+    for the live plan. */
+function VersionLabel({ version }: { version: Version }) {
+  return version.number ? (
+    <>
+      Version {version.number} · <LocalDate value={version.lockedAt} />
+    </>
+  ) : (
+    <>
+      Latest · updated <LocalDate value={version.updatedAt} />
+    </>
+  );
+}
 
 /* One version of the plan as a recipient sees it: the web version, or its
    PDF. The dashboard's preview uses the same view. */
@@ -28,7 +43,7 @@ export function PlanView({
   // Slides opt in with <div class="deck">; anything else is a document.
   const deck = /class="deck[\s"]/.test(version.html ?? "");
   const hasPdf = Boolean(version.pdfUpload);
-  const label = versionLabel(version);
+  const label = <VersionLabel version={version} />;
   const download = `${pdfUrl}${pdfUrl.includes("?") ? "&" : "?"}download`;
 
   return (

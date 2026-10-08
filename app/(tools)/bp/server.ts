@@ -15,20 +15,6 @@ export async function currentViewer(plan: Plan) {
   return plan.session((await cookies()).get(viewerCookie)?.value);
 }
 
-export const longDate = (value: string) =>
-  new Date(value).toLocaleDateString("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
-
-/** "Version 3 · October 6, 2026", or "Latest · updated October 7, 2026"
-    for the live plan. */
-export const versionLabel = (version: Version) =>
-  version.number
-    ? `Version ${version.number} · ${longDate(version.lockedAt)}`
-    : `Latest · updated ${longDate(version.updatedAt)}`;
-
 type StoredFile = { upload: string; parts: string | number; size: string | number };
 
 /** Streams a stored file part by part, or the byte range asked for, so
