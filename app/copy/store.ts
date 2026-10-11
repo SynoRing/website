@@ -83,7 +83,7 @@ const en = {
     items: [
       {
         title: "How does pre-ordering work?",
-        text: "Choose a finish and quantity, review your selection, and leave your email. Our team will contact you to confirm your size and the next steps; this website does not collect payment.",
+        text: "Choose a finish and quantity, then join the waitlist with your email. Our team will contact you to confirm your size and arrange your pre-order; this website does not collect payment.",
       },
       {
         title: "When will my ring ship?",
@@ -113,12 +113,13 @@ const en = {
     quantity: "Quantity",
     decrease: "Decrease quantity",
     increase: "Increase quantity",
-    cta: "Pre-order",
+    cta: "Join the waitlist",
+    ctaNote: "No payment today",
     dispatch: "Estimated shipping Q1 2027 · Free shipping within the US",
   },
   review: {
-    eyebrow: "Pre-order",
-    close: "Close pre-order review",
+    eyebrow: "Waitlist",
+    close: "Close the waitlist signup",
     title: "Your SynoRing.",
     line: "{finish} · Qty {quantity}",
     each: "${price} USD each",
@@ -126,9 +127,9 @@ const en = {
     savings: "Pre-order savings",
     subtotal: "Product subtotal",
     explainer:
-      "Leave your email and our team will contact you to arrange your pre-order. A sizing kit ships first so you can confirm your size; your ring is estimated to ship in Q1 2027, free within the US. Taxes and shipping to other regions are confirmed by email. No payment is collected on this website.",
-    submit: "Request pre-order",
-    doneTitle: "Pre-order request received.",
+      "Join the waitlist with this selection, and our team will contact you to arrange your pre-order at the $99 price. A sizing kit ships first so you can confirm your size; your ring is estimated to ship in Q1 2027, free within the US. Taxes and shipping to other regions are confirmed by email. No payment is collected on this website.",
+    submit: "Join the waitlist",
+    doneTitle: "You’re on the waitlist.",
     doneText: "We’ll email {email} to confirm your size and arrange your SynoRing R1 in {finish}.",
     closeDone: "Close",
     back: "Continue choosing",
@@ -224,7 +225,7 @@ const zh: StoreCopy = {
     items: [
       {
         title: "预订流程是怎样的？",
-        text: "选择配色和数量，确认你的选择，然后留下邮箱。我们的团队会联系你确认尺码和后续步骤；本网站不收取任何款项。",
+        text: "选择配色和数量，然后留下邮箱加入候补名单。我们的团队会联系你确认尺码并安排预订；本网站不收取任何款项。",
       },
       {
         title: "我的戒指什么时候发货？",
@@ -254,12 +255,13 @@ const zh: StoreCopy = {
     quantity: "数量",
     decrease: "减少数量",
     increase: "增加数量",
-    cta: "预订",
+    cta: "加入候补名单",
+    ctaNote: "今天无需付款",
     dispatch: "预计 2027 年第一季度发货 · 美国境内包邮",
   },
   review: {
-    eyebrow: "预订",
-    close: "关闭预订确认",
+    eyebrow: "候补名单",
+    close: "关闭候补名单登记",
     title: "你的 SynoRing。",
     line: "{finish} · 数量 {quantity}",
     each: "单价 ${price} USD",
@@ -267,9 +269,9 @@ const zh: StoreCopy = {
     savings: "预订优惠",
     subtotal: "商品小计",
     explainer:
-      "留下邮箱，我们的团队会联系你安排预订。我们会先寄出尺码套件，方便你确认尺码；戒指预计 2027 年第一季度发货，美国境内包邮。税费以及寄往其他地区的运费会通过邮件确认。本网站不收取任何款项。",
-    submit: "提交预订申请",
-    doneTitle: "已收到你的预订申请。",
+      "带着这个选择加入候补名单，我们的团队会联系你，按 $99 的预订价安排预订。我们会先寄出尺码套件，方便你确认尺码；戒指预计 2027 年第一季度发货，美国境内包邮。税费以及寄往其他地区的运费会通过邮件确认。本网站不收取任何款项。",
+    submit: "加入候补名单",
+    doneTitle: "你已加入候补名单。",
     doneText: "我们会发邮件到 {email}，确认你的尺码，并为你安排{finish}的 SynoRing R1。",
     closeDone: "关闭",
     back: "继续选择",

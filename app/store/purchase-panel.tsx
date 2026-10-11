@@ -119,7 +119,7 @@ export function PurchasePanel({ lang, copy }: { lang: Lang; copy: PanelCopy }) {
           }}
         >
           <span>{text.cta}</span>
-          <span>${preorderPrice * quantity} USD</span>
+          <span>{text.ctaNote}</span>
         </button>
         <p className="dispatch-note">{text.dispatch}</p>
       </div>

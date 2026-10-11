@@ -229,10 +229,10 @@ export function confirmationEmail(kind, details = {}) {
     const row = (label, value, strong = false) =>
       `<tr><td style="padding:10px 0;border-bottom:1px solid #e4e8e1;font-size:15px;color:#6b756d;">${label}</td><td align="right" style="padding:10px 0;border-bottom:1px solid #e4e8e1;font-size:15px;color:${strong ? "#1e2420" : "#4f5952"};">${value}</td></tr>`;
     return {
-      subject: "Your SynoRing R1 pre-order request",
+      subject: "You’re on the SynoRing R1 waitlist",
       preheader: "We’ll be in touch to confirm your size and next steps.",
-      body: `<h1>Pre-order request received.</h1>
-<p>Thanks for your interest in SynoRing R1. Here is what you asked for:</p>
+      body: `<h1>You’re on the waitlist.</h1>
+<p>Thanks for your interest in SynoRing R1. Here is the selection you joined with:</p>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 24px;border-top:1px solid #e4e8e1;">
 ${row("Product", "SynoRing R1")}
 ${row("Finish", "{{finish}}")}
@@ -249,7 +249,7 @@ ${row("Product subtotal", `$${escapeHtml(details.subtotal ?? "")} USD`, true)}
 <p>Questions? Just reply to this email.</p>
 <p>— The SynoRing team</p>`,
       reason:
-        "You’re receiving this because you requested a SynoRing R1 pre-order at synoring.ai.",
+        "You’re receiving this because you joined the SynoRing R1 waitlist from the store at synoring.ai.",
     };
   }
   return {

@@ -86,7 +86,7 @@ test("ships complete starter templates and confirmations", () => {
   });
   assert.match(html, /Rose Gold/);
   assert.match(html, /\$198 USD/);
-  assert.match(html, /requested a SynoRing R1 pre-order/);
+  assert.match(html, /joined the SynoRing R1 waitlist from the store/);
   assert.match(confirmationEmail("waitlist").subject, /waitlist/);
 });
 
