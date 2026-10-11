@@ -1,6 +1,7 @@
 import { site } from "../../site";
 import { PlanFrame } from "./frame";
 import { LocalDate } from "./local-date";
+import { Presenter } from "./presenter";
 import { PrintButton } from "./print-button";
 import type { Version } from "./server";
 import "./bp.css";
@@ -58,6 +59,7 @@ export function PlanView({
             {label} · Shared with {shared}
           </p>
         </div>
+        {view === "web" && deck && <Presenter />}
         {hasWeb && hasPdf && (
           <nav className="bp-views" aria-label="Format">
             <a href={base} aria-current={view === "web" ? "page" : undefined}>

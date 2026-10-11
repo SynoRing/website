@@ -143,6 +143,77 @@
 .bp-download {
   flex-shrink: 0;
 }
+
+/* Presenting: one slide at a time, as large as fits between the top bar
+   and the footer. Screen only, so printing still gives every slide. */
+.bp-present-start,
+.bp-present-end {
+  flex-shrink: 0;
+  border-color: var(--line-strong);
+}
+.bp-present {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 6px;
+}
+.bp-present output {
+  min-width: 64px;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  color: var(--muted);
+}
+.bp-present .bp-present-end {
+  margin-left: 8px;
+}
+.bp-step {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 50%;
+  color: var(--ink);
+  background: #eceee9;
+  transition: background 0.2s;
+}
+.bp-step:hover:not(:disabled) {
+  background: #e0e4dc;
+}
+.bp-step:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.bp-step .icon {
+  width: 17px;
+  height: 17px;
+}
+.bp-step-back .icon {
+  transform: scaleX(-1);
+}
+@media screen {
+  .bp-viewer.bp-presenting {
+    height: 100svh;
+    overflow: hidden;
+  }
+  .bp-presenting .bp-deck-page {
+    display: grid;
+    place-items: center;
+    min-height: 0;
+    padding: 20px 24px;
+    overflow: hidden;
+    container-type: size;
+  }
+  .bp-presenting .deck {
+    display: block;
+    width: min(100cqw, 100cqh * 16 / 9);
+    max-width: none;
+  }
+  .bp-presenting .slide:not([data-current]) {
+    display: none;
+  }
+}
 .bp-page {
   flex: 1;
   padding: 64px 24px 96px;
@@ -251,6 +322,9 @@
   }
   .bp-deck-page {
     padding: 16px 12px 40px;
+  }
+  .bp-presenting .bp-deck-page {
+    padding: 12px;
   }
   .bp-foot {
     padding: 10px 16px;
