@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
+import { Analytics } from "../analytics";
 import { ClickId } from "../click-id";
 import { siteCopy } from "../copy/site";
 import { fontClasses } from "../fonts";
@@ -86,6 +87,7 @@ export default async function RootLayout({
       <body>
         {children}
         <ClickId />
+        <Analytics />
       </body>
     </html>
   );

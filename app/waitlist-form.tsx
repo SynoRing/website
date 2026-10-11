@@ -1,9 +1,11 @@
 "use client";
 import { useId, useState, type FormEvent, type ReactNode } from "react";
+import { track } from "./analytics";
 import type { WaitlistCopy } from "./copy/site";
 import type { Lang } from "./i18n";
 import { CheckIcon } from "./icons";
 import { site } from "./site";
+import { preorderPrice } from "./store/product";
 import { fill } from "./text";
 
 /* Email signup posted to /api/waitlist. The homepage joins the waitlist;
@@ -56,6 +58,13 @@ export function WaitlistForm({
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(result.error);
       setState({ status: "done", created: result.created });
+      if (details.source === "preorder")
+        track("preorder_request", {
+          finish: details.finish,
+          quantity: details.quantity,
+          value: preorderPrice * details.quantity,
+        });
+      else track("waitlist_join", { new: Boolean(result.created) });
       onDone?.();
     } catch (error) {
       const code = error instanceof Error ? error.message : "";

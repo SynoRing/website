@@ -232,6 +232,18 @@ The marketing dashboard, `/bp`, and `/unsubscribe` stay in English. They
 live in `app/(tools)/`, which has its own root layout. Share images are still
 English in both languages.
 
+## Analytics
+
+Visits are measured with OpenPanel, self-hosted at
+[op.synoring.ai](https://op.synoring.ai). `app/analytics.tsx` loads its
+script on the public site only (not `/marketing` or `/bp`), and only in
+production, so previews and local runs never count. It records page views,
+outgoing links, and three events: `preorder_open` (the review opens, with
+finish and quantity), `preorder_request` (a pre-order is sent, with finish,
+quantity, and value), and `waitlist_join`. OpenPanel is cookieless. The
+client ID in the code is public; the project accepts browser events only
+from synoring.ai, so no secret is needed on the site.
+
 ## X Ads conversions
 
 Each pre-order request is reported to X Ads as a conversion (pixel `rgxw1`,

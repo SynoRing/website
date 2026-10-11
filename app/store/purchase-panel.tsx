@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { ProductGallery } from "./product-gallery";
+import { track } from "../analytics";
 import { RingVisual } from "../product-visual";
 import {
   finishes,
@@ -112,7 +113,10 @@ export function PurchasePanel({ lang, copy }: { lang: Lang; copy: PanelCopy }) {
         <button
           ref={trigger}
           className="button button-dark store-cta preorder-button"
-          onClick={() => setOpen(true)}
+          onClick={() => {
+            setOpen(true);
+            track("preorder_open", { finish, quantity });
+          }}
         >
           <span>{text.cta}</span>
           <span>${preorderPrice * quantity} USD</span>
