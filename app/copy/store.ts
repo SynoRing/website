@@ -49,7 +49,7 @@ const en = {
       {
         title: "Power & durability",
         rows: [
-          ["Battery capacity", "12 mAh"],
+          ["Battery capacity", "18 mAh"],
           ["Battery life, typical use", "Up to 12 hours"],
           ["Battery life, intensive use", "Up to 1 hour"],
           ["Charging", "Full charge in about 1.5 hours"],
@@ -191,7 +191,7 @@ const zh: StoreCopy = {
       {
         title: "续航与耐用性",
         rows: [
-          ["电池容量", "12 mAh"],
+          ["电池容量", "18 mAh"],
           ["续航（日常使用）", "最长 12 小时"],
           ["续航（高强度使用）", "最长 1 小时"],
           ["充电", "约 1.5 小时充满"],
