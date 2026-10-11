@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
+import { ClickId } from "../click-id";
 import { siteCopy } from "../copy/site";
 import { fontClasses } from "../fonts";
 import { alternates, isLang, languages, locales } from "../i18n";
@@ -82,7 +83,10 @@ export default async function RootLayout({
   if (!isLang(lang)) notFound();
   return (
     <html lang={languages[lang].htmlLang} className={fontClasses}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <ClickId />
+      </body>
     </html>
   );
 }

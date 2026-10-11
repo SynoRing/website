@@ -232,6 +232,24 @@ The marketing dashboard, `/bp`, and `/unsubscribe` stay in English. They
 live in `app/(tools)/`, which has its own root layout. Share images are still
 English in both languages.
 
+## X Ads conversions
+
+Each pre-order request is reported to X Ads as a conversion (pixel `rgxw1`,
+event `tw-rgxw1-rgxwh`) through X's Conversion API, server to server, after
+the response so the form never waits on it. The event carries the SHA-256
+hash of the email, the visitor's IP address and user agent, the finish,
+quantity, and value ($99 each, USD). When a visitor arrives from an X ad, the
+`?twclid=` click ID is kept in a first-party `twclid` cookie for 30 days and
+sent too, so the pre-order is credited to the ad. Requests from browsers that
+send Global Privacy Control (`Sec-GPC: 1`) are not reported. The code is in
+`app/x-conversions.mjs` and `app/x-click-id.mjs`.
+
+Setup: X Ads → Tools → Events Manager → Install Pixel → Manual → Conversion
+API → Generate access token. Add it as `X_PIXEL_TOKEN` in Vercel and
+redeploy. Only production reports conversions; previews and local runs
+never do, even with the token set. Failures are logged and never affect the
+pre-order.
+
 ## Site pages
 
 - `/`: product story, interactive preview, technology, integration direction, and development stages.
