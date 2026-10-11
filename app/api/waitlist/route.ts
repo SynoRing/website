@@ -74,29 +74,35 @@ export async function POST(request: Request) {
         );
       });
     // Report pre-orders to X Ads, unless the browser sends Global Privacy
-    // Control, the opt-out from ad tracking.
+    // Control, the opt-out from ad tracking. Each outcome is logged, so
+    // the production logs show why a pre-order did or didn't reach X.
     const conversions = xConversionsFromEnv();
-    if (
-      conversions &&
-      signup.source === "preorder" &&
-      request.headers.get("sec-gpc") !== "1"
-    )
-      after(async () => {
-        const conversion = preorderConversion({
-          email: signup.email,
-          finish: signup.finish,
-          name: `SynoRing R1 ${finishes.find((finish) => finish.id === signup.finish)?.name ?? ""}`.trim(),
-          quantity: signup.quantity,
-          price: preorderPrice,
-          twclid: clickIdFrom(request.headers.get("cookie")),
-          ip: client === "unknown" ? "" : client,
-          userAgent: request.headers.get("user-agent") ?? "",
-          sourceUrl: request.headers.get("referer") ?? "",
+    if (signup.source === "preorder" && process.env.VERCEL_ENV === "production") {
+      if (!conversions)
+        console.warn("X conversion skipped: X_PIXEL_TOKEN is not set");
+      else if (request.headers.get("sec-gpc") === "1")
+        console.info("X conversion skipped: the browser sends Global Privacy Control");
+      else
+        after(async () => {
+          const conversion = preorderConversion({
+            email: signup.email,
+            finish: signup.finish,
+            name: `SynoRing R1 ${finishes.find((finish) => finish.id === signup.finish)?.name ?? ""}`.trim(),
+            quantity: signup.quantity,
+            price: preorderPrice,
+            twclid: clickIdFrom(request.headers.get("cookie")),
+            ip: client === "unknown" ? "" : client,
+            userAgent: request.headers.get("user-agent") ?? "",
+            sourceUrl: request.headers.get("referer") ?? "",
+          });
+          await conversions
+            .send(conversion)
+            .then((result) =>
+              console.info("X conversion sent:", JSON.stringify(result.data ?? result)),
+            )
+            .catch((error) => console.error("X conversion failed:", error));
         });
-        await conversions
-          .send(conversion)
-          .catch((error) => console.error("X conversion failed:", error));
-      });
+    }
     return reply(200, { ok: true, created });
   } catch (error) {
     console.error(error);
