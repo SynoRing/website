@@ -15,7 +15,7 @@ const en = {
   recordings: {
     eyebrow: "SynoOS on RayNeo",
     title: "Real apps.\nRight in your view.",
-    text: "SynoOS, our software for smart glasses, recorded on RayNeo X3 Pro: a browser and an AI assistant, used with a tap, a glide, and your voice. Support for more smart glasses is in development.",
+    text: "SynoOS, our software for smart glasses, on RayNeo X3 Pro, controlled with SynoRing R1. Tap, glide, and speak to browse the web or ask the assistant. Support for more smart glasses is in development.",
     label: "Screen recordings · No sound",
     videos: [
       {
@@ -230,7 +230,7 @@ const zh: DemoCopy = {
   recordings: {
     eyebrow: "SynoOS on RayNeo",
     title: "真实的应用，\n就在眼前。",
-    text: "这是我们为智能眼镜打造的 SynoOS，录制于 RayNeo X3 Pro：一个浏览器，一个 AI 助手，轻点、滑动，再加上你的声音就能用。更多智能眼镜的适配正在开发中。",
+    text: "这是我们为智能眼镜打造的 SynoOS，运行在 RayNeo X3 Pro 上，用 SynoRing R1 操控。轻点、滑动，再开口说话，就能浏览网页、询问 AI 助手。更多智能眼镜的适配正在开发中。",
     label: "眼镜录屏 · 无声音",
     videos: [
       {
