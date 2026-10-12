@@ -43,6 +43,33 @@
 .demo-experience .ar-experience-card {
   height: 560px;
 }
+.demo-recordings {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+.demo-recordings figure {
+  margin: 0;
+}
+.demo-recordings video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius);
+  background: var(--forest);
+}
+.demo-recordings figcaption {
+  margin-top: 20px;
+}
+.demo-recordings h3 {
+  margin-bottom: 6px;
+}
+.demo-recordings p {
+  font-size: 16px;
+}
+.demo-try {
+  padding-top: var(--section);
+}
 .gesture-guide {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -1262,6 +1289,10 @@
   }
 }
 @media (max-width: 760px) {
+  .demo-recordings {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
   .store-product {
     grid-template-columns: 1fr;
     gap: 36px;

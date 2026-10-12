@@ -12,6 +12,22 @@ const en = {
     text: "Step into the view through smart glasses. Your cursor becomes the ring; your gestures control the display.",
     label: "Runs in your browser · No hardware needed",
   },
+  recordings: {
+    eyebrow: "Recorded on smart glasses",
+    title: "Real apps.\nRight in your view.",
+    text: "Two screen recordings straight from a pair of smart glasses: a browser and an AI assistant, used with a tap, a glide, and your voice.",
+    label: "Screen recordings · No sound",
+    videos: [
+      {
+        title: "Browse the web",
+        text: "Say what you’re looking for, then glide through the results.",
+      },
+      {
+        title: "Ask the assistant",
+        text: "Check the weather, open an app, and catch up on the news, just by asking.",
+      },
+    ],
+  },
   guide: {
     eyebrow: "How to play",
     title: "Four gestures.\nA familiar way to interact.",
@@ -210,6 +226,22 @@ const zh: DemoCopy = {
     title: "动一动手指，\n看看会发生什么。",
     text: "走进智能眼镜里的画面。你的光标就是戒指，你的手势控制着显示的内容。",
     label: "在浏览器中运行 · 无需硬件",
+  },
+  recordings: {
+    eyebrow: "智能眼镜实录",
+    title: "真实的应用，\n就在眼前。",
+    text: "两段录屏都直接来自一副智能眼镜：一个浏览器，一个 AI 助手。轻点、滑动，再加上你的声音，就能用起来。",
+    label: "眼镜录屏 · 无声音",
+    videos: [
+      {
+        title: "浏览网页",
+        text: "说出想找的内容，再滑动浏览结果。",
+      },
+      {
+        title: "问问 AI 助手",
+        text: "查天气、打开应用、了解今天的新闻，开口就行。",
+      },
+    ],
   },
   guide: {
     eyebrow: "玩法",

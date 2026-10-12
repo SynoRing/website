@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { GestureExperience } from "../../ar-experience";
 import { demoCopy } from "../../copy/demo";
+import { DemoVideo } from "../../demo-video";
 import { localePath, pageLang, type PageProps } from "../../i18n";
 import {
   CircleIcon,
@@ -23,6 +24,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 const gestureIcons = [TapIcon, GlideIcon, CircleIcon, HoldIcon];
 const sceneIcons = [MusicIcon, ReadingIcon, NavigationIcon];
+const recordings = ["demo-browse", "demo-assistant"];
 
 export default async function DemoPage({ params }: PageProps) {
   const lang = await pageLang(params);
@@ -31,10 +33,37 @@ export default async function DemoPage({ params }: PageProps) {
     <PageShell lang={lang} active="/demo">
       <section className="page-heading content-width demo-heading">
         <div>
-          <span className="eyebrow">{copy.heading.eyebrow}</span>
+          <span className="eyebrow">{copy.recordings.eyebrow}</span>
           <h1>
-            <Br text={copy.heading.title} />
+            <Br text={copy.recordings.title} />
           </h1>
+        </div>
+        <div>
+          <p>{copy.recordings.text}</p>
+          <span className="quiet-label">{copy.recordings.label}</span>
+        </div>
+      </section>
+      <section className="demo-recordings content-width">
+        {copy.recordings.videos.map((video, index) => (
+          <figure key={video.title}>
+            <DemoVideo
+              src={`/videos/${recordings[index]}.mp4`}
+              poster={`/videos/${recordings[index]}.webp`}
+              label={video.title}
+            />
+            <figcaption>
+              <h3>{video.title}</h3>
+              <p>{video.text}</p>
+            </figcaption>
+          </figure>
+        ))}
+      </section>
+      <section className="page-heading content-width demo-heading demo-try">
+        <div>
+          <span className="eyebrow">{copy.heading.eyebrow}</span>
+          <h2>
+            <Br text={copy.heading.title} />
+          </h2>
         </div>
         <div>
           <p>{copy.heading.text}</p>
