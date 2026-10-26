@@ -8,11 +8,11 @@ async function render(artifact = "en.html") {
   return readFile(new URL(artifact, outputPath), "utf8");
 }
 
-test("renders the complete SynoRing campaign page", async () => {
+test("renders the complete Syno campaign page", async () => {
   const html = await render();
   assert.match(
     html,
-    /<title>SynoRing R1 — Gesture Control Ring for AR &amp; Smart Glasses<\/title>/i,
+    /<title>Syno Ring<\/title>/i,
   );
   assert.match(html, /rel="canonical" href="https:\/\/www\.synoring\.ai"/i);
   assert.match(html, /name="robots" content="index, follow"/i);
@@ -21,6 +21,11 @@ test("renders the complete SynoRing campaign page", async () => {
   assert.match(html, /"@type":"WebSite"/);
   assert.match(html, /"@type":"Organization"/);
   assert.match(html, /"@type":"Product"/);
+  const graph = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1])["@graph"];
+  assert.equal(graph.find((item) => item["@type"] === "WebSite").name, "Syno");
+  assert.equal(graph.find((item) => item["@type"] === "Organization").name, "Syno Labs LLC");
+  assert.equal(graph.find((item) => item["@type"] === "Product").name, "Syno Ring R1");
+  assert.equal(graph.find((item) => item["@type"] === "Product").brand.name, "Syno");
   assert.match(html, /"availability":"https:\/\/schema\.org\/PreOrder"/);
   assert.match(html, /"sameAs":\["https:\/\/x\.com\/SynoRing","https:\/\/github\.com\/SynoRing"\]/);
   assert.match(
@@ -63,7 +68,7 @@ test("renders the complete SynoRing campaign page", async () => {
   assert.match(html, /class="brand-wordmark"[^>]+src="\/wordmark\.svg"/);
   assert.match(html, /class="footer-wordmark"[\s\S]+src="\/wordmark\.svg"/);
   assert.match(html, /"logo":\{"@type":"ImageObject","url":"https:\/\/www\.synoring\.ai\/logo\.svg"/);
-  assert.match(html, /aria-label="SynoRing — back to top"/);
+  assert.match(html, /aria-label="Syno — back to top"/);
   assert.doesNotMatch(html, /Interaction prototype in development/);
   assert.doesNotMatch(html, /Explore the gestures/);
   assert.doesNotMatch(html, /↗/);
@@ -87,7 +92,7 @@ test("publishes crawl and discovery metadata", async () => {
 
   assert.match(sitemap, /<loc>https:\/\/www\.synoring\.ai\/<\/loc>/);
 
-  assert.match(manifest, /"name"\s*:\s*"SynoRing"/);
+  assert.match(manifest, /"name"\s*:\s*"Syno"/);
   assert.match(manifest, /"src"\s*:\s*"\/favicon\.svg"/);
   assert.match(manifest, /"src"\s*:\s*"\/icon-512\.png"/);
   assert.match(manifest, /"purpose"\s*:\s*"maskable"/);

@@ -3,7 +3,7 @@ import { asset, Lines, Wordmark } from "../../_og/shared";
 import { locales } from "../../i18n";
 
 export const alt =
-  "SynoRing for developers: map a tap, a glide, or a circle to your app";
+  "Syno for developers: map a tap, a glide, or a circle to your app";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -44,7 +44,7 @@ export default async function Image() {
             color: "#b5c3b0",
           }}
         >
-          SynoRing for developers
+          Syno for developers
         </div>
         <Lines
           lines={["Give your spatial app", "a sense of touch."]}

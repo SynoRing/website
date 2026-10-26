@@ -22,24 +22,24 @@ export default async function Unsubscribe({
 
   return (
     <main className="unsubscribe-page">
-      <a href="/" aria-label="SynoRing home">
-        <img src="/wordmark.svg" width="132" height="44" alt="SynoRing" />
+      <a href="/" aria-label="Syno home">
+        <img src="/wordmark.svg" width="111" height="44" alt="Syno" />
       </a>
       <div className="unsubscribe-card">
         {done ? (
           <>
             <h1>You’re unsubscribed.</h1>
             <p>
-              You won’t receive SynoRing emails anymore. Joining the waitlist
+              You won’t receive Syno emails anymore. Joining the waitlist
               again will sign you back up.
             </p>
             <a className="button button-dark" href="/">
-              Back to SynoRing
+              Back to Syno
             </a>
           </>
         ) : valid ? (
           <>
-            <h1>Unsubscribe from SynoRing emails?</h1>
+            <h1>Unsubscribe from Syno emails?</h1>
             <p>
               <strong>{email}</strong> will stop receiving launch updates and
               other emails from us.

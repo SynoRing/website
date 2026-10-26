@@ -3,7 +3,7 @@ import { accent, asset, ink, Lines, muted, Wordmark } from "../../_og/shared";
 import { locales } from "../../i18n";
 
 export const alt =
-  "About SynoRing Labs: spatial computing needs a smaller gesture";
+  "About Syno Labs LLC: spatial computing needs a smaller gesture";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -74,7 +74,7 @@ export default async function Image() {
             color: accent,
           }}
         >
-          About SynoRing Labs
+          About Syno Labs LLC
         </div>
         <Lines
           lines={["Spatial computing", "needs a smaller", "gesture."]}

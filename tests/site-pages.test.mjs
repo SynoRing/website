@@ -39,7 +39,7 @@ test("every public page has unique discovery metadata and complete navigation", 
     );
     assert.match(html, /property="og:image:width" content="1200"/);
     assert.match(html, /name="twitter:card" content="summary_large_image"/);
-    assert.match(html, /property="og:site_name" content="SynoRing"/);
+    assert.match(html, /property="og:site_name" content="Syno"/);
     assert.match(html, /"@type":"BreadcrumbList"/);
     const description = html.match(/<meta name="description" content="([^"]+)"/)?.[1] ?? "";
     assert.ok(
@@ -71,7 +71,7 @@ test("pre-order route publishes confirmed pricing and keeps enquiry status clear
   assert.match(developers, /Public SDK not yet available/);
   assert.match(
     developers,
-    /mailto:contact@synoring.ai\?subject=SynoRing%20Developer%20Pilot/,
+    /mailto:contact@synoring.ai\?subject=Syno%20Developer%20Pilot/,
   );
   assert.match(demo, /Try it/);
   assert.match(demo, /Music is silent/);

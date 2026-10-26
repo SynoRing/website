@@ -2,10 +2,10 @@
    {name} placeholders are filled in by the page. */
 
 const en = {
-  title: "Pre-order SynoRing R1 — $99",
+  title: "Pre-order Syno Ring R1 — $99",
   description:
-    "Pre-order SynoRing R1 for $99 (regularly $129) in Space Gray, Platinum, Rose Gold, or Gold. Ships Q1 2027 with free US shipping; a sizing kit comes first.",
-  eyebrow: "SynoRing Store",
+    "Pre-order Syno Ring R1 for $99 (regularly $129) in Space Gray, Platinum, Rose Gold, or Gold. Ships Q1 2027 with free US shipping; a sizing kit comes first.",
+  eyebrow: "Syno Store",
   tagline: "Four finishes. One natural connection.",
   specifications: {
     eyebrow: "A closer look",
@@ -17,7 +17,7 @@ const en = {
       {
         title: "Design & finish",
         rows: [
-          ["Product", "SynoRing R1 wearable gesture controller"],
+          ["Product", "Syno Ring R1 wearable gesture controller"],
           ["Colors", "Space Gray · Platinum · Rose Gold · Gold"],
           ["Band width", "8 mm in every size"],
           ["Inner & outer diameter", "Varies by ring size"],
@@ -62,7 +62,7 @@ const en = {
           ["Pre-order price", "$99 USD"],
           ["Regular price", "$129 USD"],
           ["Sizing kit", "Ships first so you can confirm your size"],
-          ["In the box", "SynoRing R1 · Charger"],
+          ["In the box", "Syno Ring R1 · Charger"],
           ["Estimated shipping", "Q1 2027"],
           ["Shipping", "Free within the US; other regions pay shipping"],
           ["Taxes", "Confirmed by email before payment"],
@@ -70,9 +70,9 @@ const en = {
       },
     ],
     views: {
-      front: { label: "Front", alt: "SynoRing R1 front view" },
-      side: { label: "Side", alt: "SynoRing R1 side view, 8 mm band width" },
-      top: { label: "Top · touch surface", alt: "SynoRing R1 top view of the touch surface and logo" },
+      front: { label: "Front", alt: "Syno Ring R1 front view" },
+      side: { label: "Side", alt: "Syno Ring R1 side view, 8 mm band width" },
+      top: { label: "Top · touch surface", alt: "Syno Ring R1 top view of the touch surface and logo" },
     },
     caption:
       "Shown in Space Gray at one scale. The band is 8 mm wide in every size; inner and outer diameter follow your ring size.",
@@ -87,11 +87,11 @@ const en = {
       },
       {
         title: "When will my ring ship?",
-        text: "SynoRing R1 is estimated to ship in Q1 2027. Shipping is free within the US; orders to other regions pay the shipping cost.",
+        text: "Syno Ring R1 is estimated to ship in Q1 2027. Shipping is free within the US; orders to other regions pay the shipping cost.",
       },
       {
         title: "How do I find my size?",
-        text: "We send you a sizing kit first. Wear it, confirm your size, and your SynoRing R1 ships in that size. The band is 8 mm wide in every size; only the inner and outer diameter change.",
+        text: "We send you a sizing kit first. Wear it, confirm your size, and your Syno Ring R1 ships in that size. The band is 8 mm wide in every size; only the inner and outer diameter change.",
       },
     ],
     demo: {
@@ -120,7 +120,7 @@ const en = {
   review: {
     eyebrow: "Waitlist",
     close: "Close the waitlist signup",
-    title: "Your SynoRing.",
+    title: "Your Syno Ring R1.",
     line: "{finish} · Qty {quantity}",
     each: "${price} USD each",
     regularSubtotal: "Regular subtotal",
@@ -130,26 +130,26 @@ const en = {
       "Join the waitlist with this selection, and our team will contact you to arrange your pre-order at the $99 price. A sizing kit ships first so you can confirm your size; your ring is estimated to ship in Q1 2027, free within the US. Taxes and shipping to other regions are confirmed by email. No payment is collected on this website.",
     submit: "Join the waitlist",
     doneTitle: "You’re on the waitlist.",
-    doneText: "We’ll email {email} to confirm your size and arrange your SynoRing R1 in {finish}.",
+    doneText: "We’ll email {email} to confirm your size and arrange your Syno Ring R1 in {finish}.",
     closeDone: "Close",
     back: "Continue choosing",
   },
   gallery: {
     product: "{finish} product concept",
-    inside: "Inside SynoRing: flexible circuit and battery",
+    inside: "Inside Syno Ring R1: flexible circuit and battery",
     views: "Product views",
     ring: "The ring",
-    insideButton: "Inside SynoRing",
+    insideButton: "Inside Syno Ring R1",
   },
 };
 
 export type StoreCopy = typeof en;
 
 const zh: StoreCopy = {
-  title: "预订 SynoRing R1 — $99",
+  title: "预订 Syno Ring R1 — $99",
   description:
-    "以 $99 预订 SynoRing R1（原价 $129），提供深空灰、铂金色、玫瑰金和金色四种配色。预计 2027 年第一季度发货，美国境内包邮；我们会先寄出尺码套件。",
-  eyebrow: "SynoRing 商店",
+    "以 $99 预订 Syno Ring R1（原价 $129），提供深空灰、铂金色、玫瑰金和金色四种配色。预计 2027 年第一季度发货，美国境内包邮；我们会先寄出尺码套件。",
+  eyebrow: "Syno 商店",
   tagline: "四种配色，一种自然的连接。",
   specifications: {
     eyebrow: "细节一览",
@@ -160,7 +160,7 @@ const zh: StoreCopy = {
       {
         title: "设计与配色",
         rows: [
-          ["产品", "SynoRing R1 可穿戴手势控制器"],
+          ["产品", "Syno Ring R1 可穿戴手势控制器"],
           ["颜色", "深空灰 · 铂金色 · 玫瑰金 · 金色"],
           ["戒圈宽度", "所有尺码均为 8 毫米"],
           ["内径与外径", "随戒指尺码变化"],
@@ -205,7 +205,7 @@ const zh: StoreCopy = {
           ["预订价", "$99 USD"],
           ["原价", "$129 USD"],
           ["尺码套件", "先行寄出，方便你确认尺码"],
-          ["包装内含", "SynoRing R1 · 充电器"],
+          ["包装内含", "Syno Ring R1 · 充电器"],
           ["预计发货", "2027 年第一季度"],
           ["运费", "美国境内包邮；其他地区需支付运费"],
           ["税费", "付款前通过邮件确认"],
@@ -213,9 +213,9 @@ const zh: StoreCopy = {
       },
     ],
     views: {
-      front: { label: "正面", alt: "SynoRing R1 正面视图" },
-      side: { label: "侧面", alt: "SynoRing R1 侧面视图，戒圈宽 8 毫米" },
-      top: { label: "顶部 · 触控面", alt: "SynoRing R1 顶部视图，可见触控面与标志" },
+      front: { label: "正面", alt: "Syno Ring R1 正面视图" },
+      side: { label: "侧面", alt: "Syno Ring R1 侧面视图，戒圈宽 8 毫米" },
+      top: { label: "顶部 · 触控面", alt: "Syno Ring R1 顶部视图，可见触控面与标志" },
     },
     caption: "以深空灰为例，按同一比例展示。所有尺码的戒圈宽度均为 8 毫米，内径与外径随你的戒指尺码变化。",
   },
@@ -229,11 +229,11 @@ const zh: StoreCopy = {
       },
       {
         title: "我的戒指什么时候发货？",
-        text: "SynoRing R1 预计在 2027 年第一季度发货。美国境内包邮；寄往其他地区的订单需支付运费。",
+        text: "Syno Ring R1 预计在 2027 年第一季度发货。美国境内包邮；寄往其他地区的订单需支付运费。",
       },
       {
         title: "怎么确定我的尺码？",
-        text: "我们会先寄给你一套尺码套件。试戴后确认尺码，你的 SynoRing R1 就会按这个尺码发货。所有尺码的戒圈宽度都是 8 毫米，只有内径和外径不同。",
+        text: "我们会先寄给你一套尺码套件。试戴后确认尺码，你的 Syno Ring R1 就会按这个尺码发货。所有尺码的戒圈宽度都是 8 毫米，只有内径和外径不同。",
       },
     ],
     demo: {
@@ -262,7 +262,7 @@ const zh: StoreCopy = {
   review: {
     eyebrow: "候补名单",
     close: "关闭候补名单登记",
-    title: "你的 SynoRing。",
+    title: "你的 Syno Ring R1。",
     line: "{finish} · 数量 {quantity}",
     each: "单价 ${price} USD",
     regularSubtotal: "原价小计",
@@ -272,13 +272,13 @@ const zh: StoreCopy = {
       "带着这个选择加入候补名单，我们的团队会联系你，按 $99 的预订价安排预订。我们会先寄出尺码套件，方便你确认尺码；戒指预计 2027 年第一季度发货，美国境内包邮。税费以及寄往其他地区的运费会通过邮件确认。本网站不收取任何款项。",
     submit: "加入候补名单",
     doneTitle: "你已加入候补名单。",
-    doneText: "我们会发邮件到 {email}，确认你的尺码，并为你安排{finish}的 SynoRing R1。",
+    doneText: "我们会发邮件到 {email}，确认你的尺码，并为你安排{finish}的 Syno Ring R1。",
     closeDone: "关闭",
     back: "继续选择",
   },
   gallery: {
     product: "{finish}产品概念图",
-    inside: "SynoRing 内部：柔性电路与电池",
+    inside: "Syno Ring R1 内部：柔性电路与电池",
     views: "产品视图",
     ring: "戒指",
     insideButton: "内部结构",

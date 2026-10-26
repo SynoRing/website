@@ -1,20 +1,20 @@
 /* The About page. "\n" in a string is a line break. */
 
 const en = {
-  title: "About SynoRing Labs",
+  title: "About Syno Labs LLC",
   description:
-    "SynoRing Labs makes controlling AR and smart glasses feel small and natural: touch and motion in a ring. Designed in the US, manufactured in China.",
+    "Syno Labs LLC makes controlling AR and smart glasses feel small and natural: touch and motion in a ring. Designed in the US, manufactured in China.",
   hero: {
-    eyebrow: "About SynoRing",
+    eyebrow: "About Syno",
     title: "Spatial computing\nneeds a smaller gesture.",
     lead: "AR glasses change where information lives.\nWe are exploring how we interact with it.",
     paragraphs: [
-      "SynoRing is a wearable gesture controller in development at SynoRing Labs. Our focus is simple: give your hand a subtle, accessible way to control a spatial interface.",
+      "Syno Ring R1 is a wearable gesture controller in development at Syno Labs LLC. Our focus is simple: give your hand a subtle, accessible way to control a spatial interface.",
       "Combining thumb touches with finger movements lets us explore selection, navigation, and continuous adjustment in a familiar form—a ring.",
     ],
   },
   statement: {
-    emblemAlt: "SynoRing symbol",
+    emblemAlt: "Syno symbol",
     eyebrow: "The question behind the ring",
     title: "What if controlling your glasses\ndid not interrupt",
     emphasis: "what you were doing?",
@@ -42,10 +42,10 @@ const en = {
   development: {
     eyebrow: "Development, openly",
     title: "Prototype. Learn. Refine.",
-    text: "SynoRing R1, our first generation, is open for pre-order and estimated to ship in Q1 2027. Developer pilots and production validation continue alongside it.",
+    text: "Syno Ring R1, our first generation, is open for pre-order and estimated to ship in Q1 2027. Developer pilots and production validation continue alongside it.",
   },
   contact: {
-    eyebrow: "SynoRing Labs",
+    eyebrow: "Syno Labs LLC",
     title: "Let’s make the\nnext interaction better.",
     text: "Designed in the US. Manufactured in China.\nExploring a more natural connection to spatial computing.",
     general: "General enquiries",
@@ -57,20 +57,20 @@ const en = {
 };
 
 const zh: typeof en = {
-  title: "关于 SynoRing Labs",
+  title: "关于 Syno Labs LLC",
   description:
-    "SynoRing Labs 希望让操控 AR 与智能眼镜变得细微而自然：把触控与动作装进一枚戒指。美国设计，中国制造。",
+    "Syno Labs LLC 希望让操控 AR 与智能眼镜变得细微而自然：把触控与动作装进一枚戒指。美国设计，中国制造。",
   hero: {
-    eyebrow: "关于 SynoRing",
+    eyebrow: "关于 Syno",
     title: "空间计算，\n需要更小的手势。",
     lead: "AR 眼镜改变了信息所在的位置。\n我们在探索如何与它互动。",
     paragraphs: [
-      "SynoRing 是 SynoRing Labs 正在研发的一款可穿戴手势控制器。我们的目标很简单：让你的手有一种细微、易用的方式来操控空间界面。",
+      "Syno Ring R1 是 Syno Labs LLC 正在研发的一款可穿戴手势控制器。我们的目标很简单：让你的手有一种细微、易用的方式来操控空间界面。",
       "把拇指触控和手指动作结合起来，我们得以用一种熟悉的形态——戒指——去探索选择、导航和连续调节。",
     ],
   },
   statement: {
-    emblemAlt: "SynoRing 标志",
+    emblemAlt: "Syno 标志",
     eyebrow: "戒指背后的问题",
     title: "如果操控眼镜\n不会打断",
     emphasis: "你正在做的事呢？",
@@ -98,10 +98,10 @@ const zh: typeof en = {
   development: {
     eyebrow: "公开地研发",
     title: "原型，学习，打磨。",
-    text: "我们的第一代产品 SynoRing R1 现已开放预订，预计 2027 年第一季度发货。开发者试点与量产验证也在同步推进。",
+    text: "我们的第一代产品 Syno Ring R1 现已开放预订，预计 2027 年第一季度发货。开发者试点与量产验证也在同步推进。",
   },
   contact: {
-    eyebrow: "SynoRing Labs",
+    eyebrow: "Syno Labs LLC",
     title: "一起让下一次交互\n变得更好。",
     text: "美国设计，中国制造。\n探索与空间计算更自然的连接。",
     general: "一般咨询",

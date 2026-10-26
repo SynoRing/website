@@ -47,7 +47,7 @@ export function product(lang: Lang) {
   return {
     "@type": "Product",
     "@id": productId,
-    name: `${site.name} R1`,
+    name: site.productName,
     description: copy.product.description,
     url: url(lang, "/store"),
     image: Object.values(ringRenders).map((render) => `${site.url}${render.src}`),

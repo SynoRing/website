@@ -73,8 +73,8 @@ export function fileResponse(
 /** A version's PDF, inline or as a download. */
 export function pdfResponse(plan: Plan, version: Version, { download = false } = {}) {
   const name = version.number
-    ? `SynoRing business plan v${version.number}.pdf`
-    : "SynoRing business plan.pdf";
+    ? `Syno business plan v${version.number}.pdf`
+    : "Syno business plan.pdf";
   return fileResponse(
     plan,
     { upload: version.pdfUpload, parts: version.pdfParts, size: version.pdfSize },

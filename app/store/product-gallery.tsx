@@ -44,7 +44,7 @@ export function ProductGallery({ finish, copy }: { finish: Finish; copy: PanelCo
       </div>
       <div className="gallery-finish" aria-live="polite">
         {name}
-        <span>SynoRing R1</span>
+        <span>Syno Ring R1</span>
       </div>
       <div className="gallery-switch" role="group" aria-label={text.views}>
         <button

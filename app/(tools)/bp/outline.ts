@@ -1,7 +1,7 @@
 /* The starting outline for the business plan and the snippets the editor
    can insert. Classes here are styled by doc.css. */
 
-export const planTemplate = `<h1>SynoRing</h1>
+export const planTemplate = `<h1>Syno</h1>
 <p class="lede">Gesture control for AR glasses, worn as a ring.</p>
 
 <div class="metrics">
@@ -11,13 +11,13 @@ export const planTemplate = `<h1>SynoRing</h1>
 </div>
 
 <h2>Summary</h2>
-<p>[Two or three sentences: what SynoRing is, who it is for, and why now.]</p>
+<p>[Two or three sentences: what Syno is, who it is for, and why now.]</p>
 
 <h2>Problem</h2>
 <p>[What makes controlling AR and smart glasses hard today.]</p>
 
 <h2>Product</h2>
-<p>SynoRing R1 turns small finger gestures into input for AR glasses, phones, laptops, and robots.</p>
+<p>Syno Ring R1 turns small finger gestures into input for AR glasses, phones, laptops, and robots.</p>
 <ul>
   <li>[Key capability]</li>
   <li>[Key capability]</li>
@@ -32,13 +32,13 @@ export const planTemplate = `<h1>SynoRing</h1>
 </table>
 
 <h2>Business model</h2>
-<p>[How SynoRing makes money: hardware margin, software, licensing.]</p>
+<p>[How Syno makes money: hardware margin, software, licensing.]</p>
 
 <h2>Go-to-market</h2>
 <p>[First customers and how you reach them.]</p>
 
 <h2>Competition</h2>
-<p>[Alternatives and why SynoRing wins.]</p>
+<p>[Alternatives and why Syno wins.]</p>
 
 <h2>Traction</h2>
 <p>[Pilots, signups, partners, research.]</p>

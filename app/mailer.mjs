@@ -2,7 +2,7 @@
    unsubscribe links every message carries. Server only. */
 import { createHmac, timingSafeEqual } from "node:crypto";
 
-/** "SynoRing <noreply@synoring.ai>" → { address, name } */
+/** "Syno <noreply@synoring.ai>" → { address, name } */
 export function parseAddress(value) {
   const match = /^\s*(.*?)\s*<([^>]+)>\s*$/.exec(value);
   return match
@@ -63,7 +63,7 @@ export function mailerFromEnv(env = process.env) {
   return createMailer({
     accountId: env.CLOUDFLARE_ACCOUNT_ID,
     token: env.CLOUDFLARE_EMAIL_TOKEN,
-    from: env.MAIL_FROM || "SynoRing <noreply@synoring.ai>",
+    from: env.MAIL_FROM || "Syno <noreply@synoring.ai>",
     replyTo: env.MAIL_REPLY_TO || "contact@synoring.ai",
     apiBase: env.CLOUDFLARE_API_BASE || undefined,
   });

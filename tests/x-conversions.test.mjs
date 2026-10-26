@@ -28,7 +28,7 @@ test("describes a pre-order as an X conversion", () => {
     preorderConversion({
       email: "ada@example.com",
       finish: "gold",
-      name: "SynoRing R1 Gold",
+      name: "Syno Ring R1 Gold",
       quantity: 2,
       price: 99,
       twclid: "abc123",
@@ -52,7 +52,7 @@ test("describes a pre-order as an X conversion", () => {
       value: 198,
       price_currency: "USD",
       contents: [
-        { content_id: "gold", content_name: "SynoRing R1 Gold", content_price: 99, num_items: 2 },
+        { content_id: "gold", content_name: "Syno Ring R1 Gold", content_price: 99, num_items: 2 },
       ],
       number_items: 2,
     },
@@ -60,7 +60,7 @@ test("describes a pre-order as an X conversion", () => {
   const bare = preorderConversion({
     email: "ada@example.com",
     finish: "gold",
-    name: "SynoRing R1 Gold",
+    name: "Syno Ring R1 Gold",
     quantity: 1,
     price: 99,
   });

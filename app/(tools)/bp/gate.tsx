@@ -42,12 +42,12 @@ export function PlanGate({
 
   return (
     <main className="bp-gate">
-      <a href="/" aria-label="SynoRing home">
-        <img src="/wordmark.svg" width="132" height="44" alt="SynoRing" />
+      <a href="/" aria-label="Syno home">
+        <img src="/wordmark.svg" width="111" height="44" alt="Syno" />
       </a>
       <form className="bp-card" onSubmit={submit}>
         <p className="bp-eyebrow">Private</p>
-        <h1>SynoRing business plan</h1>
+        <h1>Syno business plan</h1>
         {!available ? (
           <p className="bp-lede">
             The plan isn’t available right now. Email{" "}

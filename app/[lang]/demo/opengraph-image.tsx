@@ -3,7 +3,7 @@ import { asset, Corners, hud, Lines, Wordmark } from "../../_og/shared";
 import { locales } from "../../i18n";
 
 export const alt =
-  "Try SynoRing in your browser: a green smart-glasses display over a city street";
+  "Try Syno Ring R1 in your browser: a green smart-glasses display over a city street";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -69,7 +69,7 @@ export default async function Image() {
           Interactive demo
         </div>
         <Lines
-          lines={["Try SynoRing", "in your browser."]}
+          lines={["Try Syno Ring R1", "in your browser."]}
           size={64}
           color="#ffffff"
         />

@@ -18,19 +18,19 @@ const en = {
       "your robot",
     ],
     subtitle: "Your world, at your fingertips.",
-    cta: "Discover SynoRing",
-    alt: "SynoRing seen from the front, its touch surface at the top",
+    cta: "Discover Syno Ring R1",
+    alt: "Syno Ring R1 seen from the front, its touch surface at the top",
   },
   intro: {
-    line: ["SynoRing turns finger movements and thumb touches", "into controls for your AR glasses."],
+    line: ["Syno Ring R1 turns finger movements and thumb touches", "into controls for your AR glasses."],
     captions: [
-      { label: "Meet SynoRing", text: "A gesture controller.\nMade to feel natural." },
+      { label: "Meet Syno Ring R1", text: "A gesture controller.\nMade to feel natural." },
       { label: "For your spatial world", text: "AR control.\nWithout the interruption." },
     ],
     title: "Your AR glasses.\nControlled from your ring.",
     gestures: "Select with a tap. Scroll with a glide. Adjust with a circle.",
   },
-  factsLabel: "What SynoRing does",
+  factsLabel: "What Syno Ring R1 does",
   facts: [
     {
       stage: "01 / Input",
@@ -49,7 +49,7 @@ const en = {
     },
   ],
   lifestyle: {
-    label: "SynoRing in everyday life",
+    label: "Syno Ring R1 in everyday life",
     title: "Control your glasses.\nKeep your hands relaxed.",
     text: "Navigate, read, and change the music\nwith small movements at your side.",
   },
@@ -69,7 +69,7 @@ const en = {
   technology: {
     title: "Motion and touch.\nWorking together.",
     text: "Sensors read your movement. Touch gives it intent.",
-    alt: "SynoRing exploded view: ceramic shell, flexible circuit, arc battery, and steel inner band",
+    alt: "Syno Ring R1 exploded view: ceramic shell, flexible circuit, arc battery, and steel inner band",
     layers: {
       shell: {
         title: "Ceramic shell",
@@ -95,7 +95,7 @@ const en = {
     title: "From a small gesture\nto an action in view.",
     text: "Our integration direction connects ring input to spatial applications through a phone-side software layer. Device support will be confirmed through testing.",
     steps: [
-      ["SynoRing", "Touch and motion input"],
+      ["Syno Ring R1", "Touch and motion input"],
       ["Software layer", "Interpret and map gestures"],
       ["Your AR app", "Select, scroll, and adjust"],
     ],
@@ -104,7 +104,7 @@ const en = {
     eyebrow: "For developers",
     title: "Your app.\nA new way in.",
     text: "Building a spatial reader, a media interface, or something we have not imagined? Help shape how ring input fits your application.",
-    link: "Build with SynoRing",
+    link: "Build with Syno",
     mappings: [
       ["Tap", "Select a track"],
       ["Glide", "Move through a page"],
@@ -113,16 +113,16 @@ const en = {
     note: "Your context defines the action.",
   },
   closing: {
-    title: "Get closer to\nthe first SynoRing.",
+    title: "Get closer to\nthe first Syno Ring R1.",
     text: "Join the waitlist for launch updates and developer pilots.",
     lineup: "Four finishes",
   },
   faq: {
     title: "A little more to know.",
     shipping: {
-      question: "When can I get SynoRing?",
+      question: "When can I get Syno Ring R1?",
       answer:
-        "Early means early. SynoRing R1 is open for pre-order and estimated to ship in Q1 2027, with free shipping within the US. Join the waitlist to follow developer pilots and production updates.",
+        "Early means early. Syno Ring R1 is open for pre-order and estimated to ship in Q1 2027, with free shipping within the US. Join the waitlist to follow developer pilots and production updates.",
     },
     compatibility: {
       question: "Which AR glasses will it work with?",
@@ -146,19 +146,19 @@ const zh: typeof en = {
     lines: ["弹指之间，", "掌控\u2009{device}。"],
     devices: ["AR 眼镜", "智能眼镜", "头显", "手机", "笔记本电脑", "电脑", "机器人"],
     subtitle: "你的世界，尽在指尖。",
-    cta: "了解 SynoRing",
-    alt: "SynoRing 正面视图，触控面位于顶部",
+    cta: "了解 Syno Ring R1",
+    alt: "Syno Ring R1 正面视图，触控面位于顶部",
   },
   intro: {
-    line: ["SynoRing 把手指的动作与拇指的触碰，", "变成操控 AR 眼镜的方式。"],
+    line: ["Syno Ring R1 把手指的动作与拇指的触碰，", "变成操控 AR 眼镜的方式。"],
     captions: [
-      { label: "认识 SynoRing", text: "一枚手势控制器。\n自然而然。" },
+      { label: "认识 Syno Ring R1", text: "一枚手势控制器。\n自然而然。" },
       { label: "为你的空间世界", text: "掌控 AR，\n不被打断。" },
     ],
     title: "你的 AR 眼镜，\n用戒指来掌控。",
     gestures: "轻点即选择，滑动即滚动，画圈即调节。",
   },
-  factsLabel: "SynoRing 能做什么",
+  factsLabel: "Syno Ring R1 能做什么",
   facts: [
     {
       stage: "01 / 输入",
@@ -177,7 +177,7 @@ const zh: typeof en = {
     },
   ],
   lifestyle: {
-    label: "日常生活中的 SynoRing",
+    label: "日常生活中的 Syno Ring R1",
     title: "操控眼镜，\n双手依然放松。",
     text: "在身侧轻轻一动，\n就能导航、阅读、切换音乐。",
   },
@@ -197,7 +197,7 @@ const zh: typeof en = {
   technology: {
     title: "动作与触控，\n协同工作。",
     text: "传感器读取你的动作，触控赋予它意图。",
-    alt: "SynoRing 爆炸图：陶瓷外壳、柔性电路、弧形电池和钢制内圈",
+    alt: "Syno Ring R1 爆炸图：陶瓷外壳、柔性电路、弧形电池和钢制内圈",
     layers: {
       shell: {
         title: "陶瓷外壳",
@@ -223,7 +223,7 @@ const zh: typeof en = {
     title: "从一个小手势，\n到眼前的一个动作。",
     text: "我们的集成方向，是通过手机端的软件层把戒指输入接入空间应用。支持哪些设备，将在测试后确认。",
     steps: [
-      ["SynoRing", "触控与动作输入"],
+      ["Syno Ring R1", "触控与动作输入"],
       ["软件层", "解析并映射手势"],
       ["你的 AR 应用", "选择、滚动与调节"],
     ],
@@ -232,7 +232,7 @@ const zh: typeof en = {
     eyebrow: "面向开发者",
     title: "你的应用，\n多一种交互方式。",
     text: "正在打造空间阅读器、媒体界面，或是我们还没想到的东西？欢迎一起探索戒指输入如何融入你的应用。",
-    link: "用 SynoRing 构建",
+    link: "用 Syno 构建",
     mappings: [
       ["轻点", "选择一首歌"],
       ["滑动", "翻阅页面"],
@@ -241,16 +241,16 @@ const zh: typeof en = {
     note: "具体做什么，由你的应用场景决定。",
   },
   closing: {
-    title: "离第一枚 SynoRing\n更近一步。",
+    title: "离第一枚 Syno Ring R1\n更近一步。",
     text: "加入候补名单，获取发布动态和开发者试点消息。",
     lineup: "四种配色",
   },
   faq: {
     title: "更多你想知道的。",
     shipping: {
-      question: "什么时候能拿到 SynoRing？",
+      question: "什么时候能拿到 Syno Ring R1？",
       answer:
-        "我们还处在早期阶段。SynoRing R1 现已开放预订，预计 2027 年第一季度发货，美国境内包邮。加入候补名单，关注开发者试点和量产进展。",
+        "我们还处在早期阶段。Syno Ring R1 现已开放预订，预计 2027 年第一季度发货，美国境内包邮。加入候补名单，关注开发者试点和量产进展。",
     },
     compatibility: {
       question: "它能搭配哪些 AR 眼镜？",

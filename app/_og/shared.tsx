@@ -20,7 +20,7 @@ export function Wordmark({ src, top = 52 }: { src: string; top?: number }) {
   return (
     <img
       src={src}
-      width={150}
+      width={126}
       height={50}
       style={{ position: "absolute", left: 64, top }}
     />

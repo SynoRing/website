@@ -523,7 +523,7 @@ function RecipientList({ data, reload, onNotice }: Props) {
   // The link fills the recipient's password in on the form.
   const link = (recipient: Recipient) => `${url}?p=${recipient.password}`;
   const invite = (recipient: Recipient) =>
-    `Here is the SynoRing business plan, shared with you in confidence:\n${link(recipient)}\nPassword: ${recipient.password}`;
+    `Here is the Syno business plan, shared with you in confidence:\n${link(recipient)}\nPassword: ${recipient.password}`;
 
   async function create(event: FormEvent) {
     event.preventDefault();

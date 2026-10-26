@@ -328,7 +328,8 @@ details[open] > summary > .icon {
   align-items: center;
 }
 .brand-wordmark {
-  width: 132px;
+  /* Keep the glyph scale of the original 368-wide wordmark at 132px. */
+  width: 72.46px;
   height: auto;
   filter: invert(1);
   mix-blend-mode: screen;
@@ -1463,7 +1464,7 @@ details[open] > summary > .icon {
   overflow: hidden;
 }
 .footer-wordmark img {
-  width: 132px;
+  width: 72.46px;
   height: auto;
 }
 .footer-brand > p {
@@ -2028,9 +2029,11 @@ details[open] > summary > .icon {
     inset-inline: -20px;
     padding-inline: 20px;
   }
-  .brand,
-  .brand-wordmark {
+  .brand {
     width: 112px;
+  }
+  .brand-wordmark {
+    width: 61.48px;
   }
   .nav-actions {
     gap: 8px;

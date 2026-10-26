@@ -50,8 +50,8 @@ export function PlanView({
   return (
     <div className={`bp-viewer bp-viewer-${view}`}>
       <header className="bp-bar">
-        <a href="/" aria-label="SynoRing home">
-          <img src="/wordmark.svg" width="108" height="36" alt="SynoRing" />
+        <a href="/" aria-label="Syno home">
+          <img src="/wordmark.svg" width="91" height="36" alt="Syno" />
         </a>
         <div className="bp-title">
           <h1>Business plan</h1>
@@ -85,7 +85,7 @@ export function PlanView({
         <main className={`bp-page${deck ? " bp-deck-page" : ""}`}>
           {!deck && (
             <p className="bp-print-head">
-              SynoRing business plan · {label} · Confidential · Shared with {shared}
+              Syno business plan · {label} · Confidential · Shared with {shared}
             </p>
           )}
           <article

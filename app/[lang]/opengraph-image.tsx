@@ -3,7 +3,7 @@ import { asset, Lines, Wordmark } from "../_og/shared";
 import { locales } from "../i18n";
 
 export const alt =
-  "SynoRing R1: control your devices without breaking the moment";
+  "Syno Ring R1: control your devices without breaking the moment";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -48,7 +48,7 @@ export default async function Image() {
           color: "rgba(255,255,255,0.78)",
         }}
       >
-        SynoRing R1 · Pre-order now
+        Syno Ring R1 · Pre-order now
       </div>
       <div style={{ display: "flex", marginTop: 128 }}>
         <Lines

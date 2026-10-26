@@ -483,7 +483,7 @@ function ARDemo({
         <div>
           <img src="/logo.svg" alt="" width="26" height="26" />
           <span id="ar-demo-title">
-            SynoRing{" "}
+            Syno{" "}
             <span className="ar-title-detail">{copy.header.detail}</span>
           </span>
         </div>

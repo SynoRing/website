@@ -130,8 +130,8 @@ export function Dashboard({ setup }: { setup: Setup }) {
   return (
     <div className="mk">
       <header className="mk-bar">
-        <a className="mk-brand" href="/" aria-label="SynoRing home">
-          <img src="/wordmark.svg" width="108" height="36" alt="SynoRing" />
+        <a className="mk-brand" href="/" aria-label="Syno home">
+          <img src="/wordmark.svg" width="91" height="36" alt="Syno" />
           <span>Marketing</span>
         </a>
         <nav className="mk-tabs" aria-label="Dashboard">
@@ -345,8 +345,8 @@ function AudienceView({
 const snippets = [
   ["Heading", "<h2>Heading</h2>"],
   ["Paragraph", "<p>Write something here.</p>"],
-  ["Button", '<p><a class="button" href="https://www.synoring.ai/store">Pre-order SynoRing R1</a></p>'],
-  ["Image", '<img src="https://www.synoring.ai/email/synoring-r1-finishes.jpg" width="480" alt="SynoRing R1 in four finishes" />'],
+  ["Button", '<p><a class="button" href="https://www.synoring.ai/store">Pre-order Syno Ring R1</a></p>'],
+  ["Image", '<img src="https://www.synoring.ai/email/synoring-r1-finishes.jpg" width="480" alt="Syno Ring R1 in four finishes" />'],
   ["List", "<ul>\n  <li>First point</li>\n  <li>Second point</li>\n</ul>"],
   ["Divider", "<hr />"],
 ] as const;
@@ -563,7 +563,7 @@ function ComposeView({
             onChange={(event) => set("body")(event.target.value)}
           />
           <p className="mk-hint">
-            Plain tags take the SynoRing style; <code>&lt;a class="button"&gt;</code> makes
+            Plain tags take the Syno style; <code>&lt;a class="button"&gt;</code> makes
             a button. <code>{"{{email}}"}</code>, <code>{"{{finish}}"}</code>, and{" "}
             <code>{"{{quantity}}"}</code> are filled in for each person. The unsubscribe
             link and postal address are added to every email.

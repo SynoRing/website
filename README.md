@@ -1,6 +1,6 @@
-# SynoRing website
+# Syno website
 
-The official SynoRing product and early-access website, built with the native
+The official Syno product and early-access website, built with the native
 Next.js App Router and deployed on Vercel.
 
 ## Stack
@@ -76,7 +76,7 @@ pre-order request get a confirmation email.
   so it can pause and resume without mailing anyone twice. Failed addresses
   can be retried; people who unsubscribe meanwhile are skipped.
 
-Every email carries the layout in `app/email-template.mjs`: the SynoRing
+Every email carries the layout in `app/email-template.mjs`: the Syno
 wordmark, a footer saying why the person is receiving it, an unsubscribe
 link, and the postal address. One-click unsubscribe headers (RFC 8058) are
 included for Gmail and Yahoo. `/unsubscribe` asks for a click before
@@ -100,7 +100,7 @@ Setup:
    - `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_EMAIL_TOKEN`.
    - `MAIL_POSTAL_ADDRESS`: shown in every email footer; US law (CAN-SPAM)
      requires it, and campaigns stay disabled until it is set.
-   - Optional: `MAIL_FROM` (default `SynoRing <noreply@synoring.ai>`) and
+   - Optional: `MAIL_FROM` (default `Syno <noreply@synoring.ai>`) and
      `MAIL_REPLY_TO` (default `contact@synoring.ai`).
 4. Redeploy.
 
@@ -159,7 +159,7 @@ store finishes, and `productMedia` assigns them to page slots:
 - `detail`: Rose Gold in the product introduction.
 - `lifestyle`: none yet; the section stays hidden until an image is supplied.
 
-The hero headline cycles through the devices SynoRing can control
+The hero headline cycles through the devices Syno can control
 (`hero.devices` in `app/copy/home.ts`, animated by `app/rotating-words.tsx`); a
 screen-reader sentence in the heading lists them all, and reduced-motion users
 see the first one only.
@@ -172,7 +172,7 @@ The technology section uses the V2 vertical exploded view
 (`synoring-exploded-*.webp`, `explodedView`): ceramic shell, flexible circuit,
 arc battery, and steel inner band. Each callout sits at its layer's centre,
 given in `explodedView.layers` as a percentage of the image height. Re-measure
-those if the image is re-rendered. The store's "Inside SynoRing" view shows the
+those if the image is re-rendered. The store's "Inside Syno" view shows the
 circuit wrapped around the battery (`synoring-circuit-*.webp`).
 The early-access section lines up all four finishes. The renders carry no
 background or shadow; the `--render-shadow` token in `app/globals.css`
@@ -279,7 +279,7 @@ email; there is no SDK download.
 
 ### Store pre-orders
 
-The first generation is sold as SynoRing R1, estimated to ship in Q1 2027
+The first generation is sold as Syno Ring R1, estimated to ship in Q1 2027
 with free shipping within the US (other regions pay shipping). A sizing kit
 ships first; once the size is confirmed, the ring ships with its charger
 (full charge in about 1.5 hours).

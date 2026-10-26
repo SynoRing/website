@@ -87,7 +87,7 @@ export async function POST(request: Request) {
           const conversion = preorderConversion({
             email: signup.email,
             finish: signup.finish,
-            name: `SynoRing R1 ${finishes.find((finish) => finish.id === signup.finish)?.name ?? ""}`.trim(),
+            name: `Syno Ring R1 ${finishes.find((finish) => finish.id === signup.finish)?.name ?? ""}`.trim(),
             quantity: signup.quantity,
             price: preorderPrice,
             twclid: clickIdFrom(request.headers.get("cookie")),

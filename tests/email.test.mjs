@@ -66,11 +66,11 @@ test("renders the layout with preheader, unsubscribe link, and address", () => {
   assert.match(html, /Short &lt;summary&gt;/);
   assert.match(html, /Hi ada@example\.com/);
   assert.match(html, /href="https:\/\/www\.synoring\.ai\/unsubscribe\?e=a&amp;t=b"[^>]*>Unsubscribe/);
-  assert.match(html, /SynoRing Labs · 1 Main St, Springfield, IL/);
+  assert.match(html, /Syno Labs LLC · 1 Main St, Springfield, IL/);
   assert.match(html, /email\/wordmark\.png/);
   assert.match(text, /^Hi ada@example\.com/);
   assert.match(text, /Unsubscribe: https:\/\/www\.synoring\.ai\/unsubscribe\?e=a&t=b/);
-  assert.match(text, /joined the SynoRing waitlist/);
+  assert.match(text, /joined the Syno waitlist/);
 });
 
 test("ships complete starter templates and confirmations", () => {
@@ -86,7 +86,7 @@ test("ships complete starter templates and confirmations", () => {
   });
   assert.match(html, /Rose Gold/);
   assert.match(html, /\$198 USD/);
-  assert.match(html, /joined the SynoRing R1 waitlist from the store/);
+  assert.match(html, /joined the Syno Ring R1 waitlist from the store/);
   assert.match(confirmationEmail("waitlist").subject, /waitlist/);
 });
 
@@ -108,9 +108,9 @@ test("signs unsubscribe links per address", () => {
 });
 
 test("sends through the Cloudflare email API and reports failures", async () => {
-  assert.deepEqual(parseAddress("SynoRing <noreply@synoring.ai>"), {
+  assert.deepEqual(parseAddress("Syno <noreply@synoring.ai>"), {
     address: "noreply@synoring.ai",
-    name: "SynoRing",
+    name: "Syno",
   });
   assert.deepEqual(parseAddress("noreply@synoring.ai"), { address: "noreply@synoring.ai" });
 
@@ -118,7 +118,7 @@ test("sends through the Cloudflare email API and reports failures", async () => 
   const mailer = createMailer({
     accountId: "acc",
     token: "tok",
-    from: "SynoRing <noreply@synoring.ai>",
+    from: "Syno <noreply@synoring.ai>",
     replyTo: "contact@synoring.ai",
     fetch: async (url, init) => {
       calls.push({ url, init });
@@ -133,7 +133,7 @@ test("sends through the Cloudflare email API and reports failures", async () => 
   assert.equal(calls[0].init.headers.authorization, "Bearer tok");
   assert.deepEqual(JSON.parse(calls[0].init.body), {
     to: ["a@x.io"],
-    from: { address: "noreply@synoring.ai", name: "SynoRing" },
+    from: { address: "noreply@synoring.ai", name: "Syno" },
     reply_to: "contact@synoring.ai",
     subject: "Hi",
     html: "<p>Hi</p>",
@@ -158,6 +158,6 @@ test("sends through the Cloudflare email API and reports failures", async () => 
 
   assert.equal(mailerFromEnv({}), null);
   const configured = mailerFromEnv({ CLOUDFLARE_ACCOUNT_ID: "a", CLOUDFLARE_EMAIL_TOKEN: "t" });
-  assert.equal(configured.from, "SynoRing <noreply@synoring.ai>");
+  assert.equal(configured.from, "Syno <noreply@synoring.ai>");
   assert.equal(configured.replyTo, "contact@synoring.ai");
 });

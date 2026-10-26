@@ -47,7 +47,7 @@ export function PurchasePanel({ lang, copy }: { lang: Lang; copy: PanelCopy }) {
           <span />
           {text.status}
         </span>
-        <h1>SynoRing R1</h1>
+        <h1>Syno Ring R1</h1>
         <p className="store-subtitle">{text.subtitle}</p>
         <p>{text.text}</p>
         <div className="preorder-pricing">
@@ -205,7 +205,7 @@ function PreorderReview({
           )}
         </div>
         <div>
-          <h3>SynoRing R1</h3>
+          <h3>Syno Ring R1</h3>
           <p>{fill(text.line, { finish: name, quantity })}</p>
           <span>{fill(text.each, { price: preorderPrice })}</span>
         </div>

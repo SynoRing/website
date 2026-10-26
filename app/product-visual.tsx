@@ -8,7 +8,7 @@ function ringRender(file: string, finish: string): MediaImage {
   return {
     src: `/images/synoring-${file}-1200.webp`,
     srcSet: `/images/synoring-${file}-600.webp 600w, /images/synoring-${file}-1200.webp 1200w`,
-    alt: `SynoRing in ${finish}`,
+    alt: `Syno Ring R1 in ${finish}`,
   };
 }
 export const ringRenders = {
@@ -43,7 +43,7 @@ export const explodedView = {
 export const circuitView: MediaImage = {
   src: "/images/synoring-circuit-1200.webp",
   srcSet: "/images/synoring-circuit-600.webp 600w, /images/synoring-circuit-1200.webp 1200w",
-  alt: "SynoRing flexible circuit wrapped around its arc battery",
+  alt: "Syno Ring R1 flexible circuit wrapped around its arc battery",
 };
 
 /** A null slot keeps its drawn placeholder. */

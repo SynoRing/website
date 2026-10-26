@@ -4,9 +4,9 @@
 const en = {
   title: "Developers — Gesture Input for Spatial Apps",
   description:
-    "Map SynoRing taps, glides, and circles to actions in your AR or smart glasses app. See the integration direction, follow us on GitHub, and join a pilot.",
+    "Map Syno Ring R1 taps, glides, and circles to actions in your AR or smart glasses app. See the integration direction, follow us on GitHub, and join a pilot.",
   hero: {
-    eyebrow: "SynoRing for developers",
+    eyebrow: "Syno for developers",
     title: "Give your spatial app\na sense of touch.",
     text: "Explore a new input surface for AR. Map a tap, a glide, or a circular movement to the actions that matter in your application.",
     github: "View on GitHub",
@@ -98,9 +98,9 @@ const en = {
 const zh: typeof en = {
   title: "开发者 — 为空间应用带来手势输入",
   description:
-    "把 SynoRing 的轻点、滑动和画圈映射到你的 AR 或智能眼镜应用里的操作。了解集成方向，在 GitHub 上关注我们，申请加入开发者试点。",
+    "把 Syno Ring R1 的轻点、滑动和画圈映射到你的 AR 或智能眼镜应用里的操作。了解集成方向，在 GitHub 上关注我们，申请加入开发者试点。",
   hero: {
-    eyebrow: "面向开发者的 SynoRing",
+    eyebrow: "面向开发者的 Syno",
     title: "让你的空间应用\n拥有触感。",
     text: "为 AR 探索一种新的输入方式。把一次轻点、一次滑动或一个画圈动作，映射到你的应用中最重要的操作上。",
     github: "在 GitHub 上查看",

@@ -10,7 +10,7 @@ import {
 import { locales } from "../../i18n";
 
 export const alt =
-  "Pre-order SynoRing R1 for $99, regularly $129, shipping Q1 2027";
+  "Pre-order Syno Ring R1 for $99, regularly $129, shipping Q1 2027";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -66,7 +66,7 @@ export default async function Image() {
             color: ink,
           }}
         >
-          SynoRing R1
+          Syno Ring R1
         </div>
         <div style={{ display: "flex", alignItems: "flex-end", marginTop: 30 }}>
           <div

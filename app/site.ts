@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import { alternates, languages, type Lang } from "./i18n";
 
 export const site = {
-  name: "SynoRing",
-  organization: "SynoRing Labs",
+  name: "Syno",
+  productName: "Syno Ring R1",
+  organization: "Syno Labs LLC",
   url: "https://www.synoring.ai",
-  title: "SynoRing R1 — Gesture Control Ring for AR & Smart Glasses",
+  title: "Syno Ring",
   description:
-    "SynoRing R1 is a gesture control ring for AR and smart glasses. Tap, glide, and circle to control what you see. Pre-order for $99, shipping Q1 2027.",
+    "Syno Ring R1 is a gesture control ring for AR and smart glasses. Tap, glide, and circle to control what you see. Pre-order for $99, shipping Q1 2027.",
   shortDescription: "A gesture control ring for AR and smart glasses.",
   twitter: "@SynoRing",
   email: "contact@synoring.ai",

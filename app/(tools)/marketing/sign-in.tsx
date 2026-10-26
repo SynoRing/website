@@ -28,7 +28,7 @@ export function SignIn({ message }: { message?: string }) {
 
   return (
     <main className="mk-signin">
-      <img src="/wordmark.svg" width="132" height="44" alt="SynoRing" />
+      <img src="/wordmark.svg" width="111" height="44" alt="Syno" />
       <form className="mk-signin-card" onSubmit={submit}>
         <h1>Marketing</h1>
         {message ? (

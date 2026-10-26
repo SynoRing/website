@@ -47,7 +47,7 @@ export default async function DevelopersPage({ params }: PageProps) {
             <span>{copy.console.badge}</span>
           </div>
           <div className="console-orbit">
-            <img src="/logo.svg" width="90" height="90" alt="SynoRing" />
+            <img src="/logo.svg" width="90" height="90" alt="Syno" />
             <span className="orbit-tag tag-tap">tap</span>
             <span className="orbit-tag tag-glide">glide</span>
             <span className="orbit-tag tag-circle">circle</span>

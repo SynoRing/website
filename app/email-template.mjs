@@ -1,4 +1,4 @@
-/* The SynoRing email layout, shared by the marketing composer's live
+/* The Syno email layout, shared by the marketing composer's live
    preview, campaign sends, and signup confirmations. Pure string work, so it
    runs in the browser and on the server alike.
 
@@ -108,10 +108,10 @@ export function renderEmail({
   const content = styleBody(fillVariables(body, variables));
   const textContent = htmlToText(plain(body));
   const {
-    reason = "You’re receiving this because you joined the SynoRing waitlist at synoring.ai.",
+    reason = "You’re receiving this because you joined the Syno waitlist at synoring.ai.",
     unsubscribeUrl,
     postalAddress,
-    organization = "SynoRing Labs",
+    organization = "Syno Labs LLC",
   } = footer;
   const company = [organization, postalAddress].filter(Boolean).join(" · ");
   const footerStyle = "color:#6b756d;text-decoration:underline;";
@@ -139,7 +139,7 @@ export function renderEmail({
 <tr><td align="center" class="email-outer" style="padding:40px 16px;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;">
 <tr><td style="padding:0 6px 22px;">
-<a href="${siteUrl}" style="text-decoration:none;"><img src="${siteUrl}/email/wordmark.png" width="120" height="40" alt="SynoRing" style="display:block;width:120px;height:40px;border:0;"></a>
+<a href="${siteUrl}" style="text-decoration:none;"><img src="${siteUrl}/email/wordmark.png" width="101" height="40" alt="Syno" style="display:block;width:101px;height:40px;border:0;"></a>
 </td></tr>
 <tr><td class="email-card" style="padding:40px 40px 34px;background:#ffffff;border-radius:20px;font-family:${fontStack};color:#4f5952;">
 ${content}
@@ -169,16 +169,16 @@ ${escapeHtml(company)}
 }
 
 /* Starting points for the composer. */
-const productImage = `<img src="${siteUrl}/email/synoring-r1-finishes.jpg" width="480" alt="SynoRing R1 in Space Gray, Platinum, Rose Gold, and Gold" />`;
+const productImage = `<img src="${siteUrl}/email/synoring-r1-finishes.jpg" width="480" alt="Syno Ring R1 in Space Gray, Platinum, Rose Gold, and Gold" />`;
 
 export const starterDrafts = [
   {
     name: "Product update",
-    subject: "SynoRing update: what we’ve been building",
-    preheader: "Progress on SynoRing R1, and what comes next.",
-    body: `<h1>A closer look at SynoRing R1.</h1>
+    subject: "Syno update: what we’ve been building",
+    preheader: "Progress on Syno Ring R1, and what comes next.",
+    body: `<h1>A closer look at Syno Ring R1.</h1>
 <p>Hi there,</p>
-<p>Thanks for following SynoRing. Here is what the team has been working on.</p>
+<p>Thanks for following Syno. Here is what the team has been working on.</p>
 <h2>What’s new</h2>
 <ul>
   <li>First update goes here.</li>
@@ -187,31 +187,31 @@ export const starterDrafts = [
 <h2>What’s next</h2>
 <p>A sentence about the next milestone.</p>
 <p><a class="button" href="${siteUrl}">See the latest</a></p>
-<p>— The SynoRing team</p>`,
+<p>— The Syno team</p>`,
   },
   {
     name: "Pre-order invitation",
-    subject: "SynoRing R1 is open for pre-order",
+    subject: "Syno Ring R1 is open for pre-order",
     preheader: "Reserve yours at $99 — $30 below the regular price.",
-    body: `<h1>SynoRing R1 is open for pre-order.</h1>
+    body: `<h1>Syno Ring R1 is open for pre-order.</h1>
 <p>Hi there,</p>
-<p>You joined the waitlist early, so you are among the first to hear: SynoRing R1 is now open for pre-order at <strong>$99</strong> (regularly $129).</p>
+<p>You joined the waitlist early, so you are among the first to hear: Syno Ring R1 is now open for pre-order at <strong>$99</strong> (regularly $129).</p>
 ${productImage}
 <ul>
   <li>Four finishes: Space Gray, Platinum, Rose Gold, and Gold.</li>
   <li>A sizing kit ships first, so your ring fits.</li>
   <li>Estimated to ship in Q1 2027, free within the US.</li>
 </ul>
-<p><a class="button" href="${siteUrl}/store">Pre-order SynoRing R1</a></p>
-<p>— The SynoRing team</p>`,
+<p><a class="button" href="${siteUrl}/store">Pre-order Syno Ring R1</a></p>
+<p>— The Syno team</p>`,
   },
   {
     name: "Sizing kit on its way",
-    subject: "Your SynoRing sizing kit is on its way",
+    subject: "Your Syno sizing kit is on its way",
     preheader: "Find your size before your ring ships.",
     body: `<h1>Your sizing kit is on its way.</h1>
 <p>Hi there,</p>
-<p>Thanks for pre-ordering SynoRing R1 in {{finish}}. Your sizing kit has shipped, so you can find the right fit before your ring is made.</p>
+<p>Thanks for pre-ordering Syno Ring R1 in {{finish}}. Your sizing kit has shipped, so you can find the right fit before your ring is made.</p>
 <h2>How to use it</h2>
 <ol>
   <li>Wear each sample ring on the finger you plan to use, for a few hours.</li>
@@ -219,7 +219,7 @@ ${productImage}
   <li>Reply to this email with your size.</li>
 </ol>
 <p>Your ring is estimated to ship in Q1 2027.</p>
-<p>— The SynoRing team</p>`,
+<p>— The Syno team</p>`,
   },
 ];
 
@@ -229,12 +229,12 @@ export function confirmationEmail(kind, details = {}) {
     const row = (label, value, strong = false) =>
       `<tr><td style="padding:10px 0;border-bottom:1px solid #e4e8e1;font-size:15px;color:#6b756d;">${label}</td><td align="right" style="padding:10px 0;border-bottom:1px solid #e4e8e1;font-size:15px;color:${strong ? "#1e2420" : "#4f5952"};">${value}</td></tr>`;
     return {
-      subject: "You’re on the SynoRing R1 waitlist",
+      subject: "You’re on the Syno Ring R1 waitlist",
       preheader: "We’ll be in touch to confirm your size and next steps.",
       body: `<h1>You’re on the waitlist.</h1>
-<p>Thanks for your interest in SynoRing R1. Here is the selection you joined with:</p>
+<p>Thanks for your interest in Syno Ring R1. Here is the selection you joined with:</p>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 24px;border-top:1px solid #e4e8e1;">
-${row("Product", "SynoRing R1")}
+${row("Product", "Syno Ring R1")}
 ${row("Finish", "{{finish}}")}
 ${row("Quantity", "{{quantity}}")}
 ${row("Pre-order price", "$99 USD each")}
@@ -247,21 +247,21 @@ ${row("Product subtotal", `$${escapeHtml(details.subtotal ?? "")} USD`, true)}
   <li>Your ring is estimated to ship in Q1 2027, free within the US.</li>
 </ol>
 <p>Questions? Just reply to this email.</p>
-<p>— The SynoRing team</p>`,
+<p>— The Syno team</p>`,
       reason:
-        "You’re receiving this because you joined the SynoRing R1 waitlist from the store at synoring.ai.",
+        "You’re receiving this because you joined the Syno Ring R1 waitlist from the store at synoring.ai.",
     };
   }
   return {
-    subject: "You’re on the SynoRing waitlist",
+    subject: "You’re on the Syno waitlist",
     preheader: "We’ll write with launch updates and developer pilots.",
     body: `<h1>You’re on the list.</h1>
-<p>Thanks for joining the SynoRing waitlist. We’ll write when there is real progress to share: production updates, developer pilots, and shipping news.</p>
+<p>Thanks for joining the Syno waitlist. We’ll write when there is real progress to share: production updates, developer pilots, and shipping news.</p>
 ${productImage}
-<p>SynoRing R1 is open for pre-order at $99 (regularly $129), estimated to ship in Q1 2027 with free shipping within the US.</p>
-<p><a class="button" href="${siteUrl}/store">Pre-order SynoRing R1</a></p>
-<p>— The SynoRing team</p>`,
+<p>Syno Ring R1 is open for pre-order at $99 (regularly $129), estimated to ship in Q1 2027 with free shipping within the US.</p>
+<p><a class="button" href="${siteUrl}/store">Pre-order Syno Ring R1</a></p>
+<p>— The Syno team</p>`,
     reason:
-      "You’re receiving this because you joined the SynoRing waitlist at synoring.ai.",
+      "You’re receiving this because you joined the Syno waitlist at synoring.ai.",
   };
 }

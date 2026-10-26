@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   title: "Business plan",
   description,
   robots: { index: false, follow: false },
-  openGraph: { title: "SynoRing business plan", description, url: `${site.url}/bp` },
+  openGraph: { title: "Syno business plan", description, url: `${site.url}/bp` },
 };
 
 /* The confidential business plan. Visitors enter the password made for
@@ -40,7 +40,7 @@ export default async function BusinessPlan({
   if (!version)
     return (
       <main className="bp-gate">
-        <img src="/wordmark.svg" width="132" height="44" alt="SynoRing" />
+        <img src="/wordmark.svg" width="111" height="44" alt="Syno" />
         <div className="bp-card">
           <h1>The plan is on its way.</h1>
           <p className="bp-lede">

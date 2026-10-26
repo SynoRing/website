@@ -55,7 +55,7 @@ export function setupStatus() {
   return {
     storage: Boolean(waitlistFromEnv()),
     email: Boolean(mailer),
-    from: mailer?.from ?? process.env.MAIL_FROM ?? "SynoRing <noreply@synoring.ai>",
+    from: mailer?.from ?? process.env.MAIL_FROM ?? "Syno <noreply@synoring.ai>",
     replyTo: mailer?.replyTo ?? process.env.MAIL_REPLY_TO ?? site.email,
     postalAddress: postalAddress(),
   };

@@ -7,9 +7,9 @@ const mailto = (subject: string, body: string) =>
   `mailto:contact@synoring.ai?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
 const en = {
-  title: "SynoRing R1 — Gesture Control Ring for AR & Smart Glasses",
+  title: "Syno Ring",
   description:
-    "SynoRing R1 is a gesture control ring for AR and smart glasses. Tap, glide, and circle to control what you see. Pre-order for $99, shipping Q1 2027.",
+    "Syno Ring R1 is a gesture control ring for AR and smart glasses. Tap, glide, and circle to control what you see. Pre-order for $99, shipping Q1 2027.",
   shortDescription: "A gesture control ring for AR and smart glasses.",
   navigation: {
     "/": "The ring",
@@ -19,7 +19,7 @@ const en = {
     "/about": "About",
   },
   skipLink: "Skip to content",
-  homeLabel: "SynoRing home",
+  homeLabel: "Syno home",
   mainNavigation: "Main navigation",
   earlyAccess: "Get early access",
   mobileNavigation: {
@@ -29,9 +29,9 @@ const en = {
   },
   noteLabel: "See product note {number}",
   footer: {
-    backToTop: "SynoRing — back to top",
+    backToTop: "Syno — back to top",
     tagline: "Gesture becomes intent.",
-    social: "SynoRing on {name}",
+    social: "Syno on {name}",
     groups: [
       {
         title: "Explore",
@@ -50,7 +50,7 @@ const en = {
         ],
       },
       {
-        title: "SynoRing",
+        title: "Syno",
         links: [
           ["/about", "About"],
           ["mailto:contact@synoring.ai", "Contact"],
@@ -58,7 +58,7 @@ const en = {
         ],
       },
     ],
-    copyright: "© 2026 SynoRing Labs",
+    copyright: "© 2026 Syno Labs LLC",
     origin: "Designed in the US. Manufactured in China.",
     notesTitle: "Product notes",
     notes: [
@@ -87,8 +87,8 @@ const en = {
     },
   ],
   developerEmail: mailto(
-    "SynoRing Developer Pilot",
-    "Hi SynoRing team,\n\nI'm interested in a developer pilot.\n\nProject:\nTarget device:\nInteraction use case:\n",
+    "Syno Developer Pilot",
+    "Hi Syno team,\n\nI'm interested in a developer pilot.\n\nProject:\nTarget device:\nInteraction use case:\n",
   ),
   product: {
     description:
@@ -96,8 +96,8 @@ const en = {
     category: "Wearable gesture controller",
     material: "Zirconia ceramic, stainless steel",
   },
-  renderAlt: "SynoRing in {finish}",
-  circuitAlt: "SynoRing flexible circuit wrapped around its arc battery",
+  renderAlt: "Syno Ring R1 in {finish}",
+  circuitAlt: "Syno Ring R1 flexible circuit wrapped around its arc battery",
   finishes: {
     "space-gray": "Space Gray",
     platinum: "Platinum",
@@ -121,9 +121,9 @@ const en = {
 export type SiteCopy = typeof en;
 
 const zh: SiteCopy = {
-  title: "SynoRing R1 — 为 AR 与智能眼镜打造的手势控制戒指",
+  title: "Syno Ring",
   description:
-    "SynoRing R1 是一枚为 AR 与智能眼镜打造的手势控制戒指。轻点、滑动、画圈，就能控制眼前所见。现可预订，售价 $99，预计 2027 年第一季度发货。",
+    "Syno Ring R1 是一枚为 AR 与智能眼镜打造的手势控制戒指。轻点、滑动、画圈，就能控制眼前所见。现可预订，售价 $99，预计 2027 年第一季度发货。",
   shortDescription: "为 AR 与智能眼镜打造的手势控制戒指。",
   navigation: {
     "/": "戒指",
@@ -133,7 +133,7 @@ const zh: SiteCopy = {
     "/about": "关于",
   },
   skipLink: "跳到正文",
-  homeLabel: "SynoRing 首页",
+  homeLabel: "Syno 首页",
   mainNavigation: "主导航",
   earlyAccess: "抢先体验",
   mobileNavigation: {
@@ -143,9 +143,9 @@ const zh: SiteCopy = {
   },
   noteLabel: "查看产品说明 {number}",
   footer: {
-    backToTop: "SynoRing — 返回顶部",
+    backToTop: "Syno — 返回顶部",
     tagline: "手势，即意图。",
-    social: "在 {name} 上关注 SynoRing",
+    social: "在 {name} 上关注 Syno",
     groups: [
       {
         title: "探索",
@@ -164,7 +164,7 @@ const zh: SiteCopy = {
         ],
       },
       {
-        title: "SynoRing",
+        title: "Syno",
         links: [
           ["/about", "关于我们"],
           ["mailto:contact@synoring.ai", "联系我们"],
@@ -172,7 +172,7 @@ const zh: SiteCopy = {
         ],
       },
     ],
-    copyright: "© 2026 SynoRing Labs",
+    copyright: "© 2026 Syno Labs LLC",
     origin: "美国设计，中国制造。",
     notesTitle: "产品说明",
     notes: [
@@ -201,8 +201,8 @@ const zh: SiteCopy = {
     },
   ],
   developerEmail: mailto(
-    "SynoRing 开发者试点",
-    "SynoRing 团队你好，\n\n我对开发者试点感兴趣。\n\n项目：\n目标设备：\n交互场景：\n",
+    "Syno 开发者试点",
+    "Syno 团队你好，\n\n我对开发者试点感兴趣。\n\n项目：\n目标设备：\n交互场景：\n",
   ),
   product: {
     description:
@@ -210,8 +210,8 @@ const zh: SiteCopy = {
     category: "可穿戴手势控制器",
     material: "氧化锆陶瓷、不锈钢",
   },
-  renderAlt: "{finish} SynoRing",
-  circuitAlt: "SynoRing 的柔性电路包裹着弧形电池",
+  renderAlt: "{finish} Syno Ring R1",
+  circuitAlt: "Syno Ring R1 的柔性电路包裹着弧形电池",
   finishes: {
     "space-gray": "深空灰",
     platinum: "铂金色",

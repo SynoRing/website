@@ -19,7 +19,7 @@ export function PlanFrame({ src }: { src: string }) {
       <iframe
         className="bp-frame"
         src={`${src}#view=FitH`}
-        title="SynoRing business plan"
+        title="Syno business plan"
       />
     );
   return (

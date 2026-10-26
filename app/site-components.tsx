@@ -39,8 +39,8 @@ export function SiteHeader({
           className="brand-wordmark"
           src="/wordmark.svg"
           alt=""
-          width="368"
-          height="122"
+          width="202"
+          height="80"
         />
       </a>
       <nav className="desktop-navigation" aria-label={copy.mainNavigation}>
@@ -86,7 +86,7 @@ export function SiteFooter({ lang }: { lang: Lang }) {
             href={localePath(lang, "/")}
             aria-label={footer.backToTop}
           >
-            <img src="/wordmark.svg" alt="" width="368" height="122" />
+            <img src="/wordmark.svg" alt="" width="202" height="80" />
           </a>
           <p>{footer.tagline}</p>
           <div className="footer-social">
