@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { developersCopy } from "../../copy/developers";
 import { siteCopy } from "../../copy/site";
+import { DevicePanel } from "../../developers/device-panel";
 import { localePath, pageLang, type PageProps } from "../../i18n";
 import { GitHubIcon, PlusIcon } from "../../icons";
 import { pageMetadata, site } from "../../site";
@@ -36,9 +37,8 @@ export default async function DevelopersPage({ params }: PageProps) {
               <GitHubIcon />
               {copy.hero.github}
             </a>
-            <ArrowLink href={developerEmail}>{copy.hero.pilot}</ArrowLink>
+            <ArrowLink href="#device-panel">{copy.hero.panel}</ArrowLink>
           </div>
-          <span className="quiet-label">{copy.hero.status}</span>
         </div>
         <div className="developer-console" aria-label={copy.console.label}>
           <div className="console-header">
@@ -92,6 +92,18 @@ export default async function DevelopersPage({ params }: PageProps) {
             </article>
           ))}
         </div>
+      </section>
+      <section className="device-section content-width" id="device-panel">
+        <div className="section-heading">
+          <div>
+            <span className="eyebrow">{copy.panel.eyebrow}</span>
+            <h2>
+              <Br text={copy.panel.title} />
+            </h2>
+          </div>
+          <p>{copy.panel.text}</p>
+        </div>
+        <DevicePanel lang={lang} copy={copy.panel} />
       </section>
       <section className="developer-mappings content-width">
         <div>

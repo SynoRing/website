@@ -326,6 +326,246 @@
   border-radius: 50%;
   background: var(--accent);
 }
+
+/* Developers: the device panel. Its palette is the concept console's. */
+.device-section {
+  padding-bottom: var(--section);
+}
+.device-panel {
+  --device-line: #667f492b;
+  --device-label: #93ad7f;
+  --device-quiet: #87a17a;
+  --device-text: #d0ddbf;
+  color: #eaf0df;
+  background: linear-gradient(135deg, #263b2f, #15261e);
+  border-radius: var(--radius);
+  box-shadow: 0 24px 56px #223f2118;
+}
+.device-panel button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.device-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 22px 32px;
+  border-bottom: 1px solid var(--device-line);
+}
+.device-header .live-dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  background: #5d7359;
+  transition:
+    background 0.2s,
+    box-shadow 0.2s;
+}
+.device-panel[data-link="connected"] .live-dot {
+  background: #b8d88c;
+  box-shadow: 0 0 0 4px #b8d88c26;
+}
+.device-panel[data-link="connecting"] .live-dot,
+.device-panel[data-link="reconnecting"] .live-dot {
+  background: #e0c97a;
+  animation: device-waiting 0.9s ease-in-out infinite alternate;
+}
+@keyframes device-waiting {
+  to {
+    opacity: 0.35;
+  }
+}
+.device-title {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  margin-right: auto;
+}
+.device-title strong {
+  overflow: hidden;
+  font-size: var(--text-md);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.device-title > span {
+  font-size: var(--text-xs);
+  color: var(--device-label);
+}
+.device-action {
+  min-height: 38px;
+  padding: 0 16px;
+  font-size: 14px;
+  white-space: nowrap;
+  color: var(--device-text);
+  background: transparent;
+  border: 1px solid #718a5b;
+  border-radius: var(--pill);
+  transition:
+    background 0.2s,
+    color 0.2s,
+    border-color 0.2s;
+}
+.device-action:hover:not(:disabled) {
+  background: #2e4430;
+}
+.device-action[aria-pressed="true"] {
+  color: #15261e;
+  background: #d3e7a4;
+  border-color: #d3e7a4;
+}
+.device-panel .device-notice {
+  padding: 14px 32px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #e6d9a6;
+  background: #e0c97a14;
+  border-bottom: 1px solid var(--device-line);
+}
+.device-readings {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin: 0;
+  transition: opacity 0.2s;
+}
+/* What is on screen is from before the link dropped. */
+.device-panel[data-link="reconnecting"] .device-readings {
+  opacity: 0.45;
+}
+.device-reading {
+  min-width: 0;
+  padding: 26px 32px 28px;
+  border-bottom: 1px solid var(--device-line);
+}
+.device-reading dt {
+  font-size: var(--text-xs);
+  color: var(--device-label);
+}
+.device-reading dd {
+  margin: 0;
+}
+.device-reading .device-value {
+  margin-top: 10px;
+  font-size: 28px;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+.device-reading[data-dim] .device-value {
+  color: #7f9774;
+}
+.device-reading .device-meter {
+  height: 4px;
+  margin-top: 14px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: #d3e7a41f;
+}
+.device-meter span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #b8d88c;
+  transition: width 0.4s var(--ease);
+}
+.device-reading .device-detail + .device-detail {
+  margin-top: 2px;
+}
+.device-reading .device-value + .device-detail,
+.device-reading .device-meter + .device-detail {
+  margin-top: 8px;
+}
+.device-reading .device-detail {
+  font-size: var(--text-xs);
+  line-height: 1.45;
+  color: var(--device-quiet);
+}
+.device-lower {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.device-lower > section {
+  min-width: 0;
+  padding: 28px 32px 32px;
+}
+.device-lower > section + section {
+  border-left: 1px solid var(--device-line);
+}
+.device-heading {
+  margin-bottom: 14px;
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--device-label);
+}
+.device-heading:not(:first-child) {
+  margin-top: 30px;
+}
+.device-facts {
+  margin: 0;
+  font-size: 13px;
+}
+.device-facts > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--device-line);
+}
+.device-facts > div:last-child {
+  border-bottom: 0;
+}
+.device-facts dt {
+  flex-shrink: 0;
+  color: var(--device-quiet);
+}
+.device-facts dd {
+  margin: 0;
+  text-align: right;
+  overflow-wrap: anywhere;
+  font-family: var(--font-mono), ui-monospace, Menlo, monospace;
+  color: var(--device-text);
+}
+.device-control {
+  display: grid;
+  gap: 12px;
+}
+.device-control + .device-control {
+  margin-top: 18px;
+}
+.device-control > span {
+  font-size: 14px;
+  color: var(--device-text);
+}
+.device-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.device-panel .device-hint,
+.device-panel .device-empty {
+  font-size: var(--text-xs);
+  line-height: 1.5;
+  color: var(--device-quiet);
+}
+.device-log {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--device-text);
+}
+.device-log li {
+  display: flex;
+  gap: 14px;
+  padding: 5px 0;
+}
+.device-log time {
+  flex-shrink: 0;
+  font-family: var(--font-mono), ui-monospace, Menlo, monospace;
+  color: var(--device-quiet);
+}
 .developer-mappings {
   display: grid;
   grid-template-columns: 0.85fr 1.15fr;
@@ -1216,6 +1456,16 @@
   .integration-grid article {
     padding: 26px;
   }
+  .device-header,
+  .device-panel .device-notice {
+    padding-inline: 26px;
+  }
+  .device-reading {
+    padding: 24px 26px 26px;
+  }
+  .device-lower > section {
+    padding: 26px;
+  }
   .store-product {
     gap: 40px;
   }
@@ -1272,6 +1522,16 @@
   }
   .integration-grid article {
     padding: 22px;
+  }
+  .device-readings {
+    grid-template-columns: 1fr 1fr;
+  }
+  .device-lower {
+    grid-template-columns: 1fr;
+  }
+  .device-lower > section + section {
+    border-top: 1px solid var(--device-line);
+    border-left: 0;
   }
   .store-product {
     grid-template-columns: 1fr 1fr;
@@ -1475,6 +1735,22 @@
   .integration-grid h3 {
     margin-top: 16px;
   }
+  .device-header {
+    flex-wrap: wrap;
+    padding: 20px 22px;
+  }
+  .device-panel .device-notice {
+    padding-inline: 22px;
+  }
+  .device-reading {
+    padding: 20px 22px 22px;
+  }
+  .device-reading .device-value {
+    font-size: 24px;
+  }
+  .device-lower > section {
+    padding: 22px;
+  }
   .developer-mappings {
     grid-template-columns: 1fr;
     gap: 36px;
@@ -1604,6 +1880,9 @@
   text-underline-offset: 3px;
 }
 @media (max-width: 540px) {
+  .device-readings {
+    grid-template-columns: 1fr;
+  }
   .unsubscribe-card {
     padding: 30px 22px;
   }

@@ -68,7 +68,10 @@ test("pre-order route publishes confirmed pricing and keeps enquiry status clear
     store,
     /Orders are not open|Price<\/dt><dd>To be announced/,
   );
-  assert.match(developers, /Public SDK not yet available/);
+  assert.doesNotMatch(developers, /Public SDK not yet available/);
+  assert.match(developers, /href="#device-panel"[^>]*>Open the device panel/);
+  assert.match(developers, /id="device-panel"/);
+  assert.match(developers, /Connect a case/);
   assert.match(
     developers,
     /mailto:contact@synoring.ai\?subject=Syno%20Developer%20Pilot/,
