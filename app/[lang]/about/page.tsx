@@ -3,8 +3,9 @@ import { aboutCopy } from "../../copy/about";
 import { siteCopy } from "../../copy/site";
 import { localePath, pageLang, type PageProps } from "../../i18n";
 import { ArrowIcon } from "../../icons";
-import { pageMetadata } from "../../site";
-import { DevelopmentSteps, PageShell } from "../../site-components";
+import { companyUrl, pageMetadata, site } from "../../site";
+import { ArrowLink, DevelopmentSteps, PageShell } from "../../site-components";
+import { ringRenders } from "../../product-visual";
 import { Br } from "../../text";
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -31,14 +32,15 @@ export default async function AboutPage({ params }: PageProps) {
             {copy.hero.paragraphs.map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
             ))}
+            <ArrowLink href={companyUrl(lang)}>{copy.contact.companyLink}</ArrowLink>
           </div>
         </div>
       </section>
       <section className="about-statement">
         <div className="content-width">
-          <div className="about-emblem">
-            <img src="/logo.svg" width="220" height="220" alt={copy.statement.emblemAlt} />
-          </div>
+          <img className="about-ring" src={ringRenders["space-gray"].src}
+            srcSet={ringRenders["space-gray"].srcSet} sizes="(max-width: 760px) 55vw, 340px"
+            width="1346" height="1372" alt={copy.statement.ringAlt} />
           <div>
             <span className="eyebrow">{copy.statement.eyebrow}</span>
             <h2>
@@ -80,7 +82,6 @@ export default async function AboutPage({ params }: PageProps) {
       </section>
       <section className="about-contact content-width">
         <div>
-          <span className="eyebrow">{copy.contact.eyebrow}</span>
           <h2>
             <Br text={copy.contact.title} />
           </h2>
@@ -89,10 +90,10 @@ export default async function AboutPage({ params }: PageProps) {
           </p>
         </div>
         <div className="contact-rows">
-          <a href="mailto:contact@synoring.ai">
+          <a href={`mailto:${site.email}`}>
             <span>
               <small>{copy.contact.general}</small>
-              <strong>contact@synoring.ai</strong>
+              <strong>{site.email}</strong>
             </span>
             <ArrowIcon />
           </a>

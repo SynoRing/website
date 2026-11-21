@@ -106,7 +106,7 @@ export function SiteFooter({ lang }: { lang: Lang }) {
         <div className="footer-link-groups">
           {footer.groups.map((group) => (
             <div key={group.title}>
-              <span>{group.title}</span>
+              <h3>{group.title}</h3>
               {group.links.map(([href, label]) => (
                 <a
                   key={href}

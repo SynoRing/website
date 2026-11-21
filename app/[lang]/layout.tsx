@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { title, description } = siteCopy[lang];
   return {
     metadataBase: new URL(site.url),
-    title: { default: title, template: `%s | ${site.name}` },
+    title: { default: title, template: `%s | ${site.title}` },
     description,
     applicationName: site.name,
     authors: [{ name: site.organization, url: site.url }],
@@ -55,7 +55,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description,
       type: "website",
       url: alternates(lang, "/").canonical,
-      siteName: site.name,
+      siteName: site.title,
       locale: languages[lang].ogLocale,
       alternateLocale: locales
         .filter((code) => code !== lang)

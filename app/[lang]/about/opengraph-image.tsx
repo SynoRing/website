@@ -3,7 +3,7 @@ import { accent, asset, ink, Lines, muted, Wordmark } from "../../_og/shared";
 import { locales } from "../../i18n";
 
 export const alt =
-  "About Syno Labs LLC: spatial computing needs a smaller gesture";
+  "About Syno Ring R1, a gesture ring for AR and smart glasses";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -12,9 +12,9 @@ export function generateStaticParams() {
 }
 
 export default async function Image() {
-  const [wordmark, logo] = await Promise.all([
+  const [wordmark, ring] = await Promise.all([
     asset("wordmark-dark.png"),
-    asset("logo.png"),
+    asset("ring-space-gray.png"),
   ]);
   return new ImageResponse(
     <div
@@ -28,35 +28,8 @@ export default async function Image() {
       }}
     >
       <Wordmark src={wordmark} />
-      {/* The emblem from the About page: the mark inside two rings. */}
-      <div
-        style={{
-          position: "absolute",
-          left: 96,
-          top: 150,
-          width: 360,
-          height: 360,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          borderRadius: 999,
-          border: "1.5px solid #bdc9ad",
-        }}
-      >
-        <div
-          style={{
-            width: 310,
-            height: 310,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            borderRadius: 999,
-            border: "1.5px solid #cfd8c3",
-          }}
-        >
-          <img src={logo} width={186} height={186} style={{ opacity: 0.72 }} />
-        </div>
-      </div>
+      <img src={ring} width={350} height={357}
+        style={{ position: "absolute", left: 92, top: 154, objectFit: "contain" }} />
       <div
         style={{
           position: "absolute",
@@ -74,17 +47,17 @@ export default async function Image() {
             color: accent,
           }}
         >
-          About Syno Labs LLC
+          Syno Ring R1
         </div>
         <Lines
-          lines={["Spatial computing", "needs a smaller", "gesture."]}
+          lines={["Why a ring?"]}
           size={60}
           color={ink}
         />
         <div
           style={{ display: "flex", marginTop: 30, fontSize: 23, color: muted }}
         >
-          Designed in the US · Manufactured in China
+          Gesture control for smart glasses
         </div>
       </div>
     </div>,

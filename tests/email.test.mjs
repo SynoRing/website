@@ -159,5 +159,5 @@ test("sends through the Cloudflare email API and reports failures", async () => 
   assert.equal(mailerFromEnv({}), null);
   const configured = mailerFromEnv({ CLOUDFLARE_ACCOUNT_ID: "a", CLOUDFLARE_EMAIL_TOKEN: "t" });
   assert.equal(configured.from, "Syno <noreply@synoring.ai>");
-  assert.equal(configured.replyTo, "contact@synoring.ai");
+  assert.equal(configured.replyTo, "contact@synolabs.org");
 });

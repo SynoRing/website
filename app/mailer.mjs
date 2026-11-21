@@ -64,7 +64,7 @@ export function mailerFromEnv(env = process.env) {
     accountId: env.CLOUDFLARE_ACCOUNT_ID,
     token: env.CLOUDFLARE_EMAIL_TOKEN,
     from: env.MAIL_FROM || "Syno <noreply@synoring.ai>",
-    replyTo: env.MAIL_REPLY_TO || "contact@synoring.ai",
+    replyTo: env.MAIL_REPLY_TO || "contact@synolabs.org",
     apiBase: env.CLOUDFLARE_API_BASE || undefined,
   });
 }

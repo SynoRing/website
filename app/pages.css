@@ -1329,30 +1329,14 @@
   align-items: center;
   gap: 10%;
 }
-.about-emblem {
-  position: relative;
-  display: grid;
-  place-items: center;
-  max-width: 350px;
-  aspect-ratio: 1;
+.about-intro .arrow-link {
+  margin-top: 22px;
 }
-.about-emblem:before,
-.about-emblem:after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border: 1px solid #bdc9ad;
-  border-radius: 50%;
-}
-.about-emblem:after {
-  inset: 25px;
-  border-color: #cfd8c3;
-}
-.about-emblem img {
-  width: 52%;
+.about-ring {
+  width: min(80%, 340px);
   height: auto;
-  mix-blend-mode: multiply;
-  opacity: 0.64;
+  justify-self: center;
+  filter: var(--render-shadow);
 }
 .about-statement h2 {
   font-size: clamp(30px, 3.1vw, 44px);
@@ -1805,12 +1789,8 @@
     grid-template-columns: 1fr;
     gap: 30px;
   }
-  .about-emblem {
-    width: 170px;
-    margin-inline: auto;
-  }
-  .about-emblem:after {
-    inset: 15px;
+  .about-ring {
+    width: min(55vw, 230px);
   }
   .about-statement h2 {
     font-size: 30px;

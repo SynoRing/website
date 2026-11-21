@@ -3,8 +3,10 @@
    languages side by side; the Chinese object must match the English one's
    shape, so a missing string fails the type check. */
 
+import { companyUrl, site } from "../site";
+
 const mailto = (subject: string, body: string) =>
-  `mailto:contact@synoring.ai?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  `mailto:${site.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
 const en = {
   title: "Syno Ring",
@@ -30,31 +32,32 @@ const en = {
   noteLabel: "See product note {number}",
   footer: {
     backToTop: "Syno — back to top",
-    tagline: "Gesture becomes intent.",
+    tagline: "A gesture ring for AR and smart glasses. Tap to select, glide to scroll, or draw a circle to adjust the volume.",
     social: "Syno on {name}",
     groups: [
       {
-        title: "Explore",
+        title: "Product",
         links: [
-          ["/#why", "The ring"],
+          ["/#why", "Syno Ring R1"],
+          ["/about", "About the ring"],
           ["/demo", "Demo"],
           ["/store", "Store"],
         ],
       },
       {
-        title: "Build with us",
+        title: "Resources",
         links: [
           ["/developers", "Developers"],
           ["/#technology", "Technology"],
           ["/about#development", "Development"],
+          ["/#faq", "Frequently asked questions"],
         ],
       },
       {
-        title: "Syno",
+        title: "Company",
         links: [
-          ["/about", "About"],
-          ["mailto:contact@synoring.ai", "Contact"],
-          ["/#faq", "Questions"],
+          [companyUrl("en"), "Syno Labs"],
+          [`mailto:${site.email}`, site.email],
         ],
       },
     ],
@@ -144,31 +147,32 @@ const zh: SiteCopy = {
   noteLabel: "查看产品说明 {number}",
   footer: {
     backToTop: "Syno — 返回顶部",
-    tagline: "手势，即意图。",
+    tagline: "Syno Ring R1 是一枚为 AR 与智能眼镜设计的手势戒指。拇指轻点或滑动，就能操控眼前的内容。",
     social: "在 {name} 上关注 Syno",
     groups: [
       {
-        title: "探索",
+        title: "产品",
         links: [
-          ["/#why", "戒指"],
+          ["/#why", "Syno Ring R1"],
+          ["/about", "关于戒指"],
           ["/demo", "演示"],
           ["/store", "商店"],
         ],
       },
       {
-        title: "一起构建",
+        title: "资源",
         links: [
           ["/developers", "开发者"],
           ["/#technology", "技术"],
           ["/about#development", "研发进展"],
+          ["/#faq", "常见问题"],
         ],
       },
       {
-        title: "Syno",
+        title: "公司",
         links: [
-          ["/about", "关于我们"],
-          ["mailto:contact@synoring.ai", "联系我们"],
-          ["/#faq", "常见问题"],
+          [companyUrl("zh"), "Syno Labs"],
+          [`mailto:${site.email}`, site.email],
         ],
       },
     ],

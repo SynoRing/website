@@ -1,20 +1,20 @@
 /* The About page. "\n" in a string is a line break. */
 
 const en = {
-  title: "About Syno Labs LLC",
+  title: "About Syno Ring R1",
   description:
-    "Syno Labs LLC makes controlling AR and smart glasses feel small and natural: touch and motion in a ring. Designed in the US, manufactured in China.",
+    "Explore the design of Syno Ring R1, a wearable controller that uses thumb touches and finger movements to select, scroll and adjust content on smart glasses.",
   hero: {
-    eyebrow: "About Syno",
-    title: "Spatial computing\nneeds a smaller gesture.",
-    lead: "AR glasses change where information lives.\nWe are exploring how we interact with it.",
+    eyebrow: "About Syno Ring R1",
+    title: "Why a ring?",
+    lead: "With your hand resting at your side, your thumb can already reach your index finger.",
     paragraphs: [
-      "Syno Ring R1 is a wearable gesture controller in development at Syno Labs LLC. Our focus is simple: give your hand a subtle, accessible way to control a spatial interface.",
-      "Combining thumb touches with finger movements lets us explore selection, navigation, and continuous adjustment in a familiar form—a ring.",
+      "Syno Ring R1 puts a touch surface within that reach. A tap selects an item on your glasses. A glide moves through a list.",
+      "The ring also senses motion. A small circle can turn the volume up during a song or bring a map closer.",
     ],
   },
   statement: {
-    emblemAlt: "Syno symbol",
+    ringAlt: "Syno Ring R1 in Space Gray",
     eyebrow: "The question behind the ring",
     title: "What if controlling your glasses\ndid not interrupt",
     emphasis: "what you were doing?",
@@ -45,32 +45,32 @@ const en = {
     text: "Syno Ring R1, our first generation, is open for pre-order and estimated to ship in Q1 2027. Developer pilots and production validation continue alongside it.",
   },
   contact: {
-    eyebrow: "Syno Labs LLC",
-    title: "Let’s make the\nnext interaction better.",
-    text: "Designed in the US. Manufactured in China.\nExploring a more natural connection to spatial computing.",
-    general: "General enquiries",
+    title: "Explore the R1.",
+    text: "Try the gestures in your browser, or get in touch about using R1 with your device.",
+    general: "Ring enquiries",
     builders: "For builders",
     buildersLink: "Developer conversations",
     demo: "See the idea in action",
     demoLink: "Try the AR experience",
+    companyLink: "About Syno Labs, the team behind R1",
   },
 };
 
 const zh: typeof en = {
-  title: "关于 Syno Labs LLC",
+  title: "关于 Syno Ring R1",
   description:
-    "Syno Labs LLC 希望让操控 AR 与智能眼镜变得细微而自然：把触控与动作装进一枚戒指。美国设计，中国制造。",
+    "了解 Syno Ring R1 的设计与研发。通过拇指触控和手指动作，这枚戒指让你能在 AR 与智能眼镜上选择内容、滚动页面和调节音量。",
   hero: {
-    eyebrow: "关于 Syno",
-    title: "空间计算，\n需要更小的手势。",
-    lead: "AR 眼镜改变了信息所在的位置。\n我们在探索如何与它互动。",
+    eyebrow: "关于 Syno Ring R1",
+    title: "为什么是戒指？",
+    lead: "手自然垂在身侧时，拇指刚好能碰到食指。",
     paragraphs: [
-      "Syno Ring R1 是 Syno Labs LLC 正在研发的一款可穿戴手势控制器。我们的目标很简单：让你的手有一种细微、易用的方式来操控空间界面。",
-      "把拇指触控和手指动作结合起来，我们得以用一种熟悉的形态——戒指——去探索选择、导航和连续调节。",
+      "Syno Ring R1 的触控区就在拇指能碰到的位置。轻点可以选中眼镜里的内容，沿着戒面滑动就能翻阅列表。",
+      "戒指也能感知手指的动作。听歌时画个小圈可以调节音量，查看地图时，同样的动作可以改变比例尺。",
     ],
   },
   statement: {
-    emblemAlt: "Syno 标志",
+    ringAlt: "深空灰色的 Syno Ring R1 戒指",
     eyebrow: "戒指背后的问题",
     title: "如果操控眼镜\n不会打断",
     emphasis: "你正在做的事呢？",
@@ -101,14 +101,14 @@ const zh: typeof en = {
     text: "我们的第一代产品 Syno Ring R1 现已开放预订，预计 2027 年第一季度发货。开发者试点与量产验证也在同步推进。",
   },
   contact: {
-    eyebrow: "Syno Labs LLC",
-    title: "一起让下一次交互\n变得更好。",
-    text: "美国设计，中国制造。\n探索与空间计算更自然的连接。",
-    general: "一般咨询",
+    title: "进一步了解 R1",
+    text: "在浏览器中体验戒指的手势，也可以联系我们，讨论如何把 R1 接入你的设备。",
+    general: "产品咨询",
     builders: "面向开发者",
     buildersLink: "开发者交流",
     demo: "看看实际效果",
     demoLink: "体验 AR 演示",
+    companyLink: "了解 R1 的研发团队 Syno Labs",
   },
 };
 

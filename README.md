@@ -101,7 +101,7 @@ Setup:
    - `MAIL_POSTAL_ADDRESS`: shown in every email footer; US law (CAN-SPAM)
      requires it, and campaigns stay disabled until it is set.
    - Optional: `MAIL_FROM` (default `Syno <noreply@synoring.ai>`) and
-     `MAIL_REPLY_TO` (default `contact@synoring.ai`).
+     `MAIL_REPLY_TO` (default `contact@synolabs.org`).
 4. Redeploy.
 
 Production writes to `waitlist:*` keys; previews and local runs write to
